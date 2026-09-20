@@ -1,0 +1,31 @@
+MaxVelocityFactor: 1
+MaxAccelerationFactor: 1
+MaxJerkFactor: 1
+TrajectoryParameters:
+  TrajectoryType: 1
+  TOTP:
+    PathTolerance: 0.1
+    MinAngleChange: 0.001
+  IterativeSpline:
+    ZeroAcc: true
+    EnableJerk: false
+    MinStretch: false
+    MinAngleChange: 0.001
+    Type: 0
+ConfigPlannerName: Vanilla
+CartesianPlannerName: Basic
+ServoType: 1
+TCPOnly: false
+Kinematics:
+  Type: 0
+  Group: rightArm
+  EndEffector: left_ee
+Validator:
+  Type: 0
+  Group: rightArm
+  Names:
+    - J1
+    - J2
+    - J3
+    - J4
+    - J5

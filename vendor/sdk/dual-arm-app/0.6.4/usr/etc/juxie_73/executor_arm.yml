@@ -1,0 +1,53 @@
+Resample: 0.002
+Home:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+Names:
+  - J1
+  - J2
+  - J3
+  - J4
+  - J5
+  - J6
+  - J7
+Topic: /joint_states
+PubTopic: /juxie/joint_states
+
+MotorDirect:
+  - -1
+  - 1
+  - 1
+  - 1
+  - 1
+  - -1
+  - -1
+  - -1
+  - -1
+  - 1
+  - -1
+  - 1
+  - -1
+  - -1
+
+IsUsed : true
+
+SoftZeroPosition:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0

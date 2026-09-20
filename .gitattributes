@@ -1,0 +1,25 @@
+# The vendor's binaries -- the package and its shared libraries -- are committed as ordinary
+# blobs. That is 35 MB of files that never change, which git stores in about 21 MB of pack.
+# LFS would only pay off if many vendor versions accumulated, and it costs a dependency on
+# every clone: git lfs pull, remote quota, and LFS objects in the backup.
+#
+# -text stops CRLF conversion. -diff keeps their bytes out of textual diffs, which is what
+# diff=lfs used to do.
+vendor/originals/**/*.deb -text -diff
+vendor/originals/**/*.xlsx -text -diff
+vendor/originals/**/*.docx -text -diff
+vendor/sdk/**/*.so* -text -diff
+
+# The vendor's recorded trajectories are CRLF and are compared byte-for-byte by
+# tools/verify.sh, so they must never be normalised.
+vendor/sdk/**/*.csv -text
+
+# Text we author, or that we generate for review, should diff cleanly.
+*.py   text
+*.md   text
+*.json text
+*.yml  text
+*.yaml text
+*.sh   text
+*.cpp  text
+*.hpp  text

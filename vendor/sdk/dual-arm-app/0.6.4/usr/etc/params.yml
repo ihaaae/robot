@@ -1,0 +1,63 @@
+# 0: dual arm, 1: left arm 2: right arm
+Part: 0
+
+# type ["ARM_73", "ARM_62"] default:"" dual
+type: "ARM_73"
+# Overall velocity factor (0, 1] default: 1.0
+MaxVelocityFactor: 0.04
+# Overall velocity factor (0 1] default: 1.0
+MaxAccelerationFactor: 1.0
+# Overall Jerk factor (0, 1] default: 1.0s
+MaxJerkFactor: 1.0
+#[Info, Debug]
+Level: "Info"
+#[true, false]
+IsPrintfCan: true
+
+# Use vec Limit, default: true
+UseLimit : false
+LeftLimits:
+  0:
+    - 1.5
+    - 6.5
+  1:
+    - 1.5
+    - 6.5
+  2:
+    - 1.5
+    - 6.5
+  3:
+    - 1.5
+    - 6.5
+  4:
+    - 1.5
+    - 6.5
+  5:
+    - 1.5
+    - 6.5
+  6:
+    - 1.5
+    - 6.5
+  
+RightLimits:
+  0:
+    - 1.5
+    - 6.5
+  1:
+    - 1.5
+    - 6.5
+  2:
+    - 1.5
+    - 6.5
+  3:
+    - 1.5
+    - 6.5
+  4:
+    - 1.5
+    - 6.5
+  5:
+    - 1.5
+    - 6.5
+  6:
+    - 1.5
+    - 6.5

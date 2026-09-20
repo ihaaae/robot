@@ -1,0 +1,65 @@
+{
+  "generated_by": "hand-maintained provenance record for the vendor originals; no tooling in this repository reads or writes it",
+  "artifacts": [
+    {
+      "id": "dual-arm-app/0.6.4/linux-arm64",
+      "kind": "vendor_package",
+      "original_name": "dual_arm_app-0.6.4-Linux-1.deb",
+      "stored_name": "dual_arm_app-0.6.4-Linux-1.deb",
+      "size": 14412942,
+      "sha256": "440d51d939cdbd5032ab1292f42f0c14d5b6aab230716039e515fdb04bf9b578",
+      "vendor_claimed": {
+        "package": "dual_arm_app",
+        "version": "0.6.4",
+        "architecture": "arm64",
+        "description": "cpack test program",
+        "maintainer": "xxx@163.com"
+      },
+      "acquisition": {
+        "channel": "supplied by the robot vendor to the buyer",
+        "date": "2026-09-18",
+        "recorded_by": "reverse-engineering thread"
+      },
+      "notes": [
+        "No Depends field: libboost_thread/system/regex 1.74.0 are required at runtime.",
+        "No LICENSE or copyright file for the vendor's own code anywhere in the package.",
+        "The .deb itself bundles third-party OSS headers and ZLG's proprietary libusbcanfd.so.",
+        "The standalone usr/include/third_party/ tree was removed from vendor/sdk/dual-arm-app/0.6.4/ on 2026-09-20: nothing in the package references ZLG's library, and no compilable header includes anything from that directory. Third-party code still ships inside the vendor's own binaries, statically linked."
+      ],
+      "contains_third_party": true,
+      "contains_other_vendor_binaries": true,
+      "third_party_scope": "the .deb, plus statically inside the vendor's own .so files (fmt, nlohmann/json, websocketpp, piqp, taskflow); the standalone usr/include/third_party/ tree was removed from vendor/sdk/ and survives only inside the retained .deb"
+    },
+    {
+      "stored_name": "CANopen-V0.6.xlsx",
+      "kind": "vendor_document",
+      "size": 165530,
+      "sha256": "4d03f3befda69c3f38c0280e98b3aa6504bd87ccaaebc276cdbd22b3f0699fc2",
+      "acquisition": "provided by the buyer"
+    },
+    {
+      "stored_name": "V1.3.xlsx",
+      "kind": "vendor_document",
+      "size": 24049,
+      "sha256": "905c52c433bd54a8e3a79296049c695a43a9fd1163601c0f5a2a4cbd3b5db228",
+      "acquisition": "provided by the buyer"
+    },
+    {
+      "stored_name": "_V1.0.1.docx",
+      "kind": "vendor_document",
+      "size": 48258,
+      "sha256": "777d481a2deede7a642533d54e9f1489f70777bdace768a2c28916b705b96c1f",
+      "acquisition": "provided by the buyer"
+    }
+  ],
+  "external_references": [
+    {
+      "kind": "vendor_documentation_web",
+      "title": "PR0002 关节模组 CANFD/CANopen 使用协议简易说明书",
+      "url": "https://docs.juxieservo.com/docs/protocol/joint-module-canopen",
+      "revision_seen": "Rev 1.0, 2026-06-08, firmware 1.16.07+",
+      "snapshot": "research/vendor-derived/document-text/pr0002-canopen-webpage.md",
+      "note": "A URL alone does not preserve the revision our conclusions depended on."
+    }
+  ]
+}

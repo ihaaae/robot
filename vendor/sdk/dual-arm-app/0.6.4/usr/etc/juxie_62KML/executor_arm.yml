@@ -1,0 +1,49 @@
+Resample: 0.005
+Home:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+address: 192.168.10.95
+port: 10000
+state_port: 8099
+Names:
+  - 01
+  - 02
+  - 03
+  - 04
+  - 05
+  - 06
+Topic: /joint_states
+PubTopic: /HR-UP-6DOF-2KG-B01270-241108/joint_states
+
+MotorDirect:
+  - 1
+  - -1
+  - 1
+  - 1
+  - 1
+  - -1
+  - 1
+  - -1
+  - 1
+  - -1
+  - 1
+  - 1
+
+IsUsed : true
+SoftZeroPosition:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0

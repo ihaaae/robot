@@ -1,0 +1,114 @@
+==================== lib/libbot_communication.so.0.6.4
+==================== lib/libbot_interface.so.0.6.4
+==================== lib/libbot_kinematics.so.0.6.4
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/convert.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/depthguard.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/directives.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/exceptions.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/exp.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/memory.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/node_data.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/nodebuilder.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/null.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/parse.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/parser.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/regex_yaml.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/scanner.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/scanscalar.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/scantag.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/scantoken.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/simplekey.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/singledocparser.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/stream.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/tag.cpp
+==================== lib/libbot_math.so.0.6.4
+==================== lib/libbot_path_planner.so.0.6.4
+==================== lib/libbot_planner.so.0.6.4
+==================== lib/libbot_servo.so.0.6.4
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/convert.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/depthguard.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/directives.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/exceptions.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/exp.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/memory.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/node_data.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/nodebuilder.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/null.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/parse.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/parser.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/regex_yaml.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/scanner.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/scanscalar.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/scantag.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/scantoken.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/simplekey.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/singledocparser.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/stream.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/tag.cpp
+==================== lib/libbot_traj_planner.so.0.6.4
+==================== lib/libbot_utils.so.0.6.4
+==================== lib/libbot_validator.so.0.6.4
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/depthguard.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/directives.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/exceptions.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/exp.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/memory.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/node_data.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/nodebuilder.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/null.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/parse.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/parser.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/regex_yaml.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/scanner.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/scanscalar.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/scantag.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/scantoken.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/simplekey.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/singledocparser.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/stream.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/tag.cpp
+==================== lib/libexecutor.so.0.6.4
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/binary.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/emit.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/emitfromevents.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/emitter.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/emitterstate.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/emitterutils.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/nodeevents.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/ostream_wrapper.cpp
+==================== lib/libjuxie_controller.so.0.6.4
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/binary.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/convert.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/depthguard.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/directives.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/emit.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/emitfromevents.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/emitter.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/emitterstate.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/emitterutils.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/exceptions.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/exp.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/memory.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/node_data.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/nodebuilder.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/nodeevents.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/null.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/ostream_wrapper.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/parse.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/parser.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/regex_yaml.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/scanner.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/scanscalar.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/scantag.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/scantoken.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/simplekey.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/singledocparser.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/stream.cpp
+  /home/wwh/work/yaml-cpp/build_arm  ||  ../src/tag.cpp
+==================== lib/librk3576_can_canfd.so.0.6.4
+==================== lib/libweb_interface.so.0.6.4
+==================== bin/dual_arm_app_interface_node
+==================== bin/test_controller
+  /home/wwh/work/googletest/build_arm  ||  ../googletest/src/gtest-all.cc
+==================== bin/test_rk3576_can_canfd
+  /home/wwh/work/googletest/build_arm  ||  ../googletest/src/gtest-all.cc
