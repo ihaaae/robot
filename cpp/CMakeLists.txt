@@ -17,6 +17,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_library(shensi_can STATIC
     src/frame.cpp
     src/wire.cpp
+    src/trace.cpp
     src/transport.cpp
     src/fake_transport.cpp)
 target_include_directories(shensi_can PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
@@ -29,6 +30,7 @@ if(SHENSI_CAN_BUILD_TESTS)
     add_executable(shensi_can_tests
         tests/main.cpp
         tests/test_wire.cpp
+        tests/test_trace.cpp
         tests/test_transport.cpp)
     target_link_libraries(shensi_can_tests PRIVATE shensi_can)
     target_include_directories(shensi_can_tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/tests")
