@@ -1,6 +1,9 @@
 # Build output for examples/cpp/build.sh. The SDK itself is committed under vendor/sdk/.
 /.sdk/
 
+# Build output for cpp/build.sh (the L0 wire/transport tests).
+/.l0/
+
 # Build output for python/build_bridge.sh.
 /python/build/
 
