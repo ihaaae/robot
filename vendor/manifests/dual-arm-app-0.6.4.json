@@ -50,6 +50,23 @@
       "size": 48258,
       "sha256": "777d481a2deede7a642533d54e9f1489f70777bdace768a2c28916b705b96c1f",
       "acquisition": "provided by the buyer"
+    },
+    {
+      "stored_name": "controller-user-manual.pdf",
+      "kind": "vendor_document",
+      "size": 1357157,
+      "sha256": "3fa67165e56e5bb7ddc34ddff8d62a9041cdf3dcd645c8932e07de20b7ea31c6",
+      "acquisition": {
+        "channel": "supplied by the buyer",
+        "date": "2026-09-29",
+        "recorded_by": "replacement-SDK thread"
+      },
+      "notes": [
+        "The controller-level document the repository previously lacked: no document number on the cover, watermark 无锡巨蟹智能, 8 pages.",
+        "Covers the controller board and its Web/JSON application, not the joint modules. Defines CAN1 = left arm, CAN2 = right arm; the params.yaml Part field (0 both / 1 left / 2 right); the arm model names ARM_62 / ARM_73; and the application-level error codes.",
+        "Screenshot-derived: several values (the per-joint limits, the MotorDirect signs) were read off screenshots and are less reliable than the prose. Transcription at research/vendor-derived/document-text/controller-user-manual.md.",
+        "Contains a default SSH credential for the board. Not reproduced in this repository's own text."
+      ]
     }
   ],
   "external_references": [

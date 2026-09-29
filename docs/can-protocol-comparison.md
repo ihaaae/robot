@@ -119,6 +119,11 @@
 - 伺服侧 `0x603F`：16 位 `0xDDSS` 或旧版位标志（`0x0001`/`0x0002`/`0x0004`…）。
 - 应用侧 `etc/error.json`：形如 `0x0101_0002`，是 `0xDD` + `电机序号(01..0e)` + `类型(0001 掉线 / 0002 报错)` 的自造格式，另有 `0x02xx0001` 表示「超限位」。这套和伺服的 `0xDDSS` **没有对应关系**，不要混用。
 
+  **完整表已拿到**：`vendor/originals/documents/controller-user-manual.pdf`（整理稿
+  `research/vendor-derived/document-text/controller-user-manual.md` §四）列出了全部 14 个电机的
+  三张表（掉线 / 报错 / 超限位），并说明 `NN` 取值 `01`..`0e`——即**左臂 1..7、右臂 8..14**。
+  电机报错的正文在板子上的 `logs/<最新>/ErrorData`。
+
 ## 6. 通信与物理层
 
 | 项 | 文档 | 驱动 |
