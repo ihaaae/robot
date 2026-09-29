@@ -3,12 +3,14 @@
 #
 # This is the executable form of the repository's acceptance criterion: a fresh clone can
 # verify that the vendor originals are unmodified, that the committed SDK tree is complete
-# and linkable, and that the Python package carries no vendor data and its tests pass.
+# and linkable, that the Python package carries no vendor data and its tests pass, and that
+# the L0 wire/transport/trace layer reproduces the protocol document's own frames.
 #
 #   ./tools/verify.sh                 # offline checks only
 #   ./tools/verify.sh --with-native   # also cross-compile the C++ examples (needs a toolchain)
 #
-# Never opens a socket, never touches a robot.
+# Never opens a socket, never touches a robot. Step 6 needs a host C++ compiler and nothing
+# else; it is skipped, not failed, when there is none.
 set -euo pipefail
 
 repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -155,8 +157,19 @@ DUAL_ARM_SDK_CONFIG="$SDK/usr/etc" "$runner" examples/python/01_offline_kinemati
     >/dev/null || fail "examples/python/01_offline_kinematics.py"
 pass "01_offline_kinematics.py"
 
+echo "6. L0 wire, transport and trace tests (offline, host C++ compiler)"
+if command -v c++ >/dev/null 2>&1 || command -v g++ >/dev/null 2>&1; then
+    if ! l0_output="$(./cpp/build.sh 2>&1)"; then
+        printf '%s\n' "$l0_output" >&2
+        fail "cpp/build.sh"
+    fi
+    pass "$(printf '%s\n' "$l0_output" | tail -1)"
+else
+    printf '  \033[33mskip\033[0m no host C++ compiler, L0 tests not run\n'
+fi
+
 if $with_native; then
-    echo "6. C++ demos and the Python bridge cross-compile against the SDK"
+    echo "7. C++ demos and the Python bridge cross-compile against the SDK"
     if command -v aarch64-linux-gnu-g++ >/dev/null; then
         ./examples/cpp/build.sh >/dev/null 2>&1 || fail "examples/cpp/build.sh"
         # Build only. Running them needs an arm64 sysroot and qemu; see docs/sdk-usage.md.
