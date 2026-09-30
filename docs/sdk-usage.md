@@ -32,7 +32,9 @@ aarch64-linux-gnu-g++ -std=c++17 -O1 \
 - **链接期必须加 `-Wl,-rpath-link`。** `libjuxie_controller.so` 依赖 `libexecutor`、`libbot_servo`、`libbot_planner`、`libbot_traj_planner`、`libbot_kinematics`，不加搜索路径会报一堆 `undefined reference` —— 那是**链接期找不到传递依赖**，不是头文件缺失，别被误导。
 - **运行期要么加 `-Wl,--disable-new-dtags`，要么设 `LD_LIBRARY_PATH`。** 那五个库自己都不带 RPATH，只能靠可执行文件带。现代工具链默认发 `DT_RUNPATH`，而 `DT_RUNPATH` **不用于传递依赖**：`libjuxie_controller` 能找到，它依赖的 `libexecutor` 找不到，程序直接死在 `libexecutor.so.3: cannot open shared object file`。`--disable-new-dtags` 让链接器改发 `DT_RPATH`（可传递搜索）。两条路都实测过。
 
-运行期还需要 arm64 的 `libboost_thread` / `libboost_system` / `libboost_regex`（deb 的 control 里没声明，见主报告 §8）。
+**你的程序运行期不需要 Boost。** SDK 的 10 个库没有一个在 `DT_NEEDED` 里列 Boost（`readelf -d` 实测）。
+需要 `libboost_thread` / `libboost_system` / `libboost_regex` 1.74.0 的是厂家自己的 WebSocket 应用
+`dual_arm_app_interface_node`（deb 的 control 里没声明，见主报告 §8），不是 SDK。
 
 ## 3. ⚠️ 必须先调 `OnRobot()`
 

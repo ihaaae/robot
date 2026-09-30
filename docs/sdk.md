@@ -176,7 +176,7 @@ CSV 列到 17 槽的映射（从 `MoveJCanfdTest` 的指令里读出来的，不
 
 实测：`get_FK_pose` 在零位返回 `[0,0,0.6755, 0,-0,0]`；`get_tcp_pose` 零位返回 `z = 0.6752`，与 `M` 完全一致。两者相差 0.3 mm —— 这不是笔误，是三方模型不一致的一部分，别把它当成相符。
 
-> **已经实现了**：见 [`src/shensi_robot/kinematics.py`](../src/shensi_robot/kinematics.py)（FK + 数值 IK，不依赖机器人）和 [`kinematics.md`](kinematics.md)（模型、RPY 约定、TCP 偏置、校验结果）。用厂家二进制校验到 **0.089 mm / 0.0000°**。
+> **已经实现了**：见 [`src/shensi_robot/kinematics.py`](../src/shensi_robot/kinematics.py)（FK + 数值 IK，不依赖机器人）和 [`kinematics.md`](kinematics.md)（模型、RPY 约定、TCP 偏置、校验结果）。**只部分校验**：本库 FK 加拟合的 84.721 mm 偏置能复现厂家 IK 的目标位姿；本库 IK 未与厂家比过；与厂家 FK 对不上。范围见 kinematics.md 开头。
 
 `/usr/etc/params.yml` 里注意 `MaxVelocityFactor: 0.04`（默认速度系数被压到 4%）、`UseLimit: false`（关节限位默认不生效！）。
 
@@ -399,7 +399,7 @@ allocated by ... malloc inside Juxie::State::i_IK(std::array<double,14> const&, 
 校验命令：
 
 ```bash
-python3 validate_fk_direct.py --probe run/sysroot/usr/bin/sdk_probe --sysroot run/sysroot
+python3 tools/probes/validate_fk_direct.py --probe run/sysroot/usr/bin/sdk_probe --sysroot run/sysroot
 shensi-kin --arm left fk --joints "0 0 0 0 0 0 0"
 ```
 
@@ -418,10 +418,10 @@ shensi-kin --arm left fk --joints "0 0 0 0 0 0 0"
 | [`examples/cpp/07_replay_trajectory.cpp`](../examples/cpp/07_replay_trajectory.cpp) | 按 50 Hz `MoveJ_Canfd` 回放厂家录制的轨迹（对应厂家 `MoveJCanfdTest`） |
 | [`examples/cpp/sdk_min_example.cpp`](../examples/cpp/sdk_min_example.cpp) | 最小可用 C++ 示例 |
 | [`can-protocol-comparison.md`](can-protocol-comparison.md) | 厂家 CAN 文档 vs 驱动实现逐项比对 |
-| [`src/shensi_robot/kinematics.py`](../src/shensi_robot/kinematics.py) | **离线运动学库（FK + IK，已校验）**，不依赖机器人 |
+| [`src/shensi_robot/kinematics.py`](../src/shensi_robot/kinematics.py) | **离线运动学库（FK + IK）**，不依赖机器人。只部分校验，见 kinematics.md |
 | [`tools/probes/validate_fk_direct.py`](../tools/probes/validate_fk_direct.py) | 用厂家 `getFKpose` 直接校验离线 FK 的脚本 |
-| `syms/*.syms` | 全部库与可执行文件的 demangle 符号表 |
-| `dwarf_sources.txt` | DWARF 里的编译单元 / 源文件清单 |
-| `doc_canopen.txt` | `CANopen-V0.6.xlsx` 文本化 |
-| `doc_v13.txt` | `V1.3.xlsx` 文本化 |
-| `doc_v101.txt` | `_V1.0.1.docx` 文本化 |
+| `research/evidence/syms/*.syms` | 全部库与可执行文件的 demangle 符号表 |
+| `research/evidence/dwarf_sources.txt` | DWARF 里的编译单元 / 源文件清单 |
+| `research/vendor-derived/doc_canopen.txt` | `CANopen-V0.6.xlsx` 文本化 |
+| `research/vendor-derived/doc_v13.txt` | `V1.3.xlsx` 文本化 |
+| `research/vendor-derived/doc_v101.txt` | `_V1.0.1.docx` 文本化 |

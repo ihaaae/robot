@@ -362,7 +362,7 @@ joint trajectories, and `array04_2.csv` is the input to the vendor's own streami
 Most conclusions here were verified by running the vendor's arm64 binaries under
 `qemu-user-static` with a faked `/dev/mem`, not on the robot. That is enough to verify
 protocol, ABI and kinematics, and **not** enough to verify motion, state transitions or
-fault handling. The setup is described in [`docs/sdk-usage.md`](docs/sdk-usage.md); the
+fault handling. The setup is described in [`docs/sdk.md`](docs/sdk.md) §9; the
 `run/` directory it produces is gitignored.
 
 ## Contributing

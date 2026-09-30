@@ -22,8 +22,8 @@ Start with the [repository README](../README.md) if you have not read it.
 
 | Document | What it covers | How the claims were established |
 |---|---|---|
-| [`sdk.md`](sdk.md) | The main report: what is inside the vendor package, the original project layout, the high-level SDK, packaging defects | Static inspection + emulation |
-| [`sdk-usage.md`](sdk-usage.md) | Building against the SDK; the mandatory `OnRobot()` call; per-method results; the qemu test bench | Compiled and executed |
+| [`sdk.md`](sdk.md) | The main report: what is inside the vendor package, the original project layout, the high-level SDK, packaging defects, and (§9) how to set up the qemu test bench | Static inspection + emulation |
+| [`sdk-usage.md`](sdk-usage.md) | Building against the SDK; the mandatory `OnRobot()` call; per-method results | Compiled and executed |
 | [`kinematics.md`](kinematics.md) | The kinematic model, the ZYX convention, the TCP offset, and the three-way model inconsistency | Executed against the vendor binary |
 | [`can-protocol-comparison.md`](can-protocol-comparison.md) | The vendor's CAN documents vs the reverse-engineered driver, field by field | Disassembly vs vendor documents |
 | [`hardware-acceptance.md`](hardware-acceptance.md) | **What to verify when the robot arrives**, in priority order | Open work |

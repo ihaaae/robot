@@ -164,7 +164,8 @@ installed there.
 In order, before writing anything that moves:
 
 1. **Which image is on the board** — `uname -a`, `cat /etc/os-release`. Does it match
-   `Architecture: arm64` and provide Boost 1.74.0?
+   `Architecture: arm64`? (Boost 1.74.0 matters only if you want to run the vendor's own node;
+   your program does not need it — see the table above.)
 2. **Is the node running** — `ss -ltnp | grep -E '5566|30485'`, and if so what started it.
 3. **Device access** — `ls -l /dev/mem /dev/misc_shm_can*`, and whether your user can open them.
 4. **A no-power program first** — `examples/cpp/01_offline_kinematics.cpp` in its default mode
