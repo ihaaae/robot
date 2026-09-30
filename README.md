@@ -240,19 +240,11 @@ aarch64-linux-gnu-g++ -std=c++17 -O1 \
     -ljuxie_controller -o my_app
 ```
 
-Two of those flags exist for the same five libraries, at two different times:
-
-* `-Wl,-rpath-link` is a **link-time** flag. `libjuxie_controller.so` pulls in `libexecutor`,
-  `libbot_servo`, `libbot_planner`, `libbot_traj_planner` and `libbot_kinematics`; without it
-  the linker reports `undefined reference`, which reads like a missing header but is not.
-* `-Wl,--disable-new-dtags` is the **run-time** half. None of those five libraries carries an
-  RPATH of its own, so the executable has to carry one. Under the modern `DT_RUNPATH` tag the
-  loader searches that path only for the libraries the executable itself names:
-  `libjuxie_controller` resolves, then its own dependency `libexecutor` does not, and the
-  program dies with `libexecutor.so.3: cannot open shared object file`. The older `DT_RPATH`
-  tag is searched transitively as well, which is what the flag restores. Setting
-  `LD_LIBRARY_PATH` works too, and you need that on the robot regardless — see
-  [`docs/running-on-the-robot.md`](docs/running-on-the-robot.md).
+`-Wl,-rpath-link` is for **link time** (otherwise `undefined reference` from the five transitive
+libraries); `-Wl,--disable-new-dtags` is for **run time** (otherwise `libexecutor.so.3: cannot
+open shared object file`). Why each is needed: [`docs/sdk-usage.md`](docs/sdk-usage.md) §2. On
+the robot you set `LD_LIBRARY_PATH` regardless — see
+[`docs/running-on-the-robot.md`](docs/running-on-the-robot.md).
 
 **From Python** — the counterpart of the CMake target. `python/build_bridge.sh` builds a C
 ABI shim around the SDK (its public signatures use `std::array`, `std::vector` and Eigen, none
@@ -260,15 +252,8 @@ of which ctypes can express), and `shensi_robot.sdk` drives it. One command, on 
 the script compiles natively on the robot's board and cross-compiles from x86, and it records
 which SDK tree it used, so the module finds both the library and its configuration by itself.
 
-The C ABI is a deliberate choice, not a limit of the tooling: pybind11 expresses those types
-just as well. What it also needs is a `Python.h` for the **target** architecture and a matching
-CPython minor version (include layout, `pyconfig.h`, extension suffix), so cross-building from
-x86 would require the board's Python development headers next to the aarch64 compiler — a build
-input this repository does not have and cannot deduce from the workstation. The shim instead
-depends on nothing from Python: it is a plain aarch64 shared object that any CPython minor
-version loads through ctypes. That is what keeps "one command, either machine" true, and it is
-also why ctypes suits the blocking `MoveJ` / `MoveL` calls — `CDLL` releases the GIL around
-every call, which a pybind11 binding has to ask for explicitly.
+Why a C ABI and ctypes rather than pybind11 (short version: no target-architecture `Python.h`
+needed, and ctypes releases the GIL around blocking calls): [`docs/sdk-usage.md`](docs/sdk-usage.md) §7.
 
 ```bash
 ./python/build_bridge.sh

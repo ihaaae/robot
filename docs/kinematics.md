@@ -50,13 +50,13 @@ arm.fk_pose(q, "zyx", tcp_offset=IK_TCP_OFFSET) # 对齐 get_IK_joint_position
 **这个结论的适用范围（重要）**：上面的 84.721 mm 是用**厂家 IK 解出的关节角**代进**本库的 yml FK** 拟合出来的，它只说明「往本库的 yml FK 上加这个偏置，能让它和厂家 IK 的目标位姿对上」。它**没有**证明：
 
 - 厂家 IK 与**一般位姿**下的 `get_tcp_pose` / `get_FK_pose` 之间存在恒定 84.721 mm 偏置 —— 那条链子没有测过；
-- 同一位姿分别走 `get_IK_joint_position` 和 `MoveJ_P` 会差 84.7 mm。`MoveJ_P` 收的是笛卡尔位姿而不是关节角，两者不是可以直接串联的调用链，这个说法（我之前写错了）**只是推测**，真机要单独验证。
+- 同一位姿分别走 `get_IK_joint_position` 和 `MoveJ_P` 会差 84.7 mm。`MoveJ_P` 收的是笛卡尔位姿而不是关节角，两者不是可以直接串联的调用链，这个说法**只是推测**，真机要单独验证（`hardware-acceptance.md` P0-2）。
 
 另外注意：那一节校验调的是本库的 **FK**（`fk_pose`），**没有**调用本库的数值 IK（`ArmKinematics.ik`）。所以「本库 IK 与厂家 IK 一致到 0.089 mm」不成立；0.089 mm 是「本库 FK + 该偏置 vs 厂家 IK 的目标位姿」。
 
 ## 校验结果
 
-用厂家的 `get_IK_joint_position` 作为真值来源（`get_FK_pose` 有堆损坏 bug，见 [sdk.md](sdk.md) 的「已知问题」一节：根因是 `getFKpose` 输入超过 14 个元素），对 7 个目标位姿、双臂做闭环：
+用厂家的 `get_IK_joint_position` 作为真值来源（`get_FK_pose` 有堆溢出，见 [sdk-usage.md](sdk-usage.md) §6.1），对 7 个目标位姿、双臂做闭环：
 
 ```
 tcp_offset=0 (matches get_tcp_pose):
@@ -77,7 +77,7 @@ tcp_offset=0.084721 (matches get_IK_joint_position):
 
 ## ⚠️ 三方不一致：yml / `getFKpose` / `get_IK_joint_position`
 
-后来我用 C++ 探针直接调 `getFKpose`（见 [sdk-usage.md](sdk-usage.md)），发现**上面这套校验只证明了模型与厂家的 IK 一致，并没有证明它与厂家的 FK 一致**。实测下来这三者互不一致：
+用 C++ 探针直接调 `getFKpose`（见 [sdk-usage.md](sdk-usage.md)）可以看出，**上面这套校验只证明了模型与厂家的 IK 一致，并没有证明它与厂家的 FK 一致**。实测下来这三者互不一致：
 
 | 对比 | 结果 |
 |---|---|
@@ -85,7 +85,7 @@ tcp_offset=0.084721 (matches get_IK_joint_position):
 | 我的模型（yml） vs 厂家 `get_FK_pose`，一般位姿 | ❌ **200–700 mm / 100°+** |
 | 我的模型（yml） vs 厂家 `get_FK_pose`，单关节激励 | 见下 |
 
-> 上表第 3 行只说「单关节激励」：**未经修正的 yml 模型**在单关节激励下平移差 9–24 mm（`screws[1/3/5]` 那三个轴），旋转 0.0000°。**0.05 mm / 0.3 mm 那组数字属于下面那个"反解修正过的实验模型"**，不是 `src/shensi_robot/kinematics.py` 里实际实现的那套。`kinematics.py` 的模块注释里曾把 0.05 mm 记到实现模型头上，已改正。
+> 上表第 3 行只说「单关节激励」：**未经修正的 yml 模型**在单关节激励下平移差 9–24 mm（`screws[1/3/5]` 那三个轴），旋转 0.0000°。**0.05 mm / 0.3 mm 那组数字属于下面那个"反解修正过的实验模型"**，不是 `src/shensi_robot/kinematics.py` 里实际实现的那套。
 
 逐关节单独给 0.5 rad 时：
 

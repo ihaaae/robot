@@ -126,9 +126,7 @@ makes `LD_LIBRARY_PATH` unnecessary **only if you deploy the tree to exactly tha
 
 Linking by hand without that flag, or deploying to a different path, needs `LD_LIBRARY_PATH`.
 Without either one the loader finds `libjuxie_controller` and then fails on its own dependency:
-`libexecutor.so.3: cannot open shared object file`. Both ways were measured under emulation —
-the five libraries `libjuxie_controller` needs carry no RPATH of their own, and the modern
-`DT_RUNPATH` tag is not searched transitively.
+`libexecutor.so.3: cannot open shared object file`. Why: [`sdk-usage.md`](sdk-usage.md) §2.
 
 ⚠️ The paths above are a suggestion, not a vendor convention. Nothing in the package dictates
 where a user program or the SDK tree should live.
@@ -141,13 +139,9 @@ a network hop.
 
 The package also contains a vendor application, `dual_arm_app_interface_node`, which serves a
 JSON-over-WebSocket API and a web UI on port 5566, plus a second TCP service on 30485. It is
-**built on top of the SDK, not part of it**: it is `interface_adaptor.cpp` — a table of 25
-command lambdas — plus `libweb_interface` and `libbot_interface`, and it links
-`Juxie::ControllerJuxie` exactly like any consumer of the SDK does. The dependency runs one way
-only: the 25 command names appear in the node executable and in none of the vendor libraries,
-and `libjuxie_controller.so` contains no WebSocket and no JSON symbols at all. This repository
-neither documents that application nor vendors its libraries — its executable is inside the
-`.deb`.
+**built on top of the SDK, not part of it** — it links `Juxie::ControllerJuxie` like any other
+consumer (evidence: [`sdk.md`](sdk.md) §4). This repository neither documents that application
+nor vendors its libraries; its executable is inside the `.deb`.
 
 ⚠️ **It matters anyway, because it owns the CAN bus while it runs.** The node opens the bus
 through `/dev/mem` and owns the joint bus; a second process doing the same would at best
