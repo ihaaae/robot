@@ -14,7 +14,7 @@
 | 语言 | **C++ 为第一公民**；对外导出 C ABI，Python 通过 ctypes 使用（沿用仓库现有 `python/juxie_sdk_bridge.cpp` + `src/shensi_robot/sdk.py` 的套路）。C ABI 还顺带让 Python 侧拿到 GIL 释放。 |
 | 总线独占 | **L0 在任何情况下都不与 `Juxie::ControllerJuxie` 同进程共存。** 见 §5。 |
 | 分层 | L0 只做"字节 ↔ 线上结构体 + 收发 + trace"，**不含策略、时序、状态**。 |
-| RX 边界 | **原始帧。** 不走厂家 `setReadFunction` 解好的 `JointState`——那个结构没有温度字段，且解码是 L2 的核心工作。见 §4.3。 |
+| RX 边界 | **原始帧。** 不走厂家 `setReadFunction` 解好的 `JointState`——那个结构没有温度字段，且解码必须能独立验证。见 §4.3。 |
 | 厂家 `.so` | **允许链接**，但 `VendorShmTransport` 只作为 TX / 时序 / capture 后端，不是必选路径。见 §4.2。 |
 | 公共 API | 新 SDK 按**与 `Juxie::ControllerJuxie` 兼容**设计：同名方法、同名返回码。 |
 | 原始帧来源 | **未定，等真机。** 见 §4.4。 |
@@ -50,7 +50,8 @@ golden vector 全部取自 PR0002 自带的例子，并已并入 `tools/verify.s
 **不拥有**
 
 - 什么时候发什么（L1 的时序 / DS402 序列）
-- 关节索引到机器人的映射（L2，`17 = 腰1 + 左7 + 右7 + 头2` ↔ `Dev_ID` ↔ 通道）
+- 关节索引到机器人的映射（L2：14 个设备 ↔ `Dev_ID` ↔ 通道；17 维 API ↔ 14 个设备归 L5，见 §10）
+- 什么时候必须发帧（L3 的节拍与喂狗，见 [`l3-executor-interface.md`](l3-executor-interface.md)）
 - 单位换算的**语义**（上层决定用 rad 还是 deg）；L0 只提供 `cnt ↔ rad` 的纯函数
 - 运动学（84.721 mm 偏置属于任务 4，不属于 L0）
 
@@ -211,9 +212,9 @@ public:
 厂家驱动的 `setReadFunction` 回调签名是 `void(JointState&, JointState&)`——它给的是**已经解码好的** `JointState`，不是原始帧。而且 vendored 头里的 `JointState` 只有
 `MotionState / ControlType / Current / Vel / single_torque / six_axis_torque / FaultData / origPosAct / isUpdated`，**没有温度字段**——走它的解码就永远读不到反馈帧 `[8..9]`。
 
-因此 L0 的 RX 边界定为**原始帧**（推荐）：解码是 L2 的核心工作，借厂家的等于把自己的 L2 交给一个无法独立验证的实现。`VendorShmTransport` 只作为 TX / 时序 / capture 的便利后端。
+因此 L0 的 RX 边界定为**原始帧**（推荐）：解码借厂家的，等于把自己的 L1 / L2 交给一个无法独立验证的实现。反馈帧的字节解码已经落在 L0 的 `decode_feedback`，物理量换算是 L1（任务 2.6）。`VendorShmTransport` 只作为 TX / 时序 / capture 的便利后端。
 
-若改选"用厂家解码"，则 L2 任务 3.1（遥测解码）整个消失，且 L0 的 `Frame` 类型对 RX 侧失去意义。
+若改选"用厂家解码"，则 `decode_feedback` 与任务 2.6 整个消失，且 L0 的 `Frame` 类型对 RX 侧失去意义。
 
 ### 4.4 原始帧从哪来（**现在拍不了，等真机**）
 
@@ -345,7 +346,7 @@ DiffResult result = diff(golden, bus.sent_trace());
 
 `vendor/originals/documents/controller-user-manual.pdf`（整理稿：
 `research/vendor-derived/document-text/controller-user-manual.md`）是**控制器**那一层的文档，
-本仓库此前只有关节模组那一层。其中三条直接影响 L0/L2：
+本仓库此前只有关节模组那一层。其中三条直接影响 L0 / L1 / L2：
 
 1. **左臂 CAN1、右臂 CAN2。** 这是任务 3.3 缺的那一半。⚠️ 但手册用 **1 基**的 `CAN1`/`CAN2`，
    而 `rk3576_can_canfd.h` 和 `/dev/misc_shm_can*` 用 **0 基**的 `CAN0`/`CAN1`；若两者对应，
@@ -371,3 +372,5 @@ DiffResult result = diff(golden, bus.sent_trace());
   落地并跑通（`cpp/`）。新增 §8 的文档矛盾清单。
 - v2：trace / 录制回放 / 归一化差分落地（§6）；新增 §10，记录控制器手册带来的
   总线↔臂映射、14 个应用层错误码、`MotorDirect` 三条信息。
+- v3：开发计划改为 L0–L5 六层（`development-plan.md` v1）。同步更新本文里对 L1 / L2 的引用；
+  新增 L3 的接口草案 [`l3-executor-interface.md`](l3-executor-interface.md)。

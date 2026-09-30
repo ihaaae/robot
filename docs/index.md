@@ -10,6 +10,14 @@ Start with the [repository README](../README.md) if you have not read it.
 | [`sdk-usage.md`](sdk-usage.md) | The API contracts: the mandatory `OnRobot()` ordering, what needs it, per-method results, the joint layouts, the traps — and how to call the SDK from Python (`shensi_robot.sdk`) |
 | [`error-codes.md`](error-codes.md) | The four failure encodings, and which codes we have actually observed |
 
+## If you are building the replacement controller SDK
+
+| Document | What it covers |
+|---|---|
+| [`development-plan.md`](development-plan.md) | The layering (L0–L5), the tasks per layer, and what "done" means for each |
+| [`l0-interface.md`](l0-interface.md) | L0 — wire codec, transport, trace and diff. Implemented in `cpp/` |
+| [`l3-executor-interface.md`](l3-executor-interface.md) | L3 — the executor that owns the control clock, the watchdog and the last safety gate. Draft |
+
 ## The analysis behind it
 
 | Document | What it covers | How the claims were established |
