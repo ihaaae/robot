@@ -7,19 +7,22 @@ We bought the robot; the vendor shipped a `.deb` and some loose documents, but n
 controller SDK documentation. This repository is the result of working out what is actually
 in that package, and everything needed to build against it without asking the vendor.
 
-It holds two different assets, which answer different questions:
+It holds three things, which answer different questions:
 
 * **A buildable binary SDK** for writing applications against the vendor's own controller
   (`Juxie::ControllerJuxie`). This is the fastest path if your code runs on the vendor's board.
 * **A protocol and evidence record** for writing an **independent CAN-FD master** that talks to
   the joint modules directly — the vendor's published protocol, compared frame by frame against
   their implementation.
+* **Our own controller SDK, in progress** in `cpp/`, built on that protocol and meant to
+  replace `Juxie::ControllerJuxie`. The vendor SDK is its reference, not its dependency. Plan:
+  [`docs/development-plan.md`](docs/development-plan.md); L0 (wire, transport, trace) is done.
 
 The binary SDK is **not** a portable controller foundation: it is aarch64-only, closed, and it
 reaches the joints through the vendor board's `/dev/mem` registers and shared memory. If you
-intend to *replace* the controller rather than write an application on top of it, the second
-asset is the one you need, and the SDK's role there is reference material. Neither asset has
-been validated on the robot — see [`docs/hardware-acceptance.md`](docs/hardware-acceptance.md).
+intend to *replace* the controller rather than write an application on top of it, the protocol
+record and our own SDK are what you need, and the vendor SDK's role there is reference
+material. Nothing here has been validated on the robot — see [`docs/hardware-acceptance.md`](docs/hardware-acceptance.md).
 
 ## Read this first
 
@@ -51,7 +54,8 @@ See [`docs/sdk-usage.md`](docs/sdk-usage.md) §6.1.
 ## Layout
 
 ```
-docs/            our analysis: SDK, protocol, kinematics, CAN, hardware acceptance
+docs/            our SDK's plan and interfaces, and our analysis of the vendor package
+cpp/             our own controller SDK (C++); L0 is implemented and tested
 src/             Python package (offline kinematics)
 examples/cpp/    programs that link the vendor SDK using only its public header
 cmake/           Juxie::SDK, for pointing your own CMake project at the SDK tree
@@ -61,8 +65,8 @@ vendor/          the SDK tree you build against, plus the originals it came from
 research/        evidence and vendor-derived material (symbol tables, recovered sources)
 ```
 
-`vendor/` and `research/` are records. `src/`, `tools/`, `examples/`, `cmake/` and `tests/`
-are ours.
+`vendor/` and `research/` are records. `cpp/`, `src/`, `tools/`, `examples/`, `cmake/` and
+`tests/` are ours.
 
 ## Which of these do you want?
 
@@ -73,7 +77,7 @@ Pick before reading further.
 |---|---|---|
 | **Compute offline** — forward/inverse kinematics, joint limits, plotting | `shensi_robot.kinematics` (Python) | the committed YAML. No robot, no vendor binaries, no socket. |
 | **Write native controller code** — real-time loops, servo streaming, anything on the board | the vendor C++ SDK: `#include <juxie_controller/juxie_controller.h>` | a **Linux aarch64** target on the robot's board. Cross-compile from x86 or build natively there. |
-| **Replace the controller** — your own CAN-FD master talking to the joint modules | the vendor's published protocol plus our frame-by-frame comparison: [`docs/can-protocol-comparison.md`](docs/can-protocol-comparison.md) | a **CAN-FD interface you control** (SocketCAN, a USB-CAN adapter). The vendor SDK is **not** part of this path; see the acceptance gates at the end of [`docs/hardware-acceptance.md`](docs/hardware-acceptance.md). |
+| **Replace the controller** — your own CAN-FD master talking to the joint modules | our own SDK in `cpp/`, planned in [`docs/development-plan.md`](docs/development-plan.md), on the vendor's published protocol and our frame-by-frame comparison: [`docs/can-protocol-comparison.md`](docs/can-protocol-comparison.md) | a **CAN-FD interface you control** (SocketCAN, a USB-CAN adapter). The vendor SDK is **not** part of this path; see the acceptance gates at the end of [`docs/hardware-acceptance.md`](docs/hardware-acceptance.md). |
 
 > The C++ SDK is **not** a workstation library. Those `.so` files are aarch64 Linux and are
 > meant to run on the robot's board, not to be loaded from your laptop over the network.
@@ -126,10 +130,12 @@ shensi-kin --arm left fk --joints "0 0 0 0 0 0 0"
 
 `tools/verify.sh` is the executable form of this repository's acceptance criterion: a fresh
 clone can check that the vendor originals are unmodified, that the committed SDK tree is
-complete and linkable, and that the Python package carries no vendor data and its tests pass.
-It stops at build time — with `--with-native` it adds cross-compiling the C++ examples and
-building a consumer project against `Juxie::SDK`, and that is where it ends. It does not run
-the result, does not check the robot, and proves nothing about motion or safety.
+complete and linkable, that the Python package carries no vendor data and its tests pass, and
+that our L0 layer (`cpp/`) reproduces the protocol document's own frames — that last step runs
+offline with only a host C++ compiler, and is skipped if there is none. With `--with-native` it
+adds cross-compiling the C++ examples and building a consumer project against `Juxie::SDK`.
+It does not run anything against the vendor binaries, does not check the robot, and proves
+nothing about motion or safety.
 See [The SDK and its provenance](#the-sdk-and-its-provenance).
 
 **To run something you built**, pick one:
@@ -332,15 +338,13 @@ joint trajectories, and `array04_2.csv` is the input to the vendor's own streami
 
 ## Documents
 
-| Document | What it covers |
-|---|---|
-| [`docs/sdk.md`](docs/sdk.md) | The main report: what is in the package, architecture, packaging defects |
-| [`docs/sdk-usage.md`](docs/sdk-usage.md) | Building against the SDK; the mandatory `OnRobot()` call; per-method results |
-| [`docs/kinematics.md`](docs/kinematics.md) | The kinematic model, conventions, and the three-way inconsistency |
-| [`docs/can-protocol-comparison.md`](docs/can-protocol-comparison.md) | Vendor CAN docs vs the reverse-engineered driver |
-| [`docs/running-on-the-robot.md`](docs/running-on-the-robot.md) | **Getting your own program onto the robot**, and what is still unknown |
-| [`docs/error-codes.md`](docs/error-codes.md) | The four failure encodings, and which codes we have observed |
-| [`docs/hardware-acceptance.md`](docs/hardware-acceptance.md) | **What to verify when the robot arrives** |
+The index is [`docs/index.md`](docs/index.md). It splits the documents into two groups:
+**our own controller SDK** (living: [`development-plan.md`](docs/development-plan.md),
+[`l0-interface.md`](docs/l0-interface.md), [`l3-executor-interface.md`](docs/l3-executor-interface.md),
+[`hardware-acceptance.md`](docs/hardware-acceptance.md)) and **the vendor SDK analysis**
+(reference: [`sdk.md`](docs/sdk.md), [`sdk-usage.md`](docs/sdk-usage.md),
+[`kinematics.md`](docs/kinematics.md), [`can-protocol-comparison.md`](docs/can-protocol-comparison.md),
+[`error-codes.md`](docs/error-codes.md), [`running-on-the-robot.md`](docs/running-on-the-robot.md)).
 
 ## Test bench
 

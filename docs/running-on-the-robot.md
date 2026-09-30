@@ -29,13 +29,15 @@ your code
   documentation frame for frame.
 * **How the host reaches the CAN controller** is direct register mapping instead of Linux
   SocketCAN. That is a host-side access mechanism one layer below the protocol.
-* **This repository gives you the top layer.** With `Juxie::ControllerJuxie` you never see a
-  CAN frame or `/dev/mem`; both are implementation detail of the vendor's stack.
+* **The vendor SDK is the top layer.** With `Juxie::ControllerJuxie` you never see a CAN frame
+  or `/dev/mem`; both are implementation detail of the vendor's stack. This page is about
+  deploying a program that links it. Our own replacement lives in `cpp/` and takes the second
+  path below ([`development-plan.md`](development-plan.md)).
 
 Which means there are two independent ways to drive the joints, and `/dev/mem` only matters
 for one of them:
 
-| | Use the SDK (this repository) | Write your own CAN layer |
+| | Use the vendor SDK | Write your own CAN layer (our `cpp/` SDK) |
 |---|---|---|
 | When | control software on the vendor's board | replacing the board, or driving the joints from a PC |
 | You write | `MoveJ`, `IK`, `MoveJ_Canfd`, … | the CAN frames themselves |

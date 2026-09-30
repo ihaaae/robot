@@ -4,6 +4,12 @@
 
 每项都写了：**做什么 → 看什么 → 决定了什么**。
 
+> **关于命令名。** P0 / P1 里的 `get_tcp_pose`、`get_FK_pose`、`get_IK_joint_position`、`movej`、
+> `movej_p` 是厂家 WebSocket 应用的命令名（分析阶段就是借它观察的）。本仓库不提供那个应用的客户端
+> （`sdk.md` §4），所以直接用对应的 SDK 调用：`GetTCPPose()`、`getFKpose()`（**元素 ≤ 14**）、
+> `IK()`、`MoveJ()`、`MoveJ_P()`，例如通过 `examples/cpp/sdk_probe.cpp`。只有 P0-3 必须走应用本身，
+> 因为它验证的就是应用会不会崩。
+
 ---
 
 ## P0：到货当天就要做（决定后续路线能不能走）
