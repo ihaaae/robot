@@ -1,0 +1,8 @@
+
+libjuxie_controller.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000a8408 <_ZN5Juxie9StateIdle7OnRobotEv>:
+   a8408:      	mov	w0, #0x1                // =1
+   a840c:      	ret

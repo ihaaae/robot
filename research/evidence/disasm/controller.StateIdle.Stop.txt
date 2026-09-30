@@ -1,0 +1,134 @@
+
+libjuxie_controller.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000b6488 <_ZN5Juxie9StateIdle4StopEv>:
+   b6488:      	stp	x29, x30, [sp, #-0x60]!
+   b648c:      	mov	x29, sp
+   b6490:      	stp	x19, x20, [sp, #0x10]
+   b6494:      	adrp	x20, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   b6498:      	mov	x19, x0
+   b649c:      	ldr	x1, [x20, #0x948]
+   b64a0:      	add	x8, sp, #0x38
+   b64a4:      	stp	x21, x22, [sp, #0x20]
+   b64a8:      	ldr	x2, [x1]
+   b64ac:      	str	x2, [sp, #0x58]
+   b64b0:      	mov	x2, #0x0                // =0
+   b64b4:      	bl	0xa3a90 <_ZN5Juxie5State14getExecutorPtrEv@plt>
+   b64b8:      	ldr	x0, [sp, #0x38]
+   b64bc:      	ldr	x1, [x0]
+   b64c0:      	ldr	x1, [x1, #0xa8]
+   b64c4:      	blr	x1
+   b64c8:      	add	x21, sp, #0x48
+   b64cc:      	mov	x0, x19
+   b64d0:      	mov	x8, x21
+   b64d4:      	bl	0xa3a90 <_ZN5Juxie5State14getExecutorPtrEv@plt>
+   b64d8:      	ldr	x0, [sp, #0x48]
+   b64dc:      	ldr	x1, [x0]
+   b64e0:      	ldr	x1, [x1, #0x70]
+   b64e4:      	blr	x1
+   b64e8:      	ldr	x1, [sp, #0x50]
+   b64ec:      	and	w19, w0, #0xff
+   b64f0:      	cbz	x1, 0xb64fc <_ZN5Juxie9StateIdle4StopEv+0x74>
+   b64f4:      	mov	x0, x1
+   b64f8:      	bl	0x9fee0 <_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@plt>
+   b64fc:      	adrp	x0, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   b6500:      	ldr	x0, [x0, #0x988]
+   b6504:      	ldr	x22, [x0]
+   b6508:      	mov	x0, #0x28               // =40
+   b650c:      	cbnz	w19, 0xb65bc <_ZN5Juxie9StateIdle4StopEv+0x134>
+   b6510:      	bl	0xa1190 <_Znwm@plt>
+   b6514:      	adrp	x1, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   b6518:      	mov	x19, x0
+   b651c:      	mov	w2, #0x2                // =2
+   b6520:      	mov	x0, #0x18               // =24
+   b6524:      	ldr	x1, [x1, #0xbb8]
+   b6528:      	str	w2, [x19, #0x8]
+   b652c:      	stp	xzr, xzr, [x19, #0x10]
+   b6530:      	add	x1, x1, #0x10
+   b6534:      	str	x1, [x19]
+   b6538:      	str	xzr, [x19, #0x20]
+   b653c:      	stp	x19, xzr, [sp, #0x48]
+   b6540:      	bl	0xa1190 <_Znwm@plt>
+   b6544:      	adrp	x3, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   b6548:      	mov	x2, x0
+   b654c:      	movi	v0.2s, #0x1
+   b6550:      	mov	x1, x21
+   b6554:      	ldr	x3, [x3, #0xd80]
+   b6558:      	str	x19, [x2, #0x10]
+   b655c:      	mov	x0, x22
+   b6560:      	str	x2, [sp, #0x50]
+   b6564:      	add	x3, x3, #0x10
+   b6568:      	str	x3, [x2]
+   b656c:      	str	d0, [x2, #0x8]
+   b6570:      	bl	0xa6a40 <_ZN5Juxie19ControllerJuxieImpl11changeStateESt10shared_ptrINS_5StateEE@plt>
+   b6574:      	ldr	x0, [sp, #0x50]
+   b6578:      	cbz	x0, 0xb6580 <_ZN5Juxie9StateIdle4StopEv+0xf8>
+   b657c:      	bl	0x9fee0 <_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@plt>
+   b6580:      	mov	w19, #0x1               // =1
+   b6584:      	ldr	x0, [sp, #0x40]
+   b6588:      	cbz	x0, 0xb6590 <_ZN5Juxie9StateIdle4StopEv+0x108>
+   b658c:      	bl	0x9fee0 <_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@plt>
+   b6590:      	ldr	x20, [x20, #0x948]
+   b6594:      	ldr	x0, [sp, #0x58]
+   b6598:      	ldr	x1, [x20]
+   b659c:      	subs	x0, x0, x1
+   b65a0:      	mov	x1, #0x0                // =0
+   b65a4:      	b.ne	0xb6610 <_ZN5Juxie9StateIdle4StopEv+0x188>
+   b65a8:      	mov	w0, w19
+   b65ac:      	ldp	x19, x20, [sp, #0x10]
+   b65b0:      	ldp	x21, x22, [sp, #0x20]
+   b65b4:      	ldp	x29, x30, [sp], #0x60
+   b65b8:      	ret
+   b65bc:      	bl	0xa1190 <_Znwm@plt>
+   b65c0:      	adrp	x2, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   b65c4:      	mov	x1, x0
+   b65c8:      	mov	w3, #0x4                // =4
+   b65cc:      	add	x0, x21, #0x8
+   b65d0:      	ldr	x2, [x2, #0x8e8]
+   b65d4:      	str	w3, [x1, #0x8]
+   b65d8:      	stp	xzr, xzr, [x1, #0x10]
+   b65dc:      	add	x2, x2, #0x10
+   b65e0:      	str	x2, [x1]
+   b65e4:      	str	xzr, [x1, #0x20]
+   b65e8:      	str	x1, [sp, #0x48]
+   b65ec:      	bl	0xa4980 <_ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EEC1IPN5Juxie10StateFaultEEET_@plt>
+   b65f0:      	mov	x1, x21
+   b65f4:      	mov	x0, x22
+   b65f8:      	bl	0xa6a40 <_ZN5Juxie19ControllerJuxieImpl11changeStateESt10shared_ptrINS_5StateEE@plt>
+   b65fc:      	ldr	x0, [sp, #0x50]
+   b6600:      	cbz	x0, 0xb6608 <_ZN5Juxie9StateIdle4StopEv+0x180>
+   b6604:      	bl	0x9fee0 <_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@plt>
+   b6608:      	mov	w19, #0x0               // =0
+   b660c:      	b	0xb6584 <_ZN5Juxie9StateIdle4StopEv+0xfc>
+   b6610:      	bl	0x9cb60 <__stack_chk_fail@plt>
+   b6614:      	mov	x19, x0
+   b6618:      	ldr	x0, [sp, #0x40]
+   b661c:      	cbz	x0, 0xb6624 <_ZN5Juxie9StateIdle4StopEv+0x19c>
+   b6620:      	bl	0x9fee0 <_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@plt>
+   b6624:      	mov	x0, x19
+   b6628:      	bl	0xa6570 <_Unwind_Resume@plt>
+   b662c:      	ldr	x1, [sp, #0x50]
+   b6630:      	mov	x19, x0
+   b6634:      	cbz	x1, 0xb6618 <_ZN5Juxie9StateIdle4StopEv+0x190>
+   b6638:      	mov	x0, x1
+   b663c:      	bl	0x9fee0 <_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@plt>
+   b6640:      	b	0xb6618 <_ZN5Juxie9StateIdle4StopEv+0x190>
+   b6644:      	b	0xb662c <_ZN5Juxie9StateIdle4StopEv+0x1a4>
+   b6648:      	bl	0x9d1e0 <__cxa_begin_catch@plt>
+   b664c:      	adrp	x1, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   b6650:      	ldr	x0, [x19, #0x20]
+   b6654:      	ldr	x1, [x1, #0xeb0]
+   b6658:      	add	x1, x1, #0x10
+   b665c:      	str	x1, [x19]
+   b6660:      	cbz	x0, 0xb6668 <_ZN5Juxie9StateIdle4StopEv+0x1e0>
+   b6664:      	bl	0x9fee0 <_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@plt>
+   b6668:      	mov	x0, x19
+   b666c:      	mov	x1, #0x28               // =40
+   b6670:      	bl	0xa1380 <_ZdlPvm@plt>
+   b6674:      	bl	0xa4300 <__cxa_rethrow@plt>
+   b6678:      	mov	x19, x0
+   b667c:      	bl	0xa55b0 <__cxa_end_catch@plt>
+   b6680:      	b	0xb6618 <_ZN5Juxie9StateIdle4StopEv+0x190>
+   b6684:      	b	0xb662c <_ZN5Juxie9StateIdle4StopEv+0x1a4>

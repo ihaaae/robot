@@ -1,6 +1,6 @@
 # L3 Executor 接口草案
 
-> **草稿 v0.2。** 和 [`l0-interface.md`](l0-interface.md) 一样：先把边界和签名冻结，让 L4 / L5
+> **草稿 v0.3。** 和 [`l0-interface.md`](l0-interface.md) 一样：先把边界和签名冻结，让 L4 / L5
 > 能对着一个假 executor 开工，不必等 L1 / L2 做完。内容会变；变的时候改这一份。
 >
 > 依据：厂家 `bot_executor::ExecutorBase` / `ExecutorJuxie`（头文件 + 符号表 + 配置）、
@@ -223,6 +223,22 @@ public:
 | `getDof()` / `getJointNames()` / `getHomeJointValues()` | 无 | 配置，不是运行时状态；归 L2 |
 | `setJointZeroPosition()` | 无 | 标定操作，须先失能（任务 2.3）；由 L5 在停拍状态下调 L1 |
 
+### 3.2 L5 状态机从这里读什么
+
+厂家的机器人状态在轮询线程跑起来之后，实际上是 executor 四个谓词的函数：每 5 ms 按
+`isInFault → isMoving → isEnabled` 的优先级判定一次（[`robot-state-machine.md`](robot-state-machine.md) §3）。
+我们的 L5 也从 L3 推导状态，所以上面的接口必须能回答这四个问题：
+
+| 厂家谓词 | 这里 | 备注 |
+|---|---|---|
+| `isMoving()` | `motion_active(Part::Both)` | 厂家是 `isLeftSending_ \|\| isRightSending_` |
+| `isEnabled()` | `snapshot().joints[i].enabled` | 全部关节都使能才算 |
+| `isInFault()` | `snapshot().joints[i].error` / `fault`，以及 `ArmHealth` | 新鲜度失效（§4）也要算故障，厂家没有这一项 |
+| `isConnected()` | `ArmHealth::bus_ok` | 厂家恒返回 `true`，「掉线」从不触发；我们要真的实现 |
+
+现有字段已经够用，不需要新增接口。要保证的是 `snapshot()` 里这几项取自**同一拍**，否则 L5 可能看到
+「已失能但仍在运动」这种不存在的组合。
+
 ## 4. 新鲜度与失效
 
 每臂独立判定。一条臂不新鲜时：
@@ -299,3 +315,4 @@ public:
 - v0.2：按反汇编复核更正——厂家发送周期就是 `Resample`（2 ms），`SLEEP_TIME` 是驱动层轮询；
   厂家空闲拍发 `0x80`；「厂家在发送线程里处理 SDO 应答」没有依据（没找到解析 `0x580` 的代码）；
   `[1.5, 6.5]` 是速度 / 加速度上限而不是位置限位；`SetSending` 与 `MoveEnd` 的实际行为。
+- v0.3：新增 §3.2，列出 L5 状态机要从 L3 读的四项（对应厂家 `UpdateStateThread` 轮询的四个谓词）。

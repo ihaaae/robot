@@ -1,0 +1,11 @@
+
+libexecutor.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000f0a64 <_ZN12bot_executor13ExecutorJuxie11isConnectedEv>:
+   f0a64:      	sub	sp, sp, #0x10
+   f0a68:      	str	x0, [sp, #0x8]
+   f0a6c:      	mov	w0, #0x1                // =1
+   f0a70:      	add	sp, sp, #0x10
+   f0a74:      	ret

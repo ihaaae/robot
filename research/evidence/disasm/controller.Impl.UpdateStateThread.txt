@@ -1,0 +1,626 @@
+
+libjuxie_controller.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000da538 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv>:
+   da538:      	sub	sp, sp, #0x2e0
+   da53c:      	add	x1, sp, #0xb8
+   da540:      	stp	x29, x30, [sp]
+   da544:      	mov	x29, sp
+   da548:      	stp	x23, x24, [sp, #0x30]
+   da54c:      	mov	x23, x0
+   da550:      	adrp	x0, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   da554:      	stp	x21, x22, [sp, #0x20]
+   da558:      	add	x21, sp, #0x80
+   da55c:      	add	x2, x21, #0x8
+   da560:      	ldr	x0, [x0, #0x948]
+   da564:      	stp	x27, x28, [sp, #0x50]
+   da568:      	add	x27, x23, #0xb0
+   da56c:      	stp	x19, x20, [sp, #0x10]
+   da570:      	stp	x25, x26, [sp, #0x40]
+   da574:      	str	x1, [sp, #0x68]
+   da578:      	str	x2, [sp, #0x78]
+   da57c:      	ldr	x2, [x0]
+   da580:      	str	x2, [sp, #0x2d8]
+   da584:      	mov	x2, #0x0                // =0
+   da588:      	add	x0, sp, #0xc8
+   da58c:      	str	x0, [sp, #0x70]
+   da590:      	ldarb	w0, [x27]
+   da594:      	tst	w0, #0xff
+   da598:      	b.eq	0xda700 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x1c8>
+   da59c:      	adrp	x0, 0x126000 <_ZTSN3fmt2v76detail6bufferIcEE+0x10>
+   da5a0:      	ldr	q0, [x0, #0xab0]
+   da5a4:      	str	q0, [sp, #0x80]
+   da5a8:      	b	0xda5bc <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x84>
+   da5ac:      	bl	0xa2fd0 <__errno_location@plt>
+   da5b0:      	ldr	w0, [x0]
+   da5b4:      	cmp	w0, #0x4
+   da5b8:      	b.ne	0xda5d0 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x98>
+   da5bc:      	mov	x1, x21
+   da5c0:      	mov	x0, x21
+   da5c4:      	bl	0x9fc50 <nanosleep@plt>
+   da5c8:      	cmn	w0, #0x1
+   da5cc:      	b.eq	0xda5ac <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x74>
+   da5d0:      	ldr	x0, [x23]
+   da5d4:      	ldr	x1, [x0]
+   da5d8:      	ldr	x1, [x1, #0x78]
+   da5dc:      	blr	x1
+   da5e0:      	tst	w0, #0xff
+   da5e4:      	b.ne	0xda758 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x220>
+   da5e8:      	ldr	x0, [x23, #0x68]
+   da5ec:      	ldr	w0, [x0, #0x8]
+   da5f0:      	cbz	w0, 0xda590 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x58>
+   da5f4:      	mov	x0, #0x28               // =40
+   da5f8:      	bl	0xa1190 <_Znwm@plt>
+   da5fc:      	adrp	x1, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   da600:      	mov	x19, x0
+   da604:      	mov	x0, #0x18               // =24
+   da608:      	stp	x19, xzr, [sp, #0x80]
+   da60c:      	ldr	x1, [x1, #0xd60]
+   da610:      	str	wzr, [x19, #0x8]
+   da614:      	stp	xzr, xzr, [x19, #0x10]
+   da618:      	add	x1, x1, #0x10
+   da61c:      	str	x1, [x19]
+   da620:      	str	xzr, [x19, #0x20]
+   da624:      	bl	0xa1190 <_Znwm@plt>
+   da628:      	adrp	x3, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   da62c:      	mov	x2, x0
+   da630:      	movi	v0.2s, #0x1
+   da634:      	mov	x1, x21
+   da638:      	ldr	x3, [x3, #0xcc8]
+   da63c:      	str	x19, [x2, #0x10]
+   da640:      	mov	x0, x23
+   da644:      	str	x2, [sp, #0x88]
+   da648:      	add	x3, x3, #0x10
+   da64c:      	str	x3, [x2]
+   da650:      	str	d0, [x2, #0x8]
+   da654:      	bl	0xa6a40 <_ZN5Juxie19ControllerJuxieImpl11changeStateESt10shared_ptrINS_5StateEE@plt>
+   da658:      	ldr	x0, [sp, #0x88]
+   da65c:      	cbz	x0, 0xda664 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x12c>
+   da660:      	bl	0x9fee0 <_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@plt>
+   da664:      	adrp	x22, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   da668:      	ldr	x0, [x22, #0xf00]
+   da66c:      	ldr	x0, [x0]
+   da670:      	cbz	x0, 0xda590 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x58>
+   da674:      	ldr	w0, [x0, #0x8]
+   da678:      	cmp	w0, #0x1
+   da67c:      	b.le	0xda590 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x58>
+   da680:      	add	x19, sp, #0xd8
+   da684:      	mov	x3, #0x1ce              // =462
+   da688:      	mov	x0, x19
+   da68c:      	mov	w1, #0x2                // =2
+   da690:      	adrp	x2, 0x125000 <write@@GLIBC_2.17+0x125000>
+   da694:      	add	x2, x2, #0x9a0
+   da698:      	bl	0xad7d8 <_ZN4plog6RecordC2ENS_8SeverityEPKcmS3_PKvi.constprop.0>
+   da69c:      	adrp	x1, 0x125000 <write@@GLIBC_2.17+0x125000>
+   da6a0:      	add	x0, x19, #0x30
+   da6a4:      	add	x1, x1, #0x9d8
+   da6a8:      	mov	x2, #0xf                // =15
+   da6ac:      	bl	0xa2120 <_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l@plt>
+   da6b0:      	ldr	x22, [x22, #0xf00]
+   da6b4:      	ldr	x22, [x22]
+   da6b8:      	ldp	x20, x0, [x22, #0x10]
+   da6bc:      	cmp	x0, x20
+   da6c0:      	b.eq	0xda6ec <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x1b4>
+   da6c4:      	nop
+   da6c8:      	ldr	x0, [x20]
+   da6cc:      	mov	x1, x19
+   da6d0:      	ldr	x2, [x0]
+   da6d4:      	ldr	x2, [x2, #0x10]
+   da6d8:      	blr	x2
+   da6dc:      	ldr	x0, [x22, #0x18]
+   da6e0:      	add	x20, x20, #0x8
+   da6e4:      	cmp	x0, x20
+   da6e8:      	b.ne	0xda6c8 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x190>
+   da6ec:      	mov	x0, x19
+   da6f0:      	bl	0x9b740 <_ZN4plog6RecordD1Ev@plt>
+   da6f4:      	ldarb	w0, [x27]
+   da6f8:      	tst	w0, #0xff
+   da6fc:      	b.ne	0xda59c <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x64>
+   da700:      	adrp	x22, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   da704:      	ldr	x0, [x22, #0xf00]
+   da708:      	ldr	x0, [x0]
+   da70c:      	cbz	x0, 0xda71c <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x1e4>
+   da710:      	ldr	w0, [x0, #0x8]
+   da714:      	cmp	w0, #0x3
+   da718:      	b.gt	0xdacd8 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x7a0>
+   da71c:      	adrp	x0, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   da720:      	ldr	x0, [x0, #0x948]
+   da724:      	ldr	x1, [sp, #0x2d8]
+   da728:      	ldr	x2, [x0]
+   da72c:      	subs	x1, x1, x2
+   da730:      	mov	x2, #0x0                // =0
+   da734:      	b.ne	0xdadd0 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x898>
+   da738:      	ldp	x29, x30, [sp]
+   da73c:      	ldp	x19, x20, [sp, #0x10]
+   da740:      	ldp	x21, x22, [sp, #0x20]
+   da744:      	ldp	x23, x24, [sp, #0x30]
+   da748:      	ldp	x25, x26, [sp, #0x40]
+   da74c:      	ldp	x27, x28, [sp, #0x50]
+   da750:      	add	sp, sp, #0x2e0
+   da754:      	ret
+   da758:      	ldr	x0, [x23]
+   da75c:      	ldr	x1, [x0]
+   da760:      	ldr	x1, [x1, #0x70]
+   da764:      	blr	x1
+   da768:      	tst	w0, #0xff
+   da76c:      	b.ne	0xda998 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x460>
+   da770:      	ldr	x0, [x23]
+   da774:      	ldr	x1, [x0]
+   da778:      	ldr	x1, [x1, #0x68]
+   da77c:      	blr	x1
+   da780:      	tst	w0, #0xff
+   da784:      	b.eq	0xda898 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x360>
+   da788:      	ldr	x0, [x23, #0x68]
+   da78c:      	ldr	w0, [x0, #0x8]
+   da790:      	cmp	w0, #0x3
+   da794:      	b.eq	0xda590 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x58>
+   da798:      	mov	x0, #0x28               // =40
+   da79c:      	bl	0xa1190 <_Znwm@plt>
+   da7a0:      	adrp	x1, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   da7a4:      	mov	x19, x0
+   da7a8:      	mov	w2, #0x3                // =3
+   da7ac:      	mov	x0, #0x18               // =24
+   da7b0:      	ldr	x1, [x1, #0xb40]
+   da7b4:      	str	w2, [x19, #0x8]
+   da7b8:      	stp	xzr, xzr, [x19, #0x10]
+   da7bc:      	add	x1, x1, #0x10
+   da7c0:      	str	x1, [x19]
+   da7c4:      	str	xzr, [x19, #0x20]
+   da7c8:      	stp	x19, xzr, [sp, #0x80]
+   da7cc:      	bl	0xa1190 <_Znwm@plt>
+   da7d0:      	adrp	x3, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   da7d4:      	mov	x2, x0
+   da7d8:      	movi	v0.2s, #0x1
+   da7dc:      	mov	x1, x21
+   da7e0:      	ldr	x3, [x3, #0xe58]
+   da7e4:      	str	x19, [x2, #0x10]
+   da7e8:      	mov	x0, x23
+   da7ec:      	str	x2, [sp, #0x88]
+   da7f0:      	add	x3, x3, #0x10
+   da7f4:      	str	x3, [x2]
+   da7f8:      	str	d0, [x2, #0x8]
+   da7fc:      	bl	0xa6a40 <_ZN5Juxie19ControllerJuxieImpl11changeStateESt10shared_ptrINS_5StateEE@plt>
+   da800:      	ldr	x0, [sp, #0x88]
+   da804:      	cbz	x0, 0xda80c <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x2d4>
+   da808:      	bl	0x9fee0 <_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@plt>
+   da80c:      	adrp	x22, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   da810:      	ldr	x0, [x22, #0xf00]
+   da814:      	ldr	x0, [x0]
+   da818:      	cbz	x0, 0xda590 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x58>
+   da81c:      	ldr	w0, [x0, #0x8]
+   da820:      	cmp	w0, #0x2
+   da824:      	b.le	0xda590 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x58>
+   da828:      	adrp	x2, 0x125000 <write@@GLIBC_2.17+0x125000>
+   da82c:      	add	x2, x2, #0x9a0
+   da830:      	add	x19, sp, #0xd8
+   da834:      	mov	x3, #0x1e6              // =486
+   da838:      	mov	x0, x19
+   da83c:      	mov	w1, #0x3                // =3
+   da840:      	bl	0xad7d8 <_ZN4plog6RecordC2ENS_8SeverityEPKcmS3_PKvi.constprop.0>
+   da844:      	adrp	x1, 0x125000 <write@@GLIBC_2.17+0x125000>
+   da848:      	add	x0, x19, #0x30
+   da84c:      	add	x1, x1, #0xa00
+   da850:      	bl	0xa1140 <_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc@plt>
+   da854:      	ldr	x22, [x22, #0xf00]
+   da858:      	ldr	x22, [x22]
+   da85c:      	ldp	x20, x0, [x22, #0x10]
+   da860:      	cmp	x20, x0
+   da864:      	b.eq	0xda6ec <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x1b4>
+   da868:      	ldr	x0, [x20]
+   da86c:      	mov	x1, x19
+   da870:      	ldr	x2, [x0]
+   da874:      	ldr	x2, [x2, #0x10]
+   da878:      	blr	x2
+   da87c:      	ldr	x0, [x22, #0x18]
+   da880:      	add	x20, x20, #0x8
+   da884:      	cmp	x0, x20
+   da888:      	b.ne	0xda868 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x330>
+   da88c:      	mov	x0, x19
+   da890:      	bl	0x9b740 <_ZN4plog6RecordD1Ev@plt>
+   da894:      	b	0xda6f4 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x1bc>
+   da898:      	ldr	x0, [x23]
+   da89c:      	ldr	x1, [x0]
+   da8a0:      	ldr	x1, [x1, #0x80]
+   da8a4:      	blr	x1
+   da8a8:      	tst	w0, #0xff
+   da8ac:      	ldr	x0, [x23, #0x68]
+   da8b0:      	ldr	w0, [x0, #0x8]
+   da8b4:      	b.ne	0xdabe8 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x6b0>
+   da8b8:      	cmp	w0, #0x1
+   da8bc:      	b.eq	0xda590 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x58>
+   da8c0:      	mov	x0, #0x28               // =40
+   da8c4:      	bl	0xa1190 <_Znwm@plt>
+   da8c8:      	adrp	x2, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   da8cc:      	mov	x1, x0
+   da8d0:      	stp	xzr, xzr, [x0, #0x10]
+   da8d4:      	mov	w3, #0x1                // =1
+   da8d8:      	ldr	x2, [x2, #0xef0]
+   da8dc:      	str	w3, [x1, #0x8]
+   da8e0:      	ldr	x0, [sp, #0x78]
+   da8e4:      	add	x2, x2, #0x10
+   da8e8:      	str	x2, [x1]
+   da8ec:      	str	xzr, [x1, #0x20]
+   da8f0:      	str	x1, [sp, #0x80]
+   da8f4:      	bl	0x9d110 <_ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EEC1IPN5Juxie10StateReadyEEET_@plt>
+   da8f8:      	mov	x1, x21
+   da8fc:      	mov	x0, x23
+   da900:      	bl	0xa6a40 <_ZN5Juxie19ControllerJuxieImpl11changeStateESt10shared_ptrINS_5StateEE@plt>
+   da904:      	ldr	x0, [sp, #0x88]
+   da908:      	cbz	x0, 0xda910 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x3d8>
+   da90c:      	bl	0x9fee0 <_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@plt>
+   da910:      	adrp	x22, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   da914:      	ldr	x0, [x22, #0xf00]
+   da918:      	ldr	x0, [x0]
+   da91c:      	cbz	x0, 0xda590 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x58>
+   da920:      	ldr	w0, [x0, #0x8]
+   da924:      	cmp	w0, #0x3
+   da928:      	b.le	0xda590 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x58>
+   da92c:      	adrp	x2, 0x125000 <write@@GLIBC_2.17+0x125000>
+   da930:      	add	x2, x2, #0x9a0
+   da934:      	add	x19, sp, #0xd8
+   da938:      	mov	x3, #0x1ee              // =494
+   da93c:      	mov	x0, x19
+   da940:      	mov	w1, #0x4                // =4
+   da944:      	bl	0xad7d8 <_ZN4plog6RecordC2ENS_8SeverityEPKcmS3_PKvi.constprop.0>
+   da948:      	adrp	x1, 0x125000 <write@@GLIBC_2.17+0x125000>
+   da94c:      	add	x0, x19, #0x30
+   da950:      	add	x1, x1, #0xa18
+   da954:      	bl	0xa1140 <_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc@plt>
+   da958:      	ldr	x22, [x22, #0xf00]
+   da95c:      	ldr	x22, [x22]
+   da960:      	ldp	x20, x0, [x22, #0x10]
+   da964:      	cmp	x20, x0
+   da968:      	b.eq	0xda6ec <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x1b4>
+   da96c:      	nop
+   da970:      	ldr	x0, [x20]
+   da974:      	mov	x1, x19
+   da978:      	ldr	x2, [x0]
+   da97c:      	ldr	x2, [x2, #0x10]
+   da980:      	blr	x2
+   da984:      	ldr	x0, [x22, #0x18]
+   da988:      	add	x20, x20, #0x8
+   da98c:      	cmp	x0, x20
+   da990:      	b.ne	0xda970 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x438>
+   da994:      	b	0xda6ec <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x1b4>
+   da998:      	mov	w0, #0x1388             // =5000
+   da99c:      	bl	0xa29e0 <usleep@plt>
+   da9a0:      	ldr	x0, [x23]
+   da9a4:      	add	x28, sp, #0x98
+   da9a8:      	adrp	x22, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   da9ac:      	mov	x8, x28
+   da9b0:      	ldr	x1, [x0]
+   da9b4:      	ldr	x1, [x1, #0x60]
+   da9b8:      	blr	x1
+   da9bc:      	ldr	x0, [x22, #0xf00]
+   da9c0:      	ldr	x0, [x0]
+   da9c4:      	cbz	x0, 0xda9d4 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x49c>
+   da9c8:      	ldr	w1, [x0, #0x8]
+   da9cc:      	cmp	w1, #0x3
+   da9d0:      	b.gt	0xdad48 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x810>
+   da9d4:      	add	x24, sp, #0xd8
+   da9d8:      	mov	x20, #0x0               // =0
+   da9dc:      	add	x26, x24, #0x30
+   da9e0:      	cbz	x0, 0xda9f0 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x4b8>
+   da9e4:      	ldr	w0, [x0, #0x8]
+   da9e8:      	cmp	w0, #0x3
+   da9ec:      	b.gt	0xdaa08 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x4d0>
+   da9f0:      	add	x20, x20, #0x1
+   da9f4:      	cmp	x20, #0xe
+   da9f8:      	b.eq	0xdab00 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x5c8>
+   da9fc:      	ldr	x0, [x22, #0xf00]
+   daa00:      	ldr	x0, [x0]
+   daa04:      	b	0xda9e0 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x4a8>
+   daa08:      	adrp	x0, 0x125000 <write@@GLIBC_2.17+0x125000>
+   daa0c:      	mov	x3, #0x1d9              // =473
+   daa10:      	add	x2, x0, #0x9a0
+   daa14:      	mov	w1, #0x4                // =4
+   daa18:      	mov	x0, x24
+   daa1c:      	bl	0xad7d8 <_ZN4plog6RecordC2ENS_8SeverityEPKcmS3_PKvi.constprop.0>
+   daa20:      	adrp	x1, 0x125000 <write@@GLIBC_2.17+0x125000>
+   daa24:      	mov	x0, x26
+   daa28:      	add	x1, x1, #0x958
+   daa2c:      	mov	x2, #0x3                // =3
+   daa30:      	bl	0xa2120 <_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l@plt>
+   daa34:      	add	w1, w20, #0x1
+   daa38:      	mov	x0, x26
+   daa3c:      	bl	0xa61d0 <_ZNSolsEi@plt>
+   daa40:      	adrp	x1, 0x125000 <write@@GLIBC_2.17+0x125000>
+   daa44:      	mov	x0, x26
+   daa48:      	add	x1, x1, #0x960
+   daa4c:      	mov	x2, #0xa                // =10
+   daa50:      	bl	0xa2120 <_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l@plt>
+   daa54:      	adrp	x1, 0x125000 <write@@GLIBC_2.17+0x125000>
+   daa58:      	mov	x0, x26
+   daa5c:      	add	x1, x1, #0x970
+   daa60:      	mov	x2, #0x11               // =17
+   daa64:      	bl	0xa2120 <_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l@plt>
+   daa68:      	ldrh	w1, [x28, x20, lsl #1]
+   daa6c:      	mov	x0, x23
+   daa70:      	ldr	x8, [sp, #0x68]
+   daa74:      	bl	0xa3750 <_ZN5Juxie19ControllerJuxieImpl13FindMotorErroB5cxx11Et@plt>
+   daa78:      	ldr	x19, [sp, #0xb8]
+   daa7c:      	cbz	x19, 0xdacc8 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x790>
+   daa80:      	mov	x0, x19
+   daa84:      	bl	0x9c700 <strlen@plt>
+   daa88:      	mov	x2, x0
+   daa8c:      	mov	x1, x19
+   daa90:      	mov	x0, x26
+   daa94:      	bl	0xa2120 <_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l@plt>
+   daa98:      	ldr	x0, [x22, #0xf00]
+   daa9c:      	ldr	x25, [x0]
+   daaa0:      	ldp	x19, x0, [x25, #0x10]
+   daaa4:      	cmp	x19, x0
+   daaa8:      	b.eq	0xdaad4 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x59c>
+   daaac:      	nop
+   daab0:      	ldr	x0, [x19]
+   daab4:      	mov	x1, x24
+   daab8:      	ldr	x2, [x0]
+   daabc:      	ldr	x2, [x2, #0x10]
+   daac0:      	blr	x2
+   daac4:      	ldr	x0, [x25, #0x18]
+   daac8:      	add	x19, x19, #0x8
+   daacc:      	cmp	x0, x19
+   daad0:      	b.ne	0xdaab0 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x578>
+   daad4:      	ldr	x1, [sp, #0x70]
+   daad8:      	ldr	x0, [sp, #0xb8]
+   daadc:      	cmp	x0, x1
+   daae0:      	b.eq	0xdaae8 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x5b0>
+   daae4:      	bl	0xa0cf0 <_ZdlPv@plt>
+   daae8:      	mov	x0, x24
+   daaec:      	add	x20, x20, #0x1
+   daaf0:      	bl	0x9b740 <_ZN4plog6RecordD1Ev@plt>
+   daaf4:      	cmp	x20, #0xe
+   daaf8:      	b.ne	0xda9fc <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x4c4>
+   daafc:      	nop
+   dab00:      	ldr	x0, [x23, #0x68]
+   dab04:      	ldr	w0, [x0, #0x8]
+   dab08:      	cmp	w0, #0x4
+   dab0c:      	b.eq	0xda590 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x58>
+   dab10:      	mov	x0, #0x28               // =40
+   dab14:      	bl	0xa1190 <_Znwm@plt>
+   dab18:      	adrp	x2, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   dab1c:      	mov	x1, x0
+   dab20:      	stp	xzr, xzr, [x0, #0x10]
+   dab24:      	mov	w3, #0x4                // =4
+   dab28:      	ldr	x2, [x2, #0x8e8]
+   dab2c:      	str	w3, [x1, #0x8]
+   dab30:      	ldr	x0, [sp, #0x78]
+   dab34:      	add	x2, x2, #0x10
+   dab38:      	str	x2, [x1]
+   dab3c:      	str	xzr, [x1, #0x20]
+   dab40:      	str	x1, [sp, #0x80]
+   dab44:      	bl	0xa4980 <_ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EEC1IPN5Juxie10StateFaultEEET_@plt>
+   dab48:      	mov	x1, x21
+   dab4c:      	mov	x0, x23
+   dab50:      	bl	0xa6a40 <_ZN5Juxie19ControllerJuxieImpl11changeStateESt10shared_ptrINS_5StateEE@plt>
+   dab54:      	ldr	x0, [sp, #0x88]
+   dab58:      	cbz	x0, 0xdab60 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x628>
+   dab5c:      	bl	0x9fee0 <_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@plt>
+   dab60:      	ldr	x0, [x22, #0xf00]
+   dab64:      	ldr	x0, [x0]
+   dab68:      	cbz	x0, 0xda590 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x58>
+   dab6c:      	ldr	w0, [x0, #0x8]
+   dab70:      	cmp	w0, #0x1
+   dab74:      	b.le	0xda590 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x58>
+   dab78:      	adrp	x2, 0x125000 <write@@GLIBC_2.17+0x125000>
+   dab7c:      	add	x2, x2, #0x9a0
+   dab80:      	add	x19, sp, #0xd8
+   dab84:      	mov	x3, #0x1de              // =478
+   dab88:      	mov	x0, x19
+   dab8c:      	mov	w1, #0x2                // =2
+   dab90:      	bl	0xad7d8 <_ZN4plog6RecordC2ENS_8SeverityEPKcmS3_PKvi.constprop.0>
+   dab94:      	adrp	x1, 0x125000 <write@@GLIBC_2.17+0x125000>
+   dab98:      	add	x0, x19, #0x30
+   dab9c:      	add	x1, x1, #0x9e8
+   daba0:      	bl	0xa1140 <_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc@plt>
+   daba4:      	ldr	x22, [x22, #0xf00]
+   daba8:      	ldr	x22, [x22]
+   dabac:      	ldp	x20, x0, [x22, #0x10]
+   dabb0:      	cmp	x20, x0
+   dabb4:      	b.eq	0xda6ec <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x1b4>
+   dabb8:      	ldr	x0, [x20]
+   dabbc:      	mov	x1, x19
+   dabc0:      	ldr	x2, [x0]
+   dabc4:      	ldr	x2, [x2, #0x10]
+   dabc8:      	blr	x2
+   dabcc:      	ldr	x0, [x22, #0x18]
+   dabd0:      	add	x20, x20, #0x8
+   dabd4:      	cmp	x0, x20
+   dabd8:      	b.ne	0xdabb8 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x680>
+   dabdc:      	mov	x0, x19
+   dabe0:      	bl	0x9b740 <_ZN4plog6RecordD1Ev@plt>
+   dabe4:      	b	0xda6f4 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x1bc>
+   dabe8:      	cmp	w0, #0x2
+   dabec:      	b.eq	0xda590 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x58>
+   dabf0:      	mov	x0, #0x28               // =40
+   dabf4:      	bl	0xa1190 <_Znwm@plt>
+   dabf8:      	adrp	x2, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   dabfc:      	mov	x1, x0
+   dac00:      	stp	xzr, xzr, [x0, #0x10]
+   dac04:      	mov	w3, #0x2                // =2
+   dac08:      	ldr	x2, [x2, #0xbb8]
+   dac0c:      	str	w3, [x1, #0x8]
+   dac10:      	ldr	x0, [sp, #0x78]
+   dac14:      	add	x2, x2, #0x10
+   dac18:      	str	x2, [x1]
+   dac1c:      	str	xzr, [x1, #0x20]
+   dac20:      	str	x1, [sp, #0x80]
+   dac24:      	bl	0xa0a90 <_ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EEC1IPN5Juxie9StateIdleEEET_@plt>
+   dac28:      	mov	x1, x21
+   dac2c:      	mov	x0, x23
+   dac30:      	bl	0xa6a40 <_ZN5Juxie19ControllerJuxieImpl11changeStateESt10shared_ptrINS_5StateEE@plt>
+   dac34:      	ldr	x0, [sp, #0x88]
+   dac38:      	cbz	x0, 0xdac40 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x708>
+   dac3c:      	bl	0x9fee0 <_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@plt>
+   dac40:      	adrp	x22, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   dac44:      	ldr	x0, [x22, #0xf00]
+   dac48:      	ldr	x0, [x0]
+   dac4c:      	cbz	x0, 0xda590 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x58>
+   dac50:      	ldr	w0, [x0, #0x8]
+   dac54:      	cmp	w0, #0x3
+   dac58:      	b.le	0xda590 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x58>
+   dac5c:      	adrp	x2, 0x125000 <write@@GLIBC_2.17+0x125000>
+   dac60:      	add	x2, x2, #0x9a0
+   dac64:      	add	x19, sp, #0xd8
+   dac68:      	mov	x3, #0x1f5              // =501
+   dac6c:      	mov	x0, x19
+   dac70:      	mov	w1, #0x4                // =4
+   dac74:      	bl	0xad7d8 <_ZN4plog6RecordC2ENS_8SeverityEPKcmS3_PKvi.constprop.0>
+   dac78:      	adrp	x1, 0x125000 <write@@GLIBC_2.17+0x125000>
+   dac7c:      	add	x0, x19, #0x30
+   dac80:      	add	x1, x1, #0xa30
+   dac84:      	bl	0xa1140 <_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc@plt>
+   dac88:      	ldr	x22, [x22, #0xf00]
+   dac8c:      	ldr	x22, [x22]
+   dac90:      	ldp	x20, x0, [x22, #0x10]
+   dac94:      	cmp	x20, x0
+   dac98:      	b.eq	0xda6ec <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x1b4>
+   dac9c:      	nop
+   daca0:      	ldr	x0, [x20]
+   daca4:      	mov	x1, x19
+   daca8:      	ldr	x2, [x0]
+   dacac:      	ldr	x2, [x2, #0x10]
+   dacb0:      	blr	x2
+   dacb4:      	ldr	x0, [x22, #0x18]
+   dacb8:      	add	x20, x20, #0x8
+   dacbc:      	cmp	x0, x20
+   dacc0:      	b.ne	0xdaca0 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x768>
+   dacc4:      	b	0xda6ec <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x1b4>
+   dacc8:      	adrp	x19, 0x123000 <_ZN4YAML3Exp3StrB5cxx11Ej+0x38>
+   daccc:      	mov	x2, #0x6                // =6
+   dacd0:      	add	x19, x19, #0xfc0
+   dacd4:      	b	0xdaa8c <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x554>
+   dacd8:      	adrp	x2, 0x125000 <write@@GLIBC_2.17+0x125000>
+   dacdc:      	add	x2, x2, #0x9a0
+   dace0:      	add	x19, sp, #0xd8
+   dace4:      	mov	x3, #0x1f9              // =505
+   dace8:      	mov	x0, x19
+   dacec:      	mov	w1, #0x4                // =4
+   dacf0:      	bl	0xad7d8 <_ZN4plog6RecordC2ENS_8SeverityEPKcmS3_PKvi.constprop.0>
+   dacf4:      	adrp	x1, 0x125000 <write@@GLIBC_2.17+0x125000>
+   dacf8:      	add	x0, x19, #0x30
+   dacfc:      	add	x1, x1, #0xa48
+   dad00:      	bl	0xa1140 <_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc@plt>
+   dad04:      	ldr	x22, [x22, #0xf00]
+   dad08:      	ldr	x21, [x22]
+   dad0c:      	ldp	x20, x0, [x21, #0x10]
+   dad10:      	cmp	x20, x0
+   dad14:      	b.eq	0xdad3c <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x804>
+   dad18:      	ldr	x0, [x20]
+   dad1c:      	mov	x1, x19
+   dad20:      	ldr	x2, [x0]
+   dad24:      	ldr	x2, [x2, #0x10]
+   dad28:      	blr	x2
+   dad2c:      	ldr	x0, [x21, #0x18]
+   dad30:      	add	x20, x20, #0x8
+   dad34:      	cmp	x0, x20
+   dad38:      	b.ne	0xdad18 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x7e0>
+   dad3c:      	mov	x0, x19
+   dad40:      	bl	0x9b740 <_ZN4plog6RecordD1Ev@plt>
+   dad44:      	b	0xda71c <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x1e4>
+   dad48:      	add	x19, sp, #0xd8
+   dad4c:      	mov	x3, #0x1d7              // =471
+   dad50:      	mov	x0, x19
+   dad54:      	mov	w1, #0x4                // =4
+   dad58:      	adrp	x2, 0x125000 <write@@GLIBC_2.17+0x125000>
+   dad5c:      	add	x2, x2, #0x9a0
+   dad60:      	bl	0xad7d8 <_ZN4plog6RecordC2ENS_8SeverityEPKcmS3_PKvi.constprop.0>
+   dad64:      	adrp	x1, 0x125000 <write@@GLIBC_2.17+0x125000>
+   dad68:      	add	x0, x19, #0x30
+   dad6c:      	add	x1, x1, #0x948
+   dad70:      	mov	x2, #0xa                // =10
+   dad74:      	bl	0xa2120 <_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l@plt>
+   dad78:      	add	x0, x19, #0x30
+   dad7c:      	bl	0x9d990 <_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_@plt>
+   dad80:      	ldr	x0, [x22, #0xf00]
+   dad84:      	ldr	x24, [x0]
+   dad88:      	ldp	x20, x0, [x24, #0x10]
+   dad8c:      	cmp	x20, x0
+   dad90:      	b.eq	0xdadbc <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x884>
+   dad94:      	nop
+   dad98:      	ldr	x0, [x20]
+   dad9c:      	mov	x1, x19
+   dada0:      	ldr	x2, [x0]
+   dada4:      	ldr	x2, [x2, #0x10]
+   dada8:      	blr	x2
+   dadac:      	ldr	x0, [x24, #0x18]
+   dadb0:      	add	x20, x20, #0x8
+   dadb4:      	cmp	x0, x20
+   dadb8:      	b.ne	0xdad98 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x860>
+   dadbc:      	mov	x0, x19
+   dadc0:      	bl	0x9b740 <_ZN4plog6RecordD1Ev@plt>
+   dadc4:      	ldr	x0, [x22, #0xf00]
+   dadc8:      	ldr	x0, [x0]
+   dadcc:      	b	0xda9d4 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x49c>
+   dadd0:      	bl	0x9cb60 <__stack_chk_fail@plt>
+   dadd4:      	mov	x1, x0
+   dadd8:      	mov	x0, x19
+   daddc:      	mov	x19, x1
+   dade0:      	bl	0x9b740 <_ZN4plog6RecordD1Ev@plt>
+   dade4:      	mov	x0, x19
+   dade8:      	bl	0xa6570 <_Unwind_Resume@plt>
+   dadec:      	ldr	x1, [sp, #0x88]
+   dadf0:      	mov	x19, x0
+   dadf4:      	cbz	x1, 0xdade4 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x8ac>
+   dadf8:      	mov	x0, x1
+   dadfc:      	bl	0x9fee0 <_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@plt>
+   dae00:      	b	0xdade4 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x8ac>
+   dae04:      	bl	0x9d1e0 <__cxa_begin_catch@plt>
+   dae08:      	adrp	x1, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   dae0c:      	ldr	x0, [x19, #0x20]
+   dae10:      	ldr	x1, [x1, #0xeb0]
+   dae14:      	add	x1, x1, #0x10
+   dae18:      	str	x1, [x19]
+   dae1c:      	cbz	x0, 0xdae24 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x8ec>
+   dae20:      	bl	0x9fee0 <_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@plt>
+   dae24:      	mov	x0, x19
+   dae28:      	mov	x1, #0x28               // =40
+   dae2c:      	bl	0xa1380 <_ZdlPvm@plt>
+   dae30:      	bl	0xa4300 <__cxa_rethrow@plt>
+   dae34:      	b	0xdadd4 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x89c>
+   dae38:      	mov	x19, x0
+   dae3c:      	bl	0xa55b0 <__cxa_end_catch@plt>
+   dae40:      	mov	x0, x19
+   dae44:      	bl	0xa6570 <_Unwind_Resume@plt>
+   dae48:      	b	0xdadec <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x8b4>
+   dae4c:      	b	0xdadd4 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x89c>
+   dae50:      	b	0xdadd4 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x89c>
+   dae54:      	b	0xdadec <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x8b4>
+   dae58:      	b	0xdadec <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x8b4>
+   dae5c:      	mov	x19, x0
+   dae60:      	mov	x0, x24
+   dae64:      	bl	0x9b740 <_ZN4plog6RecordD1Ev@plt>
+   dae68:      	mov	x0, x19
+   dae6c:      	bl	0xa6570 <_Unwind_Resume@plt>
+   dae70:      	bl	0x9d1e0 <__cxa_begin_catch@plt>
+   dae74:      	adrp	x1, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   dae78:      	ldr	x0, [x19, #0x20]
+   dae7c:      	ldr	x1, [x1, #0xeb0]
+   dae80:      	add	x1, x1, #0x10
+   dae84:      	str	x1, [x19]
+   dae88:      	cbz	x0, 0xdae90 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x958>
+   dae8c:      	bl	0x9fee0 <_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@plt>
+   dae90:      	mov	x0, x19
+   dae94:      	mov	x1, #0x28               // =40
+   dae98:      	bl	0xa1380 <_ZdlPvm@plt>
+   dae9c:      	bl	0xa4300 <__cxa_rethrow@plt>
+   daea0:      	b	0xdadec <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x8b4>
+   daea4:      	mov	x19, x0
+   daea8:      	bl	0xa55b0 <__cxa_end_catch@plt>
+   daeac:      	mov	x0, x19
+   daeb0:      	bl	0xa6570 <_Unwind_Resume@plt>
+   daeb4:      	ldr	x2, [sp, #0x68]
+   daeb8:      	mov	x19, x0
+   daebc:      	ldr	x1, [sp, #0xb8]
+   daec0:      	add	x2, x2, #0x10
+   daec4:      	cmp	x1, x2
+   daec8:      	b.eq	0xdae60 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x928>
+   daecc:      	mov	x0, x1
+   daed0:      	bl	0xa0cf0 <_ZdlPv@plt>
+   daed4:      	b	0xdae60 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x928>
+   daed8:      	b	0xdadd4 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x89c>
+   daedc:      	b	0xdadd4 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x89c>
+   daee0:      	b	0xdadd4 <_ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv+0x89c>
+   daee4:      	nop

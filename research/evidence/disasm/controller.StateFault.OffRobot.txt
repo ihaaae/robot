@@ -1,0 +1,78 @@
+
+libjuxie_controller.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000af2f8 <_ZN5Juxie10StateFault8OffRobotEv>:
+   af2f8:      	stp	x29, x30, [sp, #-0x40]!
+   af2fc:      	mov	x29, sp
+   af300:      	stp	x19, x20, [sp, #0x10]
+   af304:      	stp	x21, x22, [sp, #0x20]
+   af308:      	str	x23, [sp, #0x30]
+   af30c:      	bl	0xa5ab0 <_ZN5Juxie5State11m_off_robotEv@plt>
+   af310:      	adrp	x1, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   af314:      	mov	x0, #0x28               // =40
+   af318:      	ldr	x1, [x1, #0x988]
+   af31c:      	ldr	x22, [x1]
+   af320:      	bl	0xa1190 <_Znwm@plt>
+   af324:      	adrp	x1, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   af328:      	mov	x19, x0
+   af32c:      	mov	x0, #0x18               // =24
+   af330:      	ldr	x1, [x1, #0xd60]
+   af334:      	str	wzr, [x19, #0x8]
+   af338:      	stp	xzr, xzr, [x19, #0x10]
+   af33c:      	add	x1, x1, #0x10
+   af340:      	str	x1, [x19]
+   af344:      	str	xzr, [x19, #0x20]
+   af348:      	bl	0xa1190 <_Znwm@plt>
+   af34c:      	adrp	x1, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   af350:      	adrp	x21, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   af354:      	mov	x20, x0
+   af358:      	movi	v0.2s, #0x1
+   af35c:      	ldr	x1, [x1, #0xcc8]
+   af360:      	add	x23, x22, #0x78
+   af364:      	ldr	x0, [x21, #0x8c0]
+   af368:      	add	x1, x1, #0x10
+   af36c:      	str	x1, [x20]
+   af370:      	str	x19, [x20, #0x10]
+   af374:      	str	d0, [x20, #0x8]
+   af378:      	cbz	x0, 0xaf388 <_ZN5Juxie10StateFault8OffRobotEv+0x90>
+   af37c:      	mov	x0, x23
+   af380:      	bl	0x9c6a0 <pthread_mutex_lock@plt>
+   af384:      	cbnz	w0, 0xaf3c0 <_ZN5Juxie10StateFault8OffRobotEv+0xc8>
+   af388:      	ldr	x0, [x22, #0x70]
+   af38c:      	stp	x19, x20, [x22, #0x68]
+   af390:      	cbz	x0, 0xaf398 <_ZN5Juxie10StateFault8OffRobotEv+0xa0>
+   af394:      	bl	0x9fee0 <_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@plt>
+   af398:      	ldr	x21, [x21, #0x8c0]
+   af39c:      	cbz	x21, 0xaf3a8 <_ZN5Juxie10StateFault8OffRobotEv+0xb0>
+   af3a0:      	mov	x0, x23
+   af3a4:      	bl	0x9e380 <pthread_mutex_unlock@plt>
+   af3a8:      	mov	w0, #0x1                // =1
+   af3ac:      	ldp	x19, x20, [sp, #0x10]
+   af3b0:      	ldp	x21, x22, [sp, #0x20]
+   af3b4:      	ldr	x23, [sp, #0x30]
+   af3b8:      	ldp	x29, x30, [sp], #0x40
+   af3bc:      	ret
+   af3c0:      	bl	0x9ee90 <_ZSt20__throw_system_errori@plt>
+   af3c4:      	bl	0x9d1e0 <__cxa_begin_catch@plt>
+   af3c8:      	adrp	x1, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   af3cc:      	ldr	x0, [x19, #0x20]
+   af3d0:      	ldr	x1, [x1, #0xeb0]
+   af3d4:      	add	x1, x1, #0x10
+   af3d8:      	str	x1, [x19]
+   af3dc:      	cbz	x0, 0xaf3e4 <_ZN5Juxie10StateFault8OffRobotEv+0xec>
+   af3e0:      	bl	0x9fee0 <_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@plt>
+   af3e4:      	mov	x0, x19
+   af3e8:      	mov	x1, #0x28               // =40
+   af3ec:      	bl	0xa1380 <_ZdlPvm@plt>
+   af3f0:      	bl	0xa4300 <__cxa_rethrow@plt>
+   af3f4:      	mov	x19, x0
+   af3f8:      	mov	x0, x20
+   af3fc:      	bl	0x9fee0 <_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@plt>
+   af400:      	mov	x0, x19
+   af404:      	bl	0xa6570 <_Unwind_Resume@plt>
+   af408:      	mov	x19, x0
+   af40c:      	bl	0xa55b0 <__cxa_end_catch@plt>
+   af410:      	mov	x0, x19
+   af414:      	bl	0xa6570 <_Unwind_Resume@plt>

@@ -174,6 +174,7 @@ was once shared with `examples/python/`, which now holds only 01.
 | [`07_replay_trajectory.cpp`](examples/cpp/07_replay_trajectory.cpp) | replays the vendor's recorded CSV through the 50 Hz streaming interface, the way the vendor's own `MoveJCanfdTest` does. **Dry run by default** | a robot on the CAN bus |
 | [`sdk_min_example.cpp`](examples/cpp/sdk_min_example.cpp) | the smallest program that links the SDK at all | only the SDK |
 | [`sdk_probe.cpp`](examples/cpp/sdk_probe.cpp) | one SDK method per run, so a crash in one cannot hide the others | only the SDK |
+| [`state_machine_probe.cpp`](examples/cpp/state_machine_probe.cpp) | the vendor state machine's `power_off` and `fault` columns, and the two lifecycle crashes (`docs/robot-state-machine.md`). **Emulator only** — refuses to continue unless `OnRobot()` lands in `fault` | only the SDK |
 | [`fk_overflow_repro.cpp`](examples/cpp/fk_overflow_repro.cpp) | **a bug reproduction, not a demo** — it is meant to fail. Proves the `getFKpose` overflow under AddressSanitizer | only the SDK |
 
 ```bash

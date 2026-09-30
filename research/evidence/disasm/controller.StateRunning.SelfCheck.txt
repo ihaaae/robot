@@ -1,0 +1,106 @@
+
+libjuxie_controller.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000abcc0 <_ZN5Juxie12StateRunning9SelfCheckEv>:
+   abcc0:      	sub	sp, sp, #0x250
+   abcc4:      	stp	x29, x30, [sp]
+   abcc8:      	mov	x29, sp
+   abccc:      	stp	x19, x20, [sp, #0x10]
+   abcd0:      	adrp	x19, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   abcd4:      	adrp	x20, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   abcd8:      	ldr	x0, [x19, #0xf00]
+   abcdc:      	ldr	x1, [x20, #0x948]
+   abce0:      	ldr	x0, [x0]
+   abce4:      	ldr	x2, [x1]
+   abce8:      	str	x2, [sp, #0x248]
+   abcec:      	mov	x2, #0x0                // =0
+   abcf0:      	cbz	x0, 0xabd00 <_ZN5Juxie12StateRunning9SelfCheckEv+0x40>
+   abcf4:      	ldr	w0, [x0, #0x8]
+   abcf8:      	cmp	w0, #0x3
+   abcfc:      	b.gt	0xabd2c <_ZN5Juxie12StateRunning9SelfCheckEv+0x6c>
+   abd00:      	ldr	x20, [x20, #0x948]
+   abd04:      	ldr	x0, [sp, #0x248]
+   abd08:      	ldr	x1, [x20]
+   abd0c:      	subs	x0, x0, x1
+   abd10:      	mov	x1, #0x0                // =0
+   abd14:      	b.ne	0xabe34 <_ZN5Juxie12StateRunning9SelfCheckEv+0x174>
+   abd18:      	mov	w0, #0x0                // =0
+   abd1c:      	ldp	x29, x30, [sp]
+   abd20:      	ldp	x19, x20, [sp, #0x10]
+   abd24:      	add	sp, sp, #0x250
+   abd28:      	ret
+   abd2c:      	adrp	x1, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   abd30:      	mov	w2, #0x4                // =4
+   abd34:      	mov	x0, #0xb2               // =178
+   abd38:      	stp	x21, x22, [sp, #0x20]
+   abd3c:      	add	x21, sp, #0x48
+   abd40:      	ldr	x1, [x1, #0x9d0]
+   abd44:      	str	w2, [sp, #0x60]
+   abd48:      	add	x22, x21, #0x30
+   abd4c:      	add	x1, x1, #0x10
+   abd50:      	str	x1, [sp, #0x48]
+   abd54:      	bl	0xa0320 <syscall@plt>
+   abd58:      	mov	x2, x0
+   abd5c:      	mov	x1, #0x5e8              // =1512
+   abd60:      	mov	x0, x22
+   abd64:      	str	w2, [sp, #0x64]
+   abd68:      	stp	xzr, x1, [sp, #0x68]
+   abd6c:      	bl	0xa35a0 <_ZNSt7__cxx1119basic_ostringstreamIcSt11char_traitsIcESaIcEEC1Ev@plt>
+   abd70:      	adrp	x2, 0x123000 <_ZN4YAML3Exp3StrB5cxx11Ej+0x38>
+   abd74:      	add	x2, x2, #0xce0
+   abd78:      	adrp	x3, 0x123000 <_ZN4YAML3Exp3StrB5cxx11Ej+0x38>
+   abd7c:      	add	x3, x3, #0xcb0
+   abd80:      	stp	x3, x2, [sp, #0x1f0]
+   abd84:      	add	x2, sp, #0x208
+   abd88:      	add	x5, x21, #0x1d0
+   abd8c:      	add	x4, x21, #0x1f0
+   abd90:      	mov	x1, #0x0                // =0
+   abd94:      	add	x0, sp, #0x38
+   abd98:      	stp	x5, xzr, [x2]
+   abd9c:      	stp	x4, xzr, [x2, #0x20]
+   abda0:      	str	wzr, [sp, #0x200]
+   abda4:      	strb	wzr, [sp, #0x218]
+   abda8:      	strb	wzr, [sp, #0x238]
+   abdac:      	bl	0x9f630 <gettimeofday@plt>
+   abdb0:      	ldp	x5, x4, [sp, #0x38]
+   abdb4:      	mov	x3, #0xf7cf             // =63439
+   abdb8:      	movk	x3, #0xe353, lsl #16
+   abdbc:      	adrp	x1, 0x123000 <_ZN4YAML3Exp3StrB5cxx11Ej+0x38>
+   abdc0:      	movk	x3, #0x9ba5, lsl #32
+   abdc4:      	mov	x0, x22
+   abdc8:      	movk	x3, #0x20c4, lsl #48
+   abdcc:      	add	x1, x1, #0xd28
+   abdd0:      	mov	x2, #0x48               // =72
+   abdd4:      	str	x5, [sp, #0x50]
+   abdd8:      	smulh	x3, x4, x3
+   abddc:      	asr	x3, x3, #7
+   abde0:      	sub	x3, x3, x4, asr #63
+   abde4:      	strh	w3, [sp, #0x58]
+   abde8:      	bl	0xa2120 <_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l@plt>
+   abdec:      	ldr	x19, [x19, #0xf00]
+   abdf0:      	ldr	x22, [x19]
+   abdf4:      	ldp	x19, x0, [x22, #0x10]
+   abdf8:      	cmp	x19, x0
+   abdfc:      	b.eq	0xabe24 <_ZN5Juxie12StateRunning9SelfCheckEv+0x164>
+   abe00:      	ldr	x0, [x19]
+   abe04:      	mov	x1, x21
+   abe08:      	ldr	x2, [x0]
+   abe0c:      	ldr	x2, [x2, #0x10]
+   abe10:      	blr	x2
+   abe14:      	ldr	x0, [x22, #0x18]
+   abe18:      	add	x19, x19, #0x8
+   abe1c:      	cmp	x0, x19
+   abe20:      	b.ne	0xabe00 <_ZN5Juxie12StateRunning9SelfCheckEv+0x140>
+   abe24:      	mov	x0, x21
+   abe28:      	bl	0x9b740 <_ZN4plog6RecordD1Ev@plt>
+   abe2c:      	ldp	x21, x22, [sp, #0x20]
+   abe30:      	b	0xabd00 <_ZN5Juxie12StateRunning9SelfCheckEv+0x40>
+   abe34:      	stp	x21, x22, [sp, #0x20]
+   abe38:      	bl	0x9cb60 <__stack_chk_fail@plt>
+   abe3c:      	mov	x19, x0
+   abe40:      	mov	x0, x21
+   abe44:      	bl	0x9b740 <_ZN4plog6RecordD1Ev@plt>
+   abe48:      	mov	x0, x19
+   abe4c:      	bl	0xa6570 <_Unwind_Resume@plt>

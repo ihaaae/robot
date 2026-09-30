@@ -1,0 +1,106 @@
+
+libjuxie_controller.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000abfe0 <_ZN5Juxie9StateIdle9SelfCheckEv>:
+   abfe0:      	sub	sp, sp, #0x250
+   abfe4:      	stp	x29, x30, [sp]
+   abfe8:      	mov	x29, sp
+   abfec:      	stp	x19, x20, [sp, #0x10]
+   abff0:      	adrp	x19, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   abff4:      	adrp	x20, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   abff8:      	ldr	x0, [x19, #0xf00]
+   abffc:      	ldr	x1, [x20, #0x948]
+   ac000:      	ldr	x0, [x0]
+   ac004:      	ldr	x2, [x1]
+   ac008:      	str	x2, [sp, #0x248]
+   ac00c:      	mov	x2, #0x0                // =0
+   ac010:      	cbz	x0, 0xac020 <_ZN5Juxie9StateIdle9SelfCheckEv+0x40>
+   ac014:      	ldr	w0, [x0, #0x8]
+   ac018:      	cmp	w0, #0x3
+   ac01c:      	b.gt	0xac04c <_ZN5Juxie9StateIdle9SelfCheckEv+0x6c>
+   ac020:      	ldr	x20, [x20, #0x948]
+   ac024:      	ldr	x0, [sp, #0x248]
+   ac028:      	ldr	x1, [x20]
+   ac02c:      	subs	x0, x0, x1
+   ac030:      	mov	x1, #0x0                // =0
+   ac034:      	b.ne	0xac154 <_ZN5Juxie9StateIdle9SelfCheckEv+0x174>
+   ac038:      	mov	w0, #0x1                // =1
+   ac03c:      	ldp	x29, x30, [sp]
+   ac040:      	ldp	x19, x20, [sp, #0x10]
+   ac044:      	add	sp, sp, #0x250
+   ac048:      	ret
+   ac04c:      	adrp	x1, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   ac050:      	mov	w2, #0x4                // =4
+   ac054:      	mov	x0, #0xb2               // =178
+   ac058:      	stp	x21, x22, [sp, #0x20]
+   ac05c:      	add	x21, sp, #0x48
+   ac060:      	ldr	x1, [x1, #0x9d0]
+   ac064:      	str	w2, [sp, #0x60]
+   ac068:      	add	x22, x21, #0x30
+   ac06c:      	add	x1, x1, #0x10
+   ac070:      	str	x1, [sp, #0x48]
+   ac074:      	bl	0xa0320 <syscall@plt>
+   ac078:      	mov	x2, x0
+   ac07c:      	mov	x1, #0x5e3              // =1507
+   ac080:      	mov	x0, x22
+   ac084:      	str	w2, [sp, #0x64]
+   ac088:      	stp	xzr, x1, [sp, #0x68]
+   ac08c:      	bl	0xa35a0 <_ZNSt7__cxx1119basic_ostringstreamIcSt11char_traitsIcESaIcEEC1Ev@plt>
+   ac090:      	adrp	x2, 0x123000 <_ZN4YAML3Exp3StrB5cxx11Ej+0x38>
+   ac094:      	add	x2, x2, #0xce0
+   ac098:      	adrp	x3, 0x123000 <_ZN4YAML3Exp3StrB5cxx11Ej+0x38>
+   ac09c:      	add	x3, x3, #0xde8
+   ac0a0:      	stp	x3, x2, [sp, #0x1f0]
+   ac0a4:      	add	x2, sp, #0x208
+   ac0a8:      	add	x5, x21, #0x1d0
+   ac0ac:      	add	x4, x21, #0x1f0
+   ac0b0:      	mov	x1, #0x0                // =0
+   ac0b4:      	add	x0, sp, #0x38
+   ac0b8:      	stp	x5, xzr, [x2]
+   ac0bc:      	stp	x4, xzr, [x2, #0x20]
+   ac0c0:      	str	wzr, [sp, #0x200]
+   ac0c4:      	strb	wzr, [sp, #0x218]
+   ac0c8:      	strb	wzr, [sp, #0x238]
+   ac0cc:      	bl	0x9f630 <gettimeofday@plt>
+   ac0d0:      	ldp	x5, x4, [sp, #0x38]
+   ac0d4:      	mov	x3, #0xf7cf             // =63439
+   ac0d8:      	movk	x3, #0xe353, lsl #16
+   ac0dc:      	adrp	x1, 0x123000 <_ZN4YAML3Exp3StrB5cxx11Ej+0x38>
+   ac0e0:      	movk	x3, #0x9ba5, lsl #32
+   ac0e4:      	mov	x0, x22
+   ac0e8:      	movk	x3, #0x20c4, lsl #48
+   ac0ec:      	add	x1, x1, #0xe18
+   ac0f0:      	mov	x2, #0x2b               // =43
+   ac0f4:      	str	x5, [sp, #0x50]
+   ac0f8:      	smulh	x3, x4, x3
+   ac0fc:      	asr	x3, x3, #7
+   ac100:      	sub	x3, x3, x4, asr #63
+   ac104:      	strh	w3, [sp, #0x58]
+   ac108:      	bl	0xa2120 <_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l@plt>
+   ac10c:      	ldr	x19, [x19, #0xf00]
+   ac110:      	ldr	x22, [x19]
+   ac114:      	ldp	x19, x0, [x22, #0x10]
+   ac118:      	cmp	x19, x0
+   ac11c:      	b.eq	0xac144 <_ZN5Juxie9StateIdle9SelfCheckEv+0x164>
+   ac120:      	ldr	x0, [x19]
+   ac124:      	mov	x1, x21
+   ac128:      	ldr	x2, [x0]
+   ac12c:      	ldr	x2, [x2, #0x10]
+   ac130:      	blr	x2
+   ac134:      	ldr	x0, [x22, #0x18]
+   ac138:      	add	x19, x19, #0x8
+   ac13c:      	cmp	x0, x19
+   ac140:      	b.ne	0xac120 <_ZN5Juxie9StateIdle9SelfCheckEv+0x140>
+   ac144:      	mov	x0, x21
+   ac148:      	bl	0x9b740 <_ZN4plog6RecordD1Ev@plt>
+   ac14c:      	ldp	x21, x22, [sp, #0x20]
+   ac150:      	b	0xac020 <_ZN5Juxie9StateIdle9SelfCheckEv+0x40>
+   ac154:      	stp	x21, x22, [sp, #0x20]
+   ac158:      	bl	0x9cb60 <__stack_chk_fail@plt>
+   ac15c:      	mov	x19, x0
+   ac160:      	mov	x0, x21
+   ac164:      	bl	0x9b740 <_ZN4plog6RecordD1Ev@plt>
+   ac168:      	mov	x0, x19
+   ac16c:      	bl	0xa6570 <_Unwind_Resume@plt>

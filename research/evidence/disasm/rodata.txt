@@ -21,3 +21,49 @@ libexecutor.so.0.6.4 @ 0x1634c0 (YAML keys read in the constructor limits block)
   bytes : 4c 65 66 74 4c 69 6d 69 74 73 00 00 00 00 00 00 6c 65 66 74 4c 69 6d 69 74 73 2e 73 69 7a 65 28 29 20 3a 20 00 00 00 00 55 73 65 4c 69 6d 69 74 00 00 00 00 00 00 00 00 54 68 65 20 6c 69 6d 69 74 73 20 67 69 76 65 6e 20 69 73 20 6e 6f 74 20 32 20 65 6c 65 6d 65 6e 74 73 00 00 00 00 00 00 52 69 67 68 74 4c 69 6d 69 74 73 00 00 00 00 00 45 78 65 63 75 74 6f 72 20 63 6f 6e 66 69 67 20
   strings: ['LeftLimits', 'leftLimits.size() : ', 'UseLimit', 'The limits given is not 2 elements', 'RightLimits', 'Executor config ']
 
+libjuxie_controller.so.0.6.4 @ 0x126ab0 (UpdateStateThread poll period, loaded via adrp 0x126000 + #0xab0)
+  timespec: {tv_sec = 0, tv_nsec = 5000000}
+
+libjuxie_controller.so.0.6.4 @ 0x126a90 (StateRunning::DisableRobot / OffRobot wait-for-idle poll, adrp 0x126000 + #0xa90)
+  timespec: {tv_sec = 0, tv_nsec = 1000000}
+
+libjuxie_controller.so.0.6.4 @ 0x123d28 (StateRunning::SelfCheck message)
+  bytes : 54 68 65 20 72 6f 62 6f 74 20 68 61 72 64 77 61 72 65 20 69 73 20 6d 6f 76 69 6e 67 20 6e 6f 77 2c 20 70 6c 65 61 73 65 20 77 61 69 74 20 74 68 65 20 6c 61 73 74 20 6d 6f 76 65 6d 65 6e 74 20 66 69 6e 69 73 68 65 64 00
+  strings: ['The robot hardware is moving now, please wait the last movement finished']
+
+libjuxie_controller.so.0.6.4 @ 0x123da8 (StatePowerOff::SelfCheck message)
+  bytes : 54 68 65 20 72 6f 62 6f 74 20 68 61 72 64 77 61 72 65 20 69 73 20 6e 6f 74 20 63 6f 6e 6e 65 63 74 65 64 2c 20 70 6c 65 61 73 65 20 63 61 6c 6c 20 4f 6e 52 6f 62 6f 74 20 66 69 72 73 74 00
+  strings: ['The robot hardware is not connected, please call OnRobot first']
+
+libjuxie_controller.so.0.6.4 @ 0x123e18 (StateIdle::SelfCheck message)
+  bytes : 54 68 65 20 72 6f 62 6f 74 20 68 61 72 64 77 61 72 65 20 67 6f 65 73 20 77 65 6c 6c 2c 20 72 65 61 64 79 20 74 6f 20 6d 6f 76 65 00
+  strings: ['The robot hardware goes well, ready to move']
+
+libjuxie_controller.so.0.6.4 @ 0x123e78 (StateFault::SelfCheck message)
+  bytes : 54 68 65 20 72 6f 62 6f 74 20 68 61 72 64 77 61 72 65 20 69 73 20 69 6e 20 66 61 75 6c 74 2c 20 70 6c 65 61 73 65 20 63 61 6c 6c 20 43 6c 65 61 72 46 61 75 6c 74 20 66 69 72 73 74 00
+  strings: ['The robot hardware is in fault, please call ClearFault first']
+
+libjuxie_controller.so.0.6.4 @ 0x123ee8 (StateReady::SelfCheck message)
+  bytes : 54 68 65 20 72 6f 62 6f 74 20 68 61 72 64 77 61 72 65 20 69 73 20 6e 6f 74 20 65 6e 61 62 6c 65 64 2c 20 70 6c 65 61 73 65 20 63 61 6c 6c 20 45 6e 61 62 6c 65 52 6f 62 6f 74 20 66 69 72 73 74 00
+  strings: ['The robot hardware is not enabled, please call EnableRobot first']
+
+libjuxie_controller.so.0.6.4 @ 0x1259d8 (UpdateStateThread: not connected -> power_off)
+  bytes : 43 6f 6e 6e 65 63 74 69 6f 6e 20 4c 6f 73 74 00
+  strings: ['Connection Lost']
+
+libjuxie_controller.so.0.6.4 @ 0x1259e8 (UpdateStateThread: -> fault)
+  bytes : 68 61 72 64 77 61 72 65 20 69 73 20 49 6e 46 61 75 6c 74 00
+  strings: ['hardware is InFault']
+
+libjuxie_controller.so.0.6.4 @ 0x125a00 (UpdateStateThread: -> running)
+  bytes : 68 61 72 64 77 61 72 65 20 20 69 73 20 4d 6f 76 69 6e 67 00
+  strings: ['hardware  is Moving']
+
+libjuxie_controller.so.0.6.4 @ 0x125a18 (UpdateStateThread: -> ready)
+  bytes : 68 61 72 64 77 61 72 65 20 69 73 20 52 65 61 64 79 00
+  strings: ['hardware is Ready']
+
+libjuxie_controller.so.0.6.4 @ 0x125a30 (UpdateStateThread: -> idle)
+  bytes : 68 61 72 64 77 61 72 65 20 69 73 20 49 64 6c 65 00
+  strings: ['hardware is Idle']
+

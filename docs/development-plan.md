@@ -1,4 +1,4 @@
-# 开发计划（草稿 v1.1）
+# 开发计划（草稿 v1.2）
 
 > **这是草稿，不是承诺。** 划分和子任务都会随真机验证结果大幅变动。目的只是把工作切成
 > 可并行的单位，让每个人知道自己在哪一层、依赖谁、以及"做完"由什么判定。
@@ -187,7 +187,7 @@ L3，这一层只做「把 10–50 Hz 的稀疏输入变成每拍一个点」，
 | 子任务 | 内容 |
 |---|---|
 | 8.1 | `ControllerJuxie` 兼容 API：同名方法、同号返回码（`bot_common::ErrorCode`）。**只兼容名字和码，不兼容缺陷**：允许多实例或显式拒绝，不在 `OnRobot()` 之前段错误，`getFKpose` 不越界（`sdk-usage.md` §6、§7）。 |
-| 8.2 | 机器人状态机 `power_off / ready / idle / running / fault`，对齐 `GetRobotState()` 的 0..4（原 3.2）。**厂家自造，PR0002 里没有**；参照 `juxie_state.hpp` 的做法——每个状态类实现全部 API，由状态类决定拒绝哪些调用。 |
+| 8.2 | 机器人状态机 `power_off / ready / idle / running / fault`，对齐 `GetRobotState()` 的 0..4（原 3.2）。**厂家自造，PR0002 里没有**。规格是 [`robot-state-machine.md`](robot-state-machine.md) §2 的「状态 × 方法」表：每格的返回码照抄（`ready` 下 `MoveP_Canfd` 的 `-101` 除外，见该文注 4），厂家的缺陷不抄（§4、§2.2、无超时忙等）。结构上只留一个写者：状态由 L3 快照推导（该文 §5），不像厂家那样由状态类和 5 ms 轮询线程两处同时写。 |
 | 8.3 | 17 维 `JointSpaceData` ↔ 14 个设备；`-100`「保持当前位置」→ L3 的 mask（原 5.2）。读侧不再用 `-100` 表示「暂无数据」。 |
 | 8.4 | 阻塞语义：`MoveJ` / `MoveJ_P` / `MoveL` 阻塞到 L3 报告运动结束；阻塞期间 `Stop()` 必须能从另一个线程生效（原 6.2 的一半）。 |
 | 8.5 | `MoveEnd(v, part)`：给每路的 Dev_ID 8 发单轴速度帧（`0x108`，模式 2，加减速 1000 RPM/s；`can-protocol-comparison.md` §2），用 L0 的 `encode_single_axis` 即可（原 6.4）。`v` 的单位、8 号设备是什么都未知。**可以推迟或直接砍掉。** |
@@ -213,3 +213,5 @@ L3，这一层只做「把 10–50 Hz 的稀疏输入变成每拍一个点」，
 - v1.1：按反汇编复核（`research/evidence/disasm/`）更新 1.5、7.2、7.4、8.5：厂家发送周期就是
   `Resample`（2 ms）；厂家侧 `0x200` 组包已读出；`[1.5, 6.5]` 是速度 / 加速度上限；`MoveEnd` 是给 Dev_ID 8
   的普通单轴帧。v1 理由表里「驱动不发 `0x80`」一句删去——厂家空闲拍正是发 `0x80`。
+- v1.2：8.2 的规格改指 [`robot-state-machine.md`](robot-state-machine.md)（厂家状态机逐状态、逐方法的
+  反汇编结果，`power_off` / `fault` 两列已在 qemu 下实测）。

@@ -1,0 +1,48 @@
+
+libjuxie_controller.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000ad768 <_ZN5Juxie9StateIdle7MoveEndEdi>:
+   ad768:      	b	0x9f930 <_ZN5Juxie5State9m_MoveEndEdi@plt>
+   ad76c:      	nop
+
+00000000000ad770 <_ZN5Juxie12StateRunning7MoveEndEdi>:
+   ad770:      	b	0x9f930 <_ZN5Juxie5State9m_MoveEndEdi@plt>
+   ad774:      	nop
+
+00000000000ad778 <_ZN5Juxie5State14m_BreakReleaseERKSt6vectorIiSaIiEE>:
+   ad778:      	adrp	x0, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   ad77c:      	ldr	x0, [x0, #0x988]
+   ad780:      	ldr	x0, [x0]
+   ad784:      	ldr	x0, [x0]
+   ad788:      	ldr	x2, [x0]
+   ad78c:      	ldr	x2, [x2, #0xd8]
+   ad790:      	mov	x16, x2
+   ad794:      	br	x16
+
+00000000000ad798 <_ZN5Juxie10StateReady12BreakReleaseERKSt6vectorIiSaIiEE>:
+   ad798:      	b	0xa2a10 <_ZN5Juxie5State14m_BreakReleaseERKSt6vectorIiSaIiEE@plt>
+   ad79c:      	nop
+
+00000000000ad7a0 <_ZN5Juxie9StateIdle12BreakReleaseERKSt6vectorIiSaIiEE>:
+   ad7a0:      	b	0xa2a10 <_ZN5Juxie5State14m_BreakReleaseERKSt6vectorIiSaIiEE@plt>
+   ad7a4:      	nop
+
+00000000000ad7a8 <_ZN5Juxie5State13m_BreakEngageERKSt6vectorIiSaIiEE>:
+   ad7a8:      	adrp	x0, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   ad7ac:      	ldr	x0, [x0, #0x988]
+   ad7b0:      	ldr	x0, [x0]
+   ad7b4:      	ldr	x0, [x0]
+   ad7b8:      	ldr	x2, [x0]
+   ad7bc:      	ldr	x2, [x2, #0xd0]
+   ad7c0:      	mov	x16, x2
+   ad7c4:      	br	x16
+
+00000000000ad7c8 <_ZN5Juxie10StateReady11BreakEngageERKSt6vectorIiSaIiEE>:
+   ad7c8:      	b	0x9dc60 <_ZN5Juxie5State13m_BreakEngageERKSt6vectorIiSaIiEE@plt>
+   ad7cc:      	nop
+
+00000000000ad7d0 <_ZN5Juxie9StateIdle11BreakEngageERKSt6vectorIiSaIiEE>:
+   ad7d0:      	b	0x9dc60 <_ZN5Juxie5State13m_BreakEngageERKSt6vectorIiSaIiEE@plt>
+   ad7d4:      	nop
