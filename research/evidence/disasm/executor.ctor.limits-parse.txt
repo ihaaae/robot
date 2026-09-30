@@ -1,0 +1,232 @@
+
+libexecutor.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000ec6ac <_ZN12bot_executor13ExecutorJuxieC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEE>:
+   ed4b0:      	add	x2, sp, #0x580
+   ed4b4:      	add	x0, sp, #0x5c0
+   ed4b8:      	mov	x8, x0
+   ed4bc:      	adrp	x0, 0x163000 <_ZN8nlohmann16json_abi_v3_11_26detail9dtoa_implL6kGammaE+0x668>
+   ed4c0:      	add	x1, x0, #0x4c0
+   ed4c4:      	mov	x0, x2
+   ed4c8:      	bl	0xe5970 <_ZN4YAML4NodeixIA11_cEES0_RKT_@plt>
+   ed4cc:      	add	x0, sp, #0x5c0
+   ed4d0:      	str	x0, [sp, #0xb0]
+   ed4d4:      	adrp	x0, 0x163000 <_ZN8nlohmann16json_abi_v3_11_26detail9dtoa_implL6kGammaE+0x668>
+   ed4d8:      	add	x1, x0, #0x4d0
+   ed4dc:      	adrp	x0, 0x1a8000 <_ZTVSt23_Sp_counted_ptr_inplaceISt5mutexSaIS0_ELN9__gnu_cxx12_Lock_policyE2EE+0x20>
+   ed4e0:      	ldr	x0, [x0, #0xe38]
+   ed4e4:      	bl	0xe15f0 <_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc@plt>
+   ed4e8:      	mov	x19, x0
+   ed4ec:      	ldr	x0, [sp, #0xb0]
+   ed4f0:      	bl	0xe65b0 <_ZNK4YAML4Node4sizeEv@plt>
+   ed4f4:      	mov	x1, x0
+   ed4f8:      	mov	x0, x19
+   ed4fc:      	bl	0xda2b0 <_ZNSolsEm@plt>
+   ed500:      	mov	x2, x0
+   ed504:      	adrp	x0, 0x1a8000 <_ZTVSt23_Sp_counted_ptr_inplaceISt5mutexSaIS0_ELN9__gnu_cxx12_Lock_policyE2EE+0x20>
+   ed508:      	ldr	x1, [x0, #0xc00]
+   ed50c:      	mov	x0, x2
+   ed510:      	bl	0xe1cc0 <_ZNSolsEPFRSoS_E@plt>
+   ed514:      	add	x2, sp, #0x580
+   ed518:      	add	x0, sp, #0x7b8
+   ed51c:      	mov	x8, x0
+   ed520:      	adrp	x0, 0x163000 <_ZN8nlohmann16json_abi_v3_11_26detail9dtoa_implL6kGammaE+0x668>
+   ed524:      	add	x1, x0, #0x4e8
+   ed528:      	mov	x0, x2
+   ed52c:      	bl	0xda020 <_ZN4YAML4NodeixIA9_cEES0_RKT_@plt>
+   ed530:      	add	x0, sp, #0x7b8
+   ed534:      	bl	0xe7820 <_ZNK4YAML4Node2asIbEET_v@plt>
+   ed538:      	and	w1, w0, #0xff
+   ed53c:      	ldr	x0, [sp, #0x58]
+   ed540:      	strb	w1, [x0, #0x5f8]
+   ed544:      	add	x0, sp, #0x7b8
+   ed548:      	bl	0xe1c90 <_ZN4YAML4NodeD1Ev@plt>
+   ed54c:      	ldr	x0, [sp, #0xb0]
+   ed550:      	bl	0xe65b0 <_ZNK4YAML4Node4sizeEv@plt>
+   ed554:      	mov	x1, x0
+   ed558:      	add	x0, sp, #0x298
+   ed55c:      	mov	x2, #0x2                // =2
+   ed560:      	bl	0xe7ca0 <_ZN5Eigen15PlainObjectBaseINS_6MatrixIdLin1ELi2ELi0ELin1ELi2EEEE6resizeEll@plt>
+   ed564:      	str	wzr, [sp, #0x8c]
+   ed568:      	add	x0, sp, #0x410
+   ed56c:      	mov	x8, x0
+   ed570:      	ldr	x0, [sp, #0xb0]
+   ed574:      	bl	0xe5580 <_ZNK4YAML4Node5beginEv@plt>
+   ed578:      	add	x0, sp, #0x448
+   ed57c:      	mov	x8, x0
+   ed580:      	ldr	x0, [sp, #0xb0]
+   ed584:      	bl	0xe07e0 <_ZNK4YAML4Node3endEv@plt>
+   ed588:      	add	x1, sp, #0x448
+   ed58c:      	add	x0, sp, #0x410
+   ed590:      	bl	0xdf990 <_ZNK4YAML6detail13iterator_baseIKNS0_14iterator_valueEEneIS3_EEbRKNS1_IT_EE@plt>
+   ed594:      	and	w19, w0, #0xff
+   ed598:      	add	x0, sp, #0x448
+   ed59c:      	bl	0xe2dc0 <_ZN4YAML6detail13iterator_baseIKNS0_14iterator_valueEED1Ev@plt>
+   ed5a0:      	cmp	w19, #0x0
+   ed5a4:      	b.eq	0xed6a4 <_ZN12bot_executor13ExecutorJuxieC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEE+0xff8>
+   ed5a8:      	add	x0, sp, #0x410
+   ed5ac:      	add	x1, sp, #0x7b8
+   ed5b0:      	mov	x8, x1
+   ed5b4:      	bl	0xddf70 <_ZNK4YAML6detail13iterator_baseIKNS0_14iterator_valueEEptEv@plt>
+   ed5b8:      	add	x0, sp, #0x7b8
+   ed5bc:      	bl	0xe53b0 <_ZN4YAML6detail13iterator_baseIKNS0_14iterator_valueEE5proxyptEv@plt>
+   ed5c0:      	add	x0, x0, #0x80
+   ed5c4:      	add	x1, sp, #0x3d8
+   ed5c8:      	mov	x8, x1
+   ed5cc:      	bl	0xe52d0 <_ZNK4YAML4Node2asISt6vectorIdSaIdEEEET_v@plt>
+   ed5d0:      	add	x1, sp, #0x3d8
+   ed5d4:      	add	x0, sp, #0x350
+   ed5d8:      	bl	0xd9e90 <_ZNSt6vectorIdSaIdEEaSEOS1_@plt>
+   ed5dc:      	add	x0, sp, #0x3d8
+   ed5e0:      	bl	0xe0dd0 <_ZNSt6vectorIdSaIdEED1Ev@plt>
+   ed5e4:      	add	x0, sp, #0x7b8
+   ed5e8:      	bl	0xe6ca0 <_ZN4YAML6detail13iterator_baseIKNS0_14iterator_valueEE5proxyD1Ev@plt>
+   ed5ec:      	add	x0, sp, #0x350
+   ed5f0:      	bl	0xddbf0 <_ZNKSt6vectorIdSaIdEE4sizeEv@plt>
+   ed5f4:      	cmp	x0, #0x2
+   ed5f8:      	cset	w0, ne
+   ed5fc:      	and	w0, w0, #0xff
+   ed600:      	cmp	w0, #0x0
+   ed604:      	b.eq	0xed63c <_ZN12bot_executor13ExecutorJuxieC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEE+0xf90>
+   ed608:      	mov	x0, #0x10               // =16
+   ed60c:      	bl	0xdc760 <__cxa_allocate_exception@plt>
+   ed610:      	mov	x19, x0
+   ed614:      	adrp	x0, 0x163000 <_ZN8nlohmann16json_abi_v3_11_26detail9dtoa_implL6kGammaE+0x668>
+   ed618:      	add	x1, x0, #0x4f8
+   ed61c:      	mov	x0, x19
+   ed620:      	bl	0xe9e90 <_ZNSt16invalid_argumentC1EPKc@plt>
+   ed624:      	adrp	x0, 0x1a8000 <_ZTVSt23_Sp_counted_ptr_inplaceISt5mutexSaIS0_ELN9__gnu_cxx12_Lock_policyE2EE+0x20>
+   ed628:      	ldr	x2, [x0, #0xf18]
+   ed62c:      	adrp	x0, 0x1a8000 <_ZTVSt23_Sp_counted_ptr_inplaceISt5mutexSaIS0_ELN9__gnu_cxx12_Lock_policyE2EE+0x20>
+   ed630:      	ldr	x1, [x0, #0xf70]
+   ed634:      	mov	x0, x19
+   ed638:      	bl	0xe81b0 <__cxa_throw@plt>
+   ed63c:      	add	x0, sp, #0x350
+   ed640:      	bl	0xde8f0 <_ZNSt6vectorIdSaIdEE4dataEv@plt>
+   ed644:      	mov	x19, x0
+   ed648:      	add	x0, sp, #0x3a0
+   ed64c:      	bl	0xeab60 <_ZN5Eigen6StrideILi0ELi0EEC1Ev@plt>
+   ed650:      	add	x1, sp, #0x3a0
+   ed654:      	add	x0, sp, #0x3d8
+   ed658:      	mov	x4, x1
+   ed65c:      	mov	x3, #0x2                // =2
+   ed660:      	mov	x2, #0x1                // =1
+   ed664:      	mov	x1, x19
+   ed668:      	bl	0xe9f60 <_ZN5Eigen3MapINS_6MatrixIdLi1ELin1ELi1ELi1ELin1EEELi0ENS_6StrideILi0ELi0EEEEC1EPdllRKS4_@plt>
+   ed66c:      	ldr	w0, [sp, #0x8c]
+   ed670:      	add	w1, w0, #0x1
+   ed674:      	str	w1, [sp, #0x8c]
+   ed678:      	sxtw	x1, w0
+   ed67c:      	add	x0, sp, #0x298
+   ed680:      	add	x2, sp, #0x448
+   ed684:      	mov	x8, x2
+   ed688:      	bl	0xe47b0 <_ZN5Eigen9DenseBaseINS_6MatrixIdLin1ELi2ELi0ELin1ELi2EEEE3rowEl@plt>
+   ed68c:      	add	x1, sp, #0x3d8
+   ed690:      	add	x0, sp, #0x448
+   ed694:      	bl	0xdea90 <_ZN5Eigen10MatrixBaseINS_5BlockINS_6MatrixIdLin1ELi2ELi0ELin1ELi2EEELi1ELi2ELb0EEEEaSINS_3MapINS2_IdLi1ELin1ELi1ELi1ELin1EEELi0ENS_6StrideILi0ELi0EEEEEEERS4_RKNS_9DenseBaseIT_EE@plt>
+   ed698:      	add	x0, sp, #0x410
+   ed69c:      	bl	0xe48a0 <_ZN4YAML6detail13iterator_baseIKNS0_14iterator_valueEEppEv@plt>
+   ed6a0:      	b	0xed578 <_ZN12bot_executor13ExecutorJuxieC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEE+0xecc>
+   ed6a4:      	add	x0, sp, #0x410
+   ed6a8:      	bl	0xe2dc0 <_ZN4YAML6detail13iterator_baseIKNS0_14iterator_valueEED1Ev@plt>
+   ed6ac:      	str	wzr, [sp, #0x8c]
+   ed6b0:      	add	x0, sp, #0x2a8
+   ed6b4:      	bl	0xe4ab0 <_ZN5Eigen6MatrixIdLin1ELi2ELi0ELin1ELi2EEC1Ev@plt>
+   ed6b8:      	add	x2, sp, #0x580
+   ed6bc:      	add	x0, sp, #0x600
+   ed6c0:      	mov	x8, x0
+   ed6c4:      	adrp	x0, 0x163000 <_ZN8nlohmann16json_abi_v3_11_26detail9dtoa_implL6kGammaE+0x668>
+   ed6c8:      	add	x1, x0, #0x520
+   ed6cc:      	mov	x0, x2
+   ed6d0:      	bl	0xd8d10 <_ZN4YAML4NodeixIA12_cEES0_RKT_@plt>
+   ed6d4:      	add	x0, sp, #0x600
+   ed6d8:      	str	x0, [sp, #0xb8]
+   ed6dc:      	ldr	x0, [sp, #0xb8]
+   ed6e0:      	bl	0xe65b0 <_ZNK4YAML4Node4sizeEv@plt>
+   ed6e4:      	mov	x1, x0
+   ed6e8:      	add	x0, sp, #0x2a8
+   ed6ec:      	mov	x2, #0x2                // =2
+   ed6f0:      	bl	0xe7ca0 <_ZN5Eigen15PlainObjectBaseINS_6MatrixIdLin1ELi2ELi0ELin1ELi2EEEE6resizeEll@plt>
+   ed6f4:      	add	x0, sp, #0x410
+   ed6f8:      	mov	x8, x0
+   ed6fc:      	ldr	x0, [sp, #0xb8]
+   ed700:      	bl	0xe5580 <_ZNK4YAML4Node5beginEv@plt>
+   ed704:      	add	x0, sp, #0x448
+   ed708:      	mov	x8, x0
+   ed70c:      	ldr	x0, [sp, #0xb8]
+   ed710:      	bl	0xe07e0 <_ZNK4YAML4Node3endEv@plt>
+   ed714:      	add	x1, sp, #0x448
+   ed718:      	add	x0, sp, #0x410
+   ed71c:      	bl	0xdf990 <_ZNK4YAML6detail13iterator_baseIKNS0_14iterator_valueEEneIS3_EEbRKNS1_IT_EE@plt>
+   ed720:      	and	w19, w0, #0xff
+   ed724:      	add	x0, sp, #0x448
+   ed728:      	bl	0xe2dc0 <_ZN4YAML6detail13iterator_baseIKNS0_14iterator_valueEED1Ev@plt>
+   ed72c:      	cmp	w19, #0x0
+   ed730:      	b.eq	0xed830 <_ZN12bot_executor13ExecutorJuxieC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEE+0x1184>
+   ed734:      	add	x0, sp, #0x410
+   ed738:      	add	x1, sp, #0x7b8
+   ed73c:      	mov	x8, x1
+   ed740:      	bl	0xddf70 <_ZNK4YAML6detail13iterator_baseIKNS0_14iterator_valueEEptEv@plt>
+   ed744:      	add	x0, sp, #0x7b8
+   ed748:      	bl	0xe53b0 <_ZN4YAML6detail13iterator_baseIKNS0_14iterator_valueEE5proxyptEv@plt>
+   ed74c:      	add	x0, x0, #0x80
+   ed750:      	add	x1, sp, #0x448
+   ed754:      	mov	x8, x1
+   ed758:      	bl	0xe52d0 <_ZNK4YAML4Node2asISt6vectorIdSaIdEEEET_v@plt>
+   ed75c:      	add	x1, sp, #0x448
+   ed760:      	add	x0, sp, #0x350
+   ed764:      	bl	0xd9e90 <_ZNSt6vectorIdSaIdEEaSEOS1_@plt>
+   ed768:      	add	x0, sp, #0x448
+   ed76c:      	bl	0xe0dd0 <_ZNSt6vectorIdSaIdEED1Ev@plt>
+   ed770:      	add	x0, sp, #0x7b8
+   ed774:      	bl	0xe6ca0 <_ZN4YAML6detail13iterator_baseIKNS0_14iterator_valueEE5proxyD1Ev@plt>
+   ed778:      	add	x0, sp, #0x350
+   ed77c:      	bl	0xddbf0 <_ZNKSt6vectorIdSaIdEE4sizeEv@plt>
+   ed780:      	cmp	x0, #0x2
+   ed784:      	cset	w0, ne
+   ed788:      	and	w0, w0, #0xff
+   ed78c:      	cmp	w0, #0x0
+   ed790:      	b.eq	0xed7c8 <_ZN12bot_executor13ExecutorJuxieC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEE+0x111c>
+   ed794:      	mov	x0, #0x10               // =16
+   ed798:      	bl	0xdc760 <__cxa_allocate_exception@plt>
+   ed79c:      	mov	x19, x0
+   ed7a0:      	adrp	x0, 0x163000 <_ZN8nlohmann16json_abi_v3_11_26detail9dtoa_implL6kGammaE+0x668>
+   ed7a4:      	add	x1, x0, #0x4f8
+   ed7a8:      	mov	x0, x19
+   ed7ac:      	bl	0xe9e90 <_ZNSt16invalid_argumentC1EPKc@plt>
+   ed7b0:      	adrp	x0, 0x1a8000 <_ZTVSt23_Sp_counted_ptr_inplaceISt5mutexSaIS0_ELN9__gnu_cxx12_Lock_policyE2EE+0x20>
+   ed7b4:      	ldr	x2, [x0, #0xf18]
+   ed7b8:      	adrp	x0, 0x1a8000 <_ZTVSt23_Sp_counted_ptr_inplaceISt5mutexSaIS0_ELN9__gnu_cxx12_Lock_policyE2EE+0x20>
+   ed7bc:      	ldr	x1, [x0, #0xf70]
+   ed7c0:      	mov	x0, x19
+   ed7c4:      	bl	0xe81b0 <__cxa_throw@plt>
+   ed7c8:      	add	x0, sp, #0x350
+   ed7cc:      	bl	0xde8f0 <_ZNSt6vectorIdSaIdEE4dataEv@plt>
+   ed7d0:      	mov	x19, x0
+   ed7d4:      	add	x0, sp, #0x3a0
+   ed7d8:      	bl	0xeab60 <_ZN5Eigen6StrideILi0ELi0EEC1Ev@plt>
+   ed7dc:      	add	x1, sp, #0x3a0
+   ed7e0:      	add	x0, sp, #0x3d8
+   ed7e4:      	mov	x4, x1
+   ed7e8:      	mov	x3, #0x2                // =2
+   ed7ec:      	mov	x2, #0x1                // =1
+   ed7f0:      	mov	x1, x19
+   ed7f4:      	bl	0xe9f60 <_ZN5Eigen3MapINS_6MatrixIdLi1ELin1ELi1ELi1ELin1EEELi0ENS_6StrideILi0ELi0EEEEC1EPdllRKS4_@plt>
+   ed7f8:      	ldr	w0, [sp, #0x8c]
+   ed7fc:      	add	w1, w0, #0x1
+   ed800:      	str	w1, [sp, #0x8c]
+   ed804:      	sxtw	x1, w0
+   ed808:      	add	x0, sp, #0x2a8
+   ed80c:      	add	x2, sp, #0x448
+   ed810:      	mov	x8, x2
+   ed814:      	bl	0xe47b0 <_ZN5Eigen9DenseBaseINS_6MatrixIdLin1ELi2ELi0ELin1ELi2EEEE3rowEl@plt>
+   ed818:      	add	x1, sp, #0x3d8
+   ed81c:      	add	x0, sp, #0x448
+   ed820:      	bl	0xdea90 <_ZN5Eigen10MatrixBaseINS_5BlockINS_6MatrixIdLin1ELi2ELi0ELin1ELi2EEELi1ELi2ELb0EEEEaSINS_3MapINS2_IdLi1ELin1ELi1ELi1ELin1EEELi0ENS_6StrideILi0ELi0EEEEEEERS4_RKNS_9DenseBaseIT_EE@plt>
+   ed824:      	add	x0, sp, #0x410
+   ed828:      	bl	0xe48a0 <_ZN4YAML6detail13iterator_baseIKNS0_14iterator_valueEEppEv@plt>
+   ed82c:      	b	0xed704 <_ZN12bot_executor13ExecutorJuxieC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEE+0x1058>
+   ed830:      	add	x0, sp, #0x410
+   ed834:      	bl	0xe2dc0 <_ZN4YAML6detail13iterator_baseIKNS0_14iterator_valueEED1Ev@plt>

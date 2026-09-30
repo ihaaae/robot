@@ -1,0 +1,430 @@
+
+libexecutor.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000f15e8 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv>:
+   f15e8:      	sub	sp, sp, #0x3b0
+   f15ec:      	stp	x29, x30, [sp]
+   f15f0:      	mov	x29, sp
+   f15f4:      	stp	x19, x20, [sp, #0x10]
+   f15f8:      	str	d8, [sp, #0x20]
+   f15fc:      	str	x0, [sp, #0x38]
+   f1600:      	str	x1, [sp, #0x30]
+   f1604:      	adrp	x0, 0x1a8000 <_ZTVSt23_Sp_counted_ptr_inplaceISt5mutexSaIS0_ELN9__gnu_cxx12_Lock_policyE2EE+0x20>
+   f1608:      	ldr	x0, [x0, #0xbd8]
+   f160c:      	ldr	x1, [x0]
+   f1610:      	str	x1, [sp, #0x3a8]
+   f1614:      	mov	x1, #0x0                // =0
+   f1618:      	mov	w0, #0x3e8              // =1000
+   f161c:      	bl	0xe3760 <usleep@plt>
+   f1620:      	adrp	x0, 0x163000 <_ZN8nlohmann16json_abi_v3_11_26detail9dtoa_implL6kGammaE+0x668>
+   f1624:      	add	x1, x0, #0xac0
+   f1628:      	add	x0, sp, #0x358
+   f162c:      	ldr	w2, [x1]
+   f1630:      	str	w2, [x0]
+   f1634:      	ldur	w1, [x1, #0x3]
+   f1638:      	stur	w1, [x0, #0x3]
+   f163c:      	add	x0, sp, #0x400
+   f1640:      	stp	xzr, xzr, [x0, #-0x98]
+   f1644:      	add	x0, sp, #0x400
+   f1648:      	stp	xzr, xzr, [x0, #-0x88]
+   f164c:      	add	x0, sp, #0x400
+   f1650:      	stp	xzr, xzr, [x0, #-0x78]
+   f1654:      	add	x0, sp, #0x400
+   f1658:      	stp	xzr, xzr, [x0, #-0x68]
+   f165c:      	mov	w0, #0x38               // =56
+   f1660:      	strb	w0, [sp, #0x4d]
+   f1664:      	str	xzr, [sp, #0x360]
+   f1668:      	add	x0, sp, #0x60
+   f166c:      	bl	0xd8f20 <_ZN5Eigen6MatrixIdLin1ELi1ELi0ELin1ELi1EEC1Ev@plt>
+   f1670:      	ldr	x0, [sp, #0x38]
+   f1674:      	add	x0, x0, #0x2d8
+   f1678:      	mov	w1, #0x5                // =5
+   f167c:      	bl	0xe7a30 <_ZNKSt6atomicIbE4loadESt12memory_order@plt>
+   f1680:      	and	w0, w0, #0xff
+   f1684:      	cmp	w0, #0x0
+   f1688:      	b.eq	0xf1b1c <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x534>
+   f168c:      	adrp	x0, 0x1b2000 <_GLOBAL_OFFSET_TABLE_+0x94f8>
+   f1690:      	add	x1, x0, #0xd40
+   f1694:      	mov	w0, #0x1                // =1
+   f1698:      	bl	0xe0a20 <clock_gettime@plt>
+   f169c:      	ldr	x0, [sp, #0x38]
+   f16a0:      	add	x0, x0, #0x318
+   f16a4:      	bl	0xdc850 <_ZNK15ThreadSafeDequeIN5Eigen6MatrixIdLin1ELi1ELi0ELin1ELi1EEEE5emptyEv@plt>
+   f16a8:      	and	w0, w0, #0xff
+   f16ac:      	eor	w0, w0, #0x1
+   f16b0:      	and	w0, w0, #0xff
+   f16b4:      	cmp	w0, #0x0
+   f16b8:      	b.eq	0xf1a78 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x490>
+   f16bc:      	ldr	x0, [sp, #0x38]
+   f16c0:      	add	x0, x0, #0x318
+   f16c4:      	add	x1, sp, #0xf8
+   f16c8:      	mov	x8, x1
+   f16cc:      	bl	0xe05a0 <_ZN15ThreadSafeDequeIN5Eigen6MatrixIdLin1ELi1ELi0ELin1ELi1EEEE9pop_frontEv@plt>
+   f16d0:      	add	x1, sp, #0xf8
+   f16d4:      	add	x0, sp, #0x60
+   f16d8:      	bl	0xe93e0 <_ZN5Eigen6MatrixIdLin1ELi1ELi0ELin1ELi1EEaSEOS1_@plt>
+   f16dc:      	add	x0, sp, #0xf8
+   f16e0:      	bl	0xe15a0 <_ZN5Eigen6MatrixIdLin1ELi1ELi0ELin1ELi1EED1Ev@plt>
+   f16e4:      	ldr	x0, [sp, #0x38]
+   f16e8:      	ldrb	w0, [x0, #0x5f8]
+   f16ec:      	cmp	w0, #0x0
+   f16f0:      	b.eq	0xf175c <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x174>
+   f16f4:      	str	wzr, [sp, #0x54]
+   f16f8:      	ldr	x0, [sp, #0x38]
+   f16fc:      	ldr	w0, [x0, #0x5fc]
+   f1700:      	ldr	w1, [sp, #0x54]
+   f1704:      	cmp	w1, w0
+   f1708:      	b.ge	0xf175c <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x174>
+   f170c:      	ldr	x0, [sp, #0x38]
+   f1710:      	add	x19, x0, #0x528
+   f1714:      	ldrsw	x1, [sp, #0x54]
+   f1718:      	add	x0, sp, #0x60
+   f171c:      	bl	0xe8180 <_ZN5Eigen15DenseCoeffsBaseINS_6MatrixIdLin1ELi1ELi0ELin1ELi1EEELi1EEixEl@plt>
+   f1720:      	ldr	d0, [x0]
+   f1724:      	ldr	x0, [sp, #0x38]
+   f1728:      	ldr	d1, [x0, #0x10]
+   f172c:      	ldr	w1, [sp, #0x54]
+   f1730:      	mov	x0, x19
+   f1734:      	bl	0xea6f0 <_ZN20JointVelocityPlanner11limit_angleEidd@plt>
+   f1738:      	fmov	d8, d0
+   f173c:      	ldrsw	x1, [sp, #0x54]
+   f1740:      	add	x0, sp, #0x60
+   f1744:      	bl	0xe8180 <_ZN5Eigen15DenseCoeffsBaseINS_6MatrixIdLin1ELi1ELi0ELin1ELi1EEELi1EEixEl@plt>
+   f1748:      	str	d8, [x0]
+   f174c:      	ldr	w0, [sp, #0x54]
+   f1750:      	add	w0, w0, #0x1
+   f1754:      	str	w0, [sp, #0x54]
+   f1758:      	b	0xf16f8 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x110>
+   f175c:      	mov	w0, #0x8000             // =32768
+   f1760:      	str	w0, [sp, #0x50]
+   f1764:      	add	x1, sp, #0x50
+   f1768:      	add	x0, sp, #0x60
+   f176c:      	add	x2, sp, #0x80
+   f1770:      	mov	x8, x2
+   f1774:      	bl	0xe3dc0 <_ZNK5Eigen10MatrixBaseINS_6MatrixIdLin1ELi1ELi0ELin1ELi1EEEEmlIiEEKNS_13CwiseBinaryOpINS_8internal17scalar_product_opIdNS6_18promote_scalar_argIdT_XsrNS6_14has_ReturnTypeINS_20ScalarBinaryOpTraitsIdS9_NS7_IdS9_EEEEEE5valueEE4typeEEEKS2_KNS6_19plain_constant_typeIS2_SG_E4typeEEERKS9_@plt>
+   f1778:      	adrp	x0, 0x164000 <_ZN8nlohmann16json_abi_v3_11_26detail9dtoa_implL6kGammaE+0x1668>
+   f177c:      	ldr	d0, [x0, #0x830]
+   f1780:      	str	d0, [sp, #0x58]
+   f1784:      	add	x1, sp, #0x58
+   f1788:      	add	x0, sp, #0x80
+   f178c:      	add	x2, sp, #0xa8
+   f1790:      	mov	x8, x2
+   f1794:      	bl	0xde000 <_ZNK5Eigen10MatrixBaseINS_13CwiseBinaryOpINS_8internal17scalar_product_opIddEEKNS_6MatrixIdLin1ELi1ELi0ELin1ELi1EEEKNS_14CwiseNullaryOpINS2_18scalar_constant_opIdEES7_EEEEEdvIdEEKNS1_INS2_18scalar_quotient_opIdNS2_18promote_scalar_argIdT_XsrNS2_14has_ReturnTypeINS_20ScalarBinaryOpTraitsIdSI_NSG_IdSI_EEEEEE5valueEE4typeEEEKSD_KNS2_19plain_constant_typeISD_SP_E4typeEEERKSI_@plt>
+   f1798:      	add	x0, sp, #0xa8
+   f179c:      	add	x1, sp, #0xf8
+   f17a0:      	mov	x8, x1
+   f17a4:      	bl	0xea2b0 <_ZNK5Eigen9DenseBaseINS_13CwiseBinaryOpINS_8internal18scalar_quotient_opIddEEKNS1_INS2_17scalar_product_opIddEEKNS_6MatrixIdLin1ELi1ELi0ELin1ELi1EEEKNS_14CwiseNullaryOpINS2_18scalar_constant_opIdEES9_EEEESE_EEE4castIiEENSI_7CastXprIT_E4TypeEv@plt>
+   f17a8:      	add	x1, sp, #0xf8
+   f17ac:      	add	x0, sp, #0x70
+   f17b0:      	bl	0xe84c0 <_ZN5Eigen6MatrixIiLin1ELi1ELi0ELin1ELi1EEC1INS_12CwiseUnaryOpINS_8internal14scalar_cast_opIdiEEKNS_13CwiseBinaryOpINS4_18scalar_quotient_opIddEEKNS7_INS4_17scalar_product_opIddEEKNS0_IdLin1ELi1ELi0ELin1ELi1EEEKNS_14CwiseNullaryOpINS4_18scalar_constant_opIdEESD_EEEESI_EEEEEERKNS_9EigenBaseIT_EE@plt>
+   f17b4:      	strb	wzr, [sp, #0x4c]
+   f17b8:      	ldrb	w1, [sp, #0x4c]
+   f17bc:      	ldr	x0, [sp, #0x38]
+   f17c0:      	ldr	w0, [x0, #0x5fc]
+   f17c4:      	cmp	w1, w0
+   f17c8:      	b.ge	0xf1a30 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x448>
+   f17cc:      	ldrb	w1, [sp, #0x4c]
+   f17d0:      	mov	w0, w1
+   f17d4:      	ubfiz	w0, w0, #3, #5
+   f17d8:      	sub	w0, w0, w1
+   f17dc:      	strb	w0, [sp, #0x4e]
+   f17e0:      	ldrb	w0, [sp, #0x4e]
+   f17e4:      	cmp	w0, #0x31
+   f17e8:      	b.ls	0xf1898 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x2b0>
+   f17ec:      	bl	0xe8860 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   f17f0:      	cmp	x0, #0x0
+   f17f4:      	b.eq	0xf1818 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x230>
+   f17f8:      	bl	0xe8860 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   f17fc:      	mov	w1, #0x2                // =2
+   f1800:      	bl	0xdf190 <_ZNK4plog6LoggerILi0EE13checkSeverityENS_8SeverityE@plt>
+   f1804:      	and	w0, w0, #0xff
+   f1808:      	eor	w0, w0, #0x1
+   f180c:      	and	w0, w0, #0xff
+   f1810:      	cmp	w0, #0x0
+   f1814:      	b.eq	0xf1820 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x238>
+   f1818:      	mov	w0, #0x1                // =1
+   f181c:      	b	0xf1824 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x23c>
+   f1820:      	mov	w0, #0x0                // =0
+   f1824:      	cmp	w0, #0x0
+   f1828:      	b.ne	0xf188c <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x2a4>
+   f182c:      	add	x7, sp, #0x158
+   f1830:      	mov	w6, #0x0                // =0
+   f1834:      	mov	x5, #0x0                // =0
+   f1838:      	adrp	x0, 0x163000 <_ZN8nlohmann16json_abi_v3_11_26detail9dtoa_implL6kGammaE+0x668>
+   f183c:      	add	x4, x0, #0x1f8
+   f1840:      	mov	x3, #0x31a              // =794
+   f1844:      	adrp	x0, 0x163000 <_ZN8nlohmann16json_abi_v3_11_26detail9dtoa_implL6kGammaE+0x668>
+   f1848:      	add	x2, x0, #0x9f0
+   f184c:      	mov	w1, #0x2                // =2
+   f1850:      	mov	x0, x7
+   f1854:      	bl	0xe9060 <_ZN4plog6RecordC1ENS_8SeverityEPKcmS3_PKvi@plt>
+   f1858:      	add	x0, sp, #0x158
+   f185c:      	bl	0xe56d0 <_ZN4plog6Record3refEv@plt>
+   f1860:      	mov	x2, x0
+   f1864:      	adrp	x0, 0x163000 <_ZN8nlohmann16json_abi_v3_11_26detail9dtoa_implL6kGammaE+0x668>
+   f1868:      	add	x1, x0, #0xa38
+   f186c:      	mov	x0, x2
+   f1870:      	bl	0xdce80 <_ZN4plog6RecordlsIA63_cEERS0_RKT_@plt>
+   f1874:      	mov	x19, x0
+   f1878:      	bl	0xe8860 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   f187c:      	mov	x1, x19
+   f1880:      	bl	0xe5aa0 <_ZN4plog6LoggerILi0EEpLERKNS_6RecordE@plt>
+   f1884:      	add	x0, sp, #0x158
+   f1888:      	bl	0xd9490 <_ZN4plog6RecordD1Ev@plt>
+   f188c:      	mov	x20, #0x0               // =0
+   f1890:      	mov	w19, #0x0               // =0
+   f1894:      	b	0xf1a64 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x47c>
+   f1898:      	ldr	x0, [sp, #0x38]
+   f189c:      	add	x2, x0, #0x600
+   f18a0:      	ldrb	w0, [sp, #0x4c]
+   f18a4:      	add	w0, w0, #0x1
+   f18a8:      	sxtw	x0, w0
+   f18ac:      	mov	x1, x0
+   f18b0:      	mov	x0, x2
+   f18b4:      	bl	0xdf670 <_ZNSt5arrayIdLm17EEixEm@plt>
+   f18b8:      	ldr	d8, [x0]
+   f18bc:      	ldrb	w1, [sp, #0x4c]
+   f18c0:      	add	x0, sp, #0x70
+   f18c4:      	bl	0xe2bc0 <_ZN5Eigen15DenseCoeffsBaseINS_6MatrixIiLin1ELi1ELi0ELin1ELi1EEELi1EEixEl@plt>
+   f18c8:      	ldr	w1, [x0]
+   f18cc:      	scvtf	d0, w1
+   f18d0:      	fmul	d0, d8, d0
+   f18d4:      	fcvtzs	w1, d0
+   f18d8:      	str	w1, [x0]
+   f18dc:      	ldrb	w1, [sp, #0x4c]
+   f18e0:      	add	x0, sp, #0x70
+   f18e4:      	bl	0xe2bc0 <_ZN5Eigen15DenseCoeffsBaseINS_6MatrixIiLin1ELi1ELi0ELin1ELi1EEELi1EEixEl@plt>
+   f18e8:      	ldr	w0, [x0]
+   f18ec:      	and	w0, w0, #0xff
+   f18f0:      	strb	w0, [sp, #0x35a]
+   f18f4:      	ldrb	w1, [sp, #0x4c]
+   f18f8:      	add	x0, sp, #0x70
+   f18fc:      	bl	0xe2bc0 <_ZN5Eigen15DenseCoeffsBaseINS_6MatrixIiLin1ELi1ELi0ELin1ELi1EEELi1EEixEl@plt>
+   f1900:      	ldr	w0, [x0]
+   f1904:      	asr	w0, w0, #8
+   f1908:      	and	w0, w0, #0xff
+   f190c:      	strb	w0, [sp, #0x359]
+   f1910:      	ldrb	w0, [sp, #0x4c]
+   f1914:      	add	w0, w0, #0x1
+   f1918:      	strb	w0, [sp, #0x4f]
+   f191c:      	ldrb	w0, [sp, #0x4e]
+   f1920:      	add	x1, sp, #0x368
+   f1924:      	sxtw	x0, w0
+   f1928:      	add	x0, x1, x0
+   f192c:      	mov	x1, x0
+   f1930:      	add	x0, sp, #0x358
+   f1934:      	ldr	w2, [x0]
+   f1938:      	str	w2, [x1]
+   f193c:      	ldur	w0, [x0, #0x3]
+   f1940:      	stur	w0, [x1, #0x3]
+   f1944:      	ldrb	w1, [sp, #0x4d]
+   f1948:      	ldrb	w0, [sp, #0x4c]
+   f194c:      	add	w0, w1, w0
+   f1950:      	cmp	w0, #0x3f
+   f1954:      	b.le	0xf1a04 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x41c>
+   f1958:      	bl	0xe8860 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   f195c:      	cmp	x0, #0x0
+   f1960:      	b.eq	0xf1984 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x39c>
+   f1964:      	bl	0xe8860 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   f1968:      	mov	w1, #0x2                // =2
+   f196c:      	bl	0xdf190 <_ZNK4plog6LoggerILi0EE13checkSeverityENS_8SeverityE@plt>
+   f1970:      	and	w0, w0, #0xff
+   f1974:      	eor	w0, w0, #0x1
+   f1978:      	and	w0, w0, #0xff
+   f197c:      	cmp	w0, #0x0
+   f1980:      	b.eq	0xf198c <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x3a4>
+   f1984:      	mov	w0, #0x1                // =1
+   f1988:      	b	0xf1990 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x3a8>
+   f198c:      	mov	w0, #0x0                // =0
+   f1990:      	cmp	w0, #0x0
+   f1994:      	b.ne	0xf19f8 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x410>
+   f1998:      	add	x7, sp, #0x158
+   f199c:      	mov	w6, #0x0                // =0
+   f19a0:      	mov	x5, #0x0                // =0
+   f19a4:      	adrp	x0, 0x163000 <_ZN8nlohmann16json_abi_v3_11_26detail9dtoa_implL6kGammaE+0x668>
+   f19a8:      	add	x4, x0, #0x1f8
+   f19ac:      	mov	x3, #0x323              // =803
+   f19b0:      	adrp	x0, 0x163000 <_ZN8nlohmann16json_abi_v3_11_26detail9dtoa_implL6kGammaE+0x668>
+   f19b4:      	add	x2, x0, #0x9f0
+   f19b8:      	mov	w1, #0x2                // =2
+   f19bc:      	mov	x0, x7
+   f19c0:      	bl	0xe9060 <_ZN4plog6RecordC1ENS_8SeverityEPKcmS3_PKvi@plt>
+   f19c4:      	add	x0, sp, #0x158
+   f19c8:      	bl	0xe56d0 <_ZN4plog6Record3refEv@plt>
+   f19cc:      	mov	x2, x0
+   f19d0:      	adrp	x0, 0x163000 <_ZN8nlohmann16json_abi_v3_11_26detail9dtoa_implL6kGammaE+0x668>
+   f19d4:      	add	x1, x0, #0xa78
+   f19d8:      	mov	x0, x2
+   f19dc:      	bl	0xd8a30 <_ZN4plog6RecordlsIA33_cEERS0_RKT_@plt>
+   f19e0:      	mov	x19, x0
+   f19e4:      	bl	0xe8860 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   f19e8:      	mov	x1, x19
+   f19ec:      	bl	0xe5aa0 <_ZN4plog6LoggerILi0EEpLERKNS_6RecordE@plt>
+   f19f0:      	add	x0, sp, #0x158
+   f19f4:      	bl	0xd9490 <_ZN4plog6RecordD1Ev@plt>
+   f19f8:      	mov	x20, #0x0               // =0
+   f19fc:      	mov	w19, #0x0               // =0
+   f1a00:      	b	0xf1a64 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x47c>
+   f1a04:      	ldrb	w1, [sp, #0x4d]
+   f1a08:      	ldrb	w0, [sp, #0x4c]
+   f1a0c:      	add	w0, w1, w0
+   f1a10:      	sxtw	x0, w0
+   f1a14:      	add	x1, sp, #0x368
+   f1a18:      	ldrb	w2, [sp, #0x4f]
+   f1a1c:      	strb	w2, [x1, x0]
+   f1a20:      	ldrb	w0, [sp, #0x4c]
+   f1a24:      	add	w0, w0, #0x1
+   f1a28:      	strb	w0, [sp, #0x4c]
+   f1a2c:      	b	0xf17b8 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x1d0>
+   f1a30:      	ldr	x0, [sp, #0x38]
+   f1a34:      	add	x0, x0, #0x4a8
+   f1a38:      	bl	0xdae30 <_ZNKSt19__shared_ptr_accessIN16rk3576_can_canfd14RK3576CanCanfdELN9__gnu_cxx12_Lock_policyE2ELb0ELb0EEptEv@plt>
+   f1a3c:      	ldr	x1, [x0]
+   f1a40:      	add	x1, x1, #0x18
+   f1a44:      	ldr	x5, [x1]
+   f1a48:      	add	x1, sp, #0x368
+   f1a4c:      	mov	x4, x1
+   f1a50:      	mov	w3, #0x40               // =64
+   f1a54:      	mov	w2, #0x200              // =512
+   f1a58:      	mov	w1, #0x0                // =0
+   f1a5c:      	blr	x5
+   f1a60:      	mov	w19, #0x1               // =1
+   f1a64:      	add	x0, sp, #0x70
+   f1a68:      	bl	0xe8fb0 <_ZN5Eigen6MatrixIiLin1ELi1ELi0ELin1ELi1EED1Ev@plt>
+   f1a6c:      	cmp	w19, #0x1
+   f1a70:      	b.ne	0xf1b20 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x538>
+   f1a74:      	b	0xf1ab8 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x4d0>
+   f1a78:      	ldr	x0, [sp, #0x38]
+   f1a7c:      	ldrb	w0, [x0, #0x4bc]
+   f1a80:      	cmp	w0, #0x0
+   f1a84:      	b.eq	0xf1ab8 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x4d0>
+   f1a88:      	ldr	x0, [sp, #0x38]
+   f1a8c:      	add	x0, x0, #0x4a8
+   f1a90:      	bl	0xdae30 <_ZNKSt19__shared_ptr_accessIN16rk3576_can_canfd14RK3576CanCanfdELN9__gnu_cxx12_Lock_policyE2ELb0ELb0EEptEv@plt>
+   f1a94:      	ldr	x1, [x0]
+   f1a98:      	add	x1, x1, #0x18
+   f1a9c:      	ldr	x5, [x1]
+   f1aa0:      	add	x1, sp, #0x360
+   f1aa4:      	mov	x4, x1
+   f1aa8:      	mov	w3, #0x8                // =8
+   f1aac:      	mov	w2, #0x80               // =128
+   f1ab0:      	mov	w1, #0x0                // =0
+   f1ab4:      	blr	x5
+   f1ab8:      	adrp	x0, 0x1b2000 <_GLOBAL_OFFSET_TABLE_+0x94f8>
+   f1abc:      	add	x0, x0, #0xd40
+   f1ac0:      	ldr	x0, [x0, #0x8]
+   f1ac4:      	ldr	x1, [sp, #0x38]
+   f1ac8:      	ldr	d0, [x1, #0x10]
+   f1acc:      	mov	x1, #0xcd6500000000     // =225833675390976
+   f1ad0:      	movk	x1, #0x41cd, lsl #48
+   f1ad4:      	fmov	d1, x1
+   f1ad8:      	fmul	d0, d0, d1
+   f1adc:      	fcvtzs	d0, d0
+   f1ae0:      	fmov	x1, d0
+   f1ae4:      	add	x1, x0, x1
+   f1ae8:      	adrp	x0, 0x1b2000 <_GLOBAL_OFFSET_TABLE_+0x94f8>
+   f1aec:      	add	x0, x0, #0xd40
+   f1af0:      	str	x1, [x0, #0x8]
+   f1af4:      	adrp	x0, 0x1b2000 <_GLOBAL_OFFSET_TABLE_+0x94f8>
+   f1af8:      	add	x0, x0, #0xd40
+   f1afc:      	bl	0xeae28 <tsnorm>
+   f1b00:      	mov	x3, #0x0                // =0
+   f1b04:      	adrp	x0, 0x1b2000 <_GLOBAL_OFFSET_TABLE_+0x94f8>
+   f1b08:      	add	x2, x0, #0xd40
+   f1b0c:      	mov	w1, #0x1                // =1
+   f1b10:      	mov	w0, #0x1                // =1
+   f1b14:      	bl	0xea020 <clock_nanosleep@plt>
+   f1b18:      	b	0xf1670 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x88>
+   f1b1c:      	mov	x20, #0x0               // =0
+   f1b20:      	add	x0, sp, #0x60
+   f1b24:      	bl	0xe15a0 <_ZN5Eigen6MatrixIdLin1ELi1ELi0ELin1ELi1EED1Ev@plt>
+   f1b28:      	mov	x1, x20
+   f1b2c:      	adrp	x0, 0x1a8000 <_ZTVSt23_Sp_counted_ptr_inplaceISt5mutexSaIS0_ELN9__gnu_cxx12_Lock_policyE2EE+0x20>
+   f1b30:      	ldr	x0, [x0, #0xbd8]
+   f1b34:      	ldr	x2, [sp, #0x3a8]
+   f1b38:      	ldr	x3, [x0]
+   f1b3c:      	subs	x2, x2, x3
+   f1b40:      	mov	x3, #0x0                // =0
+   f1b44:      	b.eq	0xf1c70 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x688>
+   f1b48:      	b	0xf1c6c <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x684>
+   f1b4c:      	b	0xf1b8c <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x5a4>
+   f1b50:      	b	0xf1b8c <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x5a4>
+   f1b54:      	b	0xf1b8c <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x5a4>
+   f1b58:      	mov	x19, x0
+   f1b5c:      	add	x0, sp, #0x158
+   f1b60:      	bl	0xd9490 <_ZN4plog6RecordD1Ev@plt>
+   f1b64:      	b	0xf1b7c <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x594>
+   f1b68:      	mov	x19, x0
+   f1b6c:      	add	x0, sp, #0x158
+   f1b70:      	bl	0xd9490 <_ZN4plog6RecordD1Ev@plt>
+   f1b74:      	b	0xf1b7c <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x594>
+   f1b78:      	mov	x19, x0
+   f1b7c:      	add	x0, sp, #0x70
+   f1b80:      	bl	0xe8fb0 <_ZN5Eigen6MatrixIiLin1ELi1ELi0ELin1ELi1EED1Ev@plt>
+   f1b84:      	mov	x0, x19
+   f1b88:      	b	0xf1b8c <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x5a4>
+   f1b8c:      	bl	0xdbac0 <__cxa_begin_catch@plt>
+   f1b90:      	bl	0xe8860 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   f1b94:      	cmp	x0, #0x0
+   f1b98:      	b.eq	0xf1bbc <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x5d4>
+   f1b9c:      	bl	0xe8860 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   f1ba0:      	mov	w1, #0x2                // =2
+   f1ba4:      	bl	0xdf190 <_ZNK4plog6LoggerILi0EE13checkSeverityENS_8SeverityE@plt>
+   f1ba8:      	and	w0, w0, #0xff
+   f1bac:      	eor	w0, w0, #0x1
+   f1bb0:      	and	w0, w0, #0xff
+   f1bb4:      	cmp	w0, #0x0
+   f1bb8:      	b.eq	0xf1bc4 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x5dc>
+   f1bbc:      	mov	w0, #0x1                // =1
+   f1bc0:      	b	0xf1bc8 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x5e0>
+   f1bc4:      	mov	w0, #0x0                // =0
+   f1bc8:      	cmp	w0, #0x0
+   f1bcc:      	b.ne	0xf1c30 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x648>
+   f1bd0:      	add	x7, sp, #0x158
+   f1bd4:      	mov	w6, #0x0                // =0
+   f1bd8:      	mov	x5, #0x0                // =0
+   f1bdc:      	adrp	x0, 0x163000 <_ZN8nlohmann16json_abi_v3_11_26detail9dtoa_implL6kGammaE+0x668>
+   f1be0:      	add	x4, x0, #0x1f8
+   f1be4:      	mov	x3, #0x33c              // =828
+   f1be8:      	adrp	x0, 0x163000 <_ZN8nlohmann16json_abi_v3_11_26detail9dtoa_implL6kGammaE+0x668>
+   f1bec:      	add	x2, x0, #0x9f0
+   f1bf0:      	mov	w1, #0x2                // =2
+   f1bf4:      	mov	x0, x7
+   f1bf8:      	bl	0xe9060 <_ZN4plog6RecordC1ENS_8SeverityEPKcmS3_PKvi@plt>
+   f1bfc:      	add	x0, sp, #0x158
+   f1c00:      	bl	0xe56d0 <_ZN4plog6Record3refEv@plt>
+   f1c04:      	mov	x2, x0
+   f1c08:      	adrp	x0, 0x163000 <_ZN8nlohmann16json_abi_v3_11_26detail9dtoa_implL6kGammaE+0x668>
+   f1c0c:      	add	x1, x0, #0xaa0
+   f1c10:      	mov	x0, x2
+   f1c14:      	bl	0xe3570 <_ZN4plog6RecordlsIA25_cEERS0_RKT_@plt>
+   f1c18:      	mov	x19, x0
+   f1c1c:      	bl	0xe8860 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   f1c20:      	mov	x1, x19
+   f1c24:      	bl	0xe5aa0 <_ZN4plog6LoggerILi0EEpLERKNS_6RecordE@plt>
+   f1c28:      	add	x0, sp, #0x158
+   f1c2c:      	bl	0xd9490 <_ZN4plog6RecordD1Ev@plt>
+   f1c30:      	nop
+   f1c34:      	bl	0xe7550 <__cxa_end_catch@plt>
+   f1c38:      	b	0xf1b1c <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x534>
+   f1c3c:      	mov	x19, x0
+   f1c40:      	add	x0, sp, #0x158
+   f1c44:      	bl	0xd9490 <_ZN4plog6RecordD1Ev@plt>
+   f1c48:      	b	0xf1c50 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x668>
+   f1c4c:      	mov	x19, x0
+   f1c50:      	bl	0xe7550 <__cxa_end_catch@plt>
+   f1c54:      	b	0xf1c5c <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv+0x674>
+   f1c58:      	mov	x19, x0
+   f1c5c:      	add	x0, sp, #0x60
+   f1c60:      	bl	0xe15a0 <_ZN5Eigen6MatrixIdLin1ELi1ELi0ELin1ELi1EED1Ev@plt>
+   f1c64:      	mov	x0, x19
+   f1c68:      	bl	0xe89e0 <_Unwind_Resume@plt>
+   f1c6c:      	bl	0xdb1e0 <__stack_chk_fail@plt>
+   f1c70:      	mov	x0, x1
+   f1c74:      	ldp	x19, x20, [sp, #0x10]
+   f1c78:      	ldp	x29, x30, [sp]
+   f1c7c:      	ldr	d8, [sp, #0x20]
+   f1c80:      	add	sp, sp, #0x3b0
+   f1c84:      	ret

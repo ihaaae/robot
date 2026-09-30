@@ -141,9 +141,11 @@ int main(int argc, char **argv) {
                     i + 1, config.lower[i], config.upper[i],
                     config.lower[i] * 180.0 / M_PI, config.upper[i] * 180.0 / M_PI);
     }
-    std::printf("  NOTE: these are the library defaults. params.yml sets UseLimit: false and\n");
-    std::printf("        carries placeholder [1.5, 6.5] ranges, so nothing enforces limits and\n");
-    std::printf("        the yml values are not usable as-is. Your own planner has to decide.\n");
+    std::printf("  NOTE: these are the library defaults and look like placeholders. The\n");
+    std::printf("        [1.5, 6.5] pairs in params.yml are per-joint max velocity /\n");
+    std::printf("        acceleration, not position limits (UseLimit: false turns that limiter\n");
+    std::printf("        off). Whether anything enforces these position limits is unverified.\n");
+    std::printf("        Your own planner has to decide.\n");
 
     // ---------------------------------------------------------------- inverse kinematics
     std::printf("\n=== inverse kinematics ===\n");

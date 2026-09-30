@@ -138,7 +138,7 @@ shensi-kin --arm right fk --joints "0.1 -0.2 0.3 -0.4 0.5 -0.6 0.7"
 
 ## 还没做的
 
-- **IK 不做碰撞检查，也不做限位规避**（只按 yml 的 `limits` 做夹紧）。关节限位本身在 `params.yml` 里默认是关闭的（`UseLimit: false`），真机上要注意。
+- **IK 不做碰撞检查，也不做限位规避**（只按 yml 的 `limits` 做夹紧）。随包的位置限位只有 yml 里这组 ±3.1415，像占位值；`params.yml` 的 `UseLimit` 管的是速度 / 加速度限制，不是位置限位（`hardware-acceptance.md` P0-4）。真机上要注意。
 - **没有多解选择**：数值解依赖种子，返回的是种子附近的解，不保证与厂家 IK 选同一个分支。厂家那侧可能有肘部/腕部构型偏好（`ik_tolerance_emog_elbow` / `ik_tolerance_ev_elbow` 等参数暗示了按肘/腕分类的解析分支）。
 - **没做轨迹规划/插值**：`bot_traj_planner` 里用的是时间最优（TOTP）+ 迭代样条（`planner_*.yml` 里 `TrajectoryType: 1`），要复现得另做。
 - **没有校验右臂**：`kinematics_rightArm.yml` 已加载并且验证里双臂都通过了，但右臂的 `M` 与左臂相同（都是 0.6752），如果真机上两臂 TCP 不同需要修正。

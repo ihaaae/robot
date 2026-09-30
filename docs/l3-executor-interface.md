@@ -1,6 +1,6 @@
 # L3 Executor 接口草案
 
-> **草稿 v0。** 和 [`l0-interface.md`](l0-interface.md) 一样：先把边界和签名冻结，让 L4 / L5
+> **草稿 v0.2。** 和 [`l0-interface.md`](l0-interface.md) 一样：先把边界和签名冻结，让 L4 / L5
 > 能对着一个假 executor 开工，不必等 L1 / L2 做完。内容会变；变的时候改这一份。
 >
 > 依据：厂家 `bot_executor::ExecutorBase` / `ExecutorJuxie`（头文件 + 符号表 + 配置）、
@@ -8,7 +8,7 @@
 > 相关：[`development-plan.md`](development-plan.md)（分层与任务 7）。
 >
 > 下文凡标「厂家」的结论，都出自 `vendor/sdk/dual-arm-app/0.6.4/usr/include/`、
-> `research/evidence/syms/libexecutor.so.0.6.4.syms` 和 `usr/etc/*/executor_arm.yml` 的静态阅读，
+> `usr/etc/*/executor_arm.yml` 和反汇编（片段在 `research/evidence/disasm/`）的静态阅读，
 > 没有在真机上确认过。
 
 ## 0. 为什么要单独一层
@@ -21,16 +21,19 @@ L3 回答的是：**谁拥有时钟。**
 1. **看门狗靠周期控制帧喂**（< 500 ms，否则关节自锁；`can-protocol-comparison.md` §7.3）。
    「每一拍都有一帧出去」必须由**唯一一个**组件保证。如果交给上层，流式控制停止喂点的时候、
    离线规划结束一条轨迹的时候、上层线程卡住的时候，都会断流。
-2. **反馈是控制帧触发的。** 驱动不发 `0x80` 同步帧（`can-protocol-comparison.md` §1），所以
-   `0x300` 反馈的节奏取决于 TX 的节奏。新鲜度判定和发送节拍本来就是同一个循环的两面。
+2. **反馈是总线上的帧触发的。** 按 PR0002，`0x300` 由同步帧 `0x80`、多控报文或单轴报文触发，
+   模块不会自己周期上报。所以反馈什么时候回来，取决于我们什么时候发什么。新鲜度判定和发送节拍
+   本来就是同一个循环的两面。
 3. **最后一道安全门只能放在唯一的出口。** 流式控制（`MoveJ_Canfd`）不经过离线规划器。限位如果
    只放在规划器里（v0 计划的 6.5），流式路径就没有任何兜底。
 
-厂家也是这么切的：`ExecutorJuxie` 一个类同时拥有每通道的发送线程（`sendCommandThread0/1`）、
-状态监听线程（`listenStateThread`）、`watchdog` 线程、每通道一个命令队列
-（`ThreadSafeDeque<Eigen::VectorXd> motor0_commands / motor1_commands`）、限位检查
-（`checkJointsWithLimits`）和限速（`JointVelocityPlanner`）。上层的 `ArmServoMode`（在线）和
-`PathPlanner`（离线）都只通过 `ExecutorBase` 这个接口往下走。
+厂家也是这么切的：`ExecutorJuxie` 一个类同时拥有每通道的发送线程（实际启动的是
+`ucas_can0/1_task_send_thread`；头文件里的 `sendCommandThread0/1` 和 `listenStateThread` 是死代码，
+没人调用）、`watchdog` 线程、每通道一个命令队列
+（`ThreadSafeDeque<Eigen::VectorXd> motor0_commands / motor1_commands`）和每拍的限速
+（`JointVelocityPlanner`，`UseLimit` 打开时生效）。`checkJointsWithLimits` 也在这个类里，但只在构造时
+调用一次，不在每拍的路径上。上层的 `ArmServoMode`（在线）和 `PathPlanner`（离线）都只通过
+`ExecutorBase` 这个接口往下走。
 
 ## 1. 边界
 
@@ -63,17 +66,17 @@ L3 回答的是：**谁拥有时钟。**
 
 ### 2.1 周期：可配置，不写死
 
-周期没有定论，候选值有三个，而且互相不一致：
+厂家的发送周期已经从反汇编读出来了（`can-protocol-comparison.md` §1.1）：
 
 | 来源 | 值 | 说明 |
 |---|---|---|
-| `ExecutorJuxie.hpp`：`double resample_delta {0.005}; //200hz` | 5 ms | 头文件里的默认值 |
-| `usr/etc/juxie_73/executor_arm.yml`：`Resample: 0.002` | **2 ms** | 本机型（`params.yml` 里 `type: "ARM_73"`）的配置。`juxie_53` / `62` / `62KML` 都是 0.005 |
-| 驱动里的 `SLEEP_TIME` | 0.2 ms | 驱动收发循环里的休眠。它是否等于控制周期没有证据，实际循环周期要实测（`hardware-acceptance.md` P1-1）。本文**推测**它不是：200 µs 与两份 yml 的量级都对不上 |
+| `ExecutorJuxie.hpp`：`double resample_delta {0.005}; //200hz` | 5 ms | 默认值；构造时被 yml 的 `Resample` 覆盖 |
+| `usr/etc/juxie_73/executor_arm.yml`：`Resample: 0.002` | **2 ms** | **厂家 `0x200` 的实际发送周期**：发送线程每轮 `clock_nanosleep` 的步长就是 `resample_delta`。本机型（`params.yml` 里 `type: "ARM_73"`）用这份；`juxie_53` / `62` / `62KML` 都是 0.005 |
+| 驱动里的 `SLEEP_TIME` | 0.2 ms | 头文件注释写「发送周期」，但它是**驱动层**线程（把帧写进共享内存那一层）的轮询间隔，不决定 `0x200` 的节拍 |
+| `V1.3.xlsx`「位置跃迁过大」 | 1 ms | 故障条件的前提写着「发送周期为 1ms」：CSP 下单帧目标位置 Δ > 500 cnt 就报错。周期越长，单拍允许的速度越低（2 ms 时约 500/65536 × 2π / 0.002 ≈ 24 rad/s，远高于厂家限速，不是瓶颈） |
 
-`Resample` 究竟是「轨迹重采样步长」还是「发送周期」，或者两者都是，还没有确认。所以
-**周期是构造参数**，默认取 2 ms（与本机型的配置一致），真机测过之后再定。L4 不得假设周期，
-一律通过 `tick_period()` 读取。
+**周期仍然是构造参数**，默认取 2 ms（与厂家本机型一致）。真机要测的是抖动，而不是标称值。L4
+不得假设周期，一律通过 `tick_period()` 读取。
 
 ### 2.2 线程模型
 
@@ -102,9 +105,13 @@ tick(now):
   8. 记录本拍：是否误拍、是否有步长被截断
 ```
 
-SDO 应答也在这个循环里处理，与厂家一致：`ucas_can0_task_send_thread` 里比较的正是 `0x580`
-（`can-protocol-comparison.md` §1）。也就是说，厂家同样是由发送线程串行处理 SDO 请求和应答，
-而不是另开一条线程。
+SDO 应答也在这个循环里处理。这是我们自己的决定，**不是照搬厂家**：厂家栈里没找到解析 `0x580` 的代码
+（`can-protocol-comparison.md` §1），它看起来只发 SDO、不读应答。
+
+**与厂家的一处差别：空闲拍发什么。** 厂家没有设定点时发 `0x80` 同步帧（每臂一帧），不发保持帧；
+我们发目标为当前位置的 `0x200` 保持帧。两者都能让总线上每拍有帧、让模块回 `0x300`。选保持帧的理由是
+它同时把「保持在哪」说清楚了；代价是和厂家的总线形态不同，做 trace 差分时要把这一类归一化掉。
+**这是可以推翻的决定**：如果真机上保持帧会带来抖动，就改成和厂家一样发 `0x80`。
 
 ## 3. 接口
 
@@ -211,8 +218,8 @@ public:
 | `setEnableForJoint(bool)` / `clearErrorsForJoint()` / `disableServo()` | `request_enable` / `request_clear_faults` | 按臂，不是全体 |
 | `BreakEngage` / `BreakRelease` | `request_brake(mask, engage)` | |
 | `getControlFrequency()` | `tick_period()` | |
-| `SetSending(bool, part)` | 无 | 语义不明。L3 总是在发；「不发」就等于让看门狗自锁 |
-| `MoveEnd(v, part)` | 无 | 未文档化的 `0x108` 帧；需要时由 L5 通过 `send_raw` 走，见 `l0-interface.md` §3.7 |
+| `SetSending(bool, part)` | 无 | 它写的两个原子标志（按头文件成员顺序是 `isLeftSending_` / `isRightSending_`）由 `move()` 和 `isMoving()` 读，看起来是「这条臂正在执行轨迹」的状态位，不是开关总线发送。对应物是 `motion_active(part)`，不需要单独的写接口 |
+| `MoveEnd(v, part)` | 无 | 发给 Dev_ID 8 的普通单轴速度帧（`can-protocol-comparison.md` §2）。L3 目前不管 Dev_ID 8；要支持时加一个面向它的轴请求，不走 `send_raw` |
 | `getDof()` / `getJointNames()` / `getHomeJointValues()` | 无 | 配置，不是运行时状态；归 L2 |
 | `setJointZeroPosition()` | 无 | 标定操作，须先失能（任务 2.3）；由 L5 在停拍状态下调 L1 |
 
@@ -243,10 +250,12 @@ public:
 | 单拍步长 `|Δq| ≤ v_max · T` | 截断到上限，`clamped_ticks` 加一 | 截断只会让运动变慢，不会让它变危险 |
 | 连续截断超过 M 拍 | 该臂 `halt`，返回 `CommandStep` | 上层持续给出过快的目标，说明上层有 bug |
 
-限位值**不能**取随包 `params.yml` 里的值：那里 `UseLimit: false`，每轴限位都是 `[1.5, 6.5]`
-这样的占位值（下限连零位都不包含）。真实限位要在真机上标定（`hardware-acceptance.md` P0-4）。在那之前，
+位置限位**没有可用的随包值**。`params.yml` 里的 `LeftLimits` / `RightLimits`（每轴 `[1.5, 6.5]`）
+不是位置限位：反汇编显示两列分别写进 `JointVelocityPlanner::max_velocity` / `max_acc`，与头文件里的
+默认值 1.5 / 6.5 相同，`UseLimit` 开关的是这个速度 / 加速度限制器（`hardware-acceptance.md` P0-4）。
+随包的位置限位只有 `kinematics_*.yml` 的 `limits`，全是 ±3.1415。真实位置限位要在真机上标定。在那之前，
 `SimExecutor` 用 `getConfig()` 在模拟环境里返回的值做测试即可，真实的 `Executor` 构造时必须
-显式传入限位，**不提供默认值**。
+显式传入限位，**不提供默认值**。步长上限 `v_max` 可以拿厂家的 1.5 rad/s 作起点，同样要真机确认。
 
 ## 6. 两个假实现
 
@@ -274,12 +283,12 @@ public:
 
 | # | 事项 | 怎么定 |
 |---|---|---|
-| 1 | 控制周期：5 ms / 2 ms，还是别的 | 真机抓 `0x200` 的帧间隔（`can-protocol-comparison.md` §8） |
+| 1 | 控制周期的抖动（标称值已知：厂家本机型 2 ms） | 真机抓 `0x200` 的帧间隔 |
 | 2 | 失能状态下反馈是否仍由控制帧触发 | 真机：失能后发 `enable = 0` 子帧，看有没有 `0x300` 回来 |
 | 3 | 新鲜度窗口与失效拍数 N | 真机测反馈延迟分布后定 |
 | 4 | 步长上限 `v_max` 与 `halt` 的最大减速度 | 与 P0-4 限位一起标定 |
 | 5 | 单线程双总线是否够用 | 真机测每拍的发送耗时 |
-| 6 | `SetSending(bool, part)` 在厂家那边到底做什么 | 反汇编或真机 trace；目前我们选择不提供对应物 |
+| 6 | 空闲拍发保持帧还是 `0x80`（§2.3） | 真机：两种都试，看保持精度与反馈节奏 |
 
 ## 本文件的历史
 
@@ -287,3 +296,6 @@ public:
   接口对照厂家 `ExecutorBase`；新增两个假实现。
 - v0.1：更正两处——占位限位是 `[1.5, 6.5]`（不是 `1.5 / 6.5` 的含糊写法）；`SLEEP_TIME`
   不是控制周期只是推测，不是 `hardware-acceptance.md` 的结论。
+- v0.2：按反汇编复核更正——厂家发送周期就是 `Resample`（2 ms），`SLEEP_TIME` 是驱动层轮询；
+  厂家空闲拍发 `0x80`；「厂家在发送线程里处理 SDO 应答」没有依据（没找到解析 `0x580` 的代码）；
+  `[1.5, 6.5]` 是速度 / 加速度上限而不是位置限位；`SetSending` 与 `MoveEnd` 的实际行为。

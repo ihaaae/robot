@@ -1,0 +1,502 @@
+
+librk3576_can_canfd.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+0000000000041974 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType>:
+   41974:      	sub	sp, sp, #0x3b0
+   41978:      	stp	x29, x30, [sp]
+   4197c:      	mov	x29, sp
+   41980:      	stp	x19, x20, [sp, #0x10]
+   41984:      	str	x21, [sp, #0x20]
+   41988:      	str	x0, [sp, #0x38]
+   4198c:      	str	w1, [sp, #0x34]
+   41990:      	adrp	x0, 0x89000 <usleep@@GLIBC_2.17+0x89000>
+   41994:      	ldr	x0, [x0, #0xe38]
+   41998:      	ldr	x1, [x0]
+   4199c:      	str	x1, [sp, #0x3a8]
+   419a0:      	mov	x1, #0x0                // =0
+   419a4:      	ldr	x0, [sp, #0x38]
+   419a8:      	ldrb	w0, [x0, #0x420]
+   419ac:      	cmp	w0, #0x0
+   419b0:      	b.eq	0x419d4 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x60>
+   419b4:      	ldr	x0, [sp, #0x38]
+   419b8:      	ldrb	w0, [x0, #0x380]
+   419bc:      	eor	w0, w0, #0x1
+   419c0:      	and	w0, w0, #0xff
+   419c4:      	cmp	w0, #0x0
+   419c8:      	b.eq	0x419d4 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x60>
+   419cc:      	mov	w0, #0x0                // =0
+   419d0:      	b	0x42064 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x6f0>
+   419d4:      	ldr	x0, [sp, #0x38]
+   419d8:      	ldrb	w0, [x0, #0x421]
+   419dc:      	cmp	w0, #0x0
+   419e0:      	b.eq	0x41a04 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x90>
+   419e4:      	ldr	x0, [sp, #0x38]
+   419e8:      	ldrb	w0, [x0, #0x414]
+   419ec:      	eor	w0, w0, #0x1
+   419f0:      	and	w0, w0, #0xff
+   419f4:      	cmp	w0, #0x0
+   419f8:      	b.eq	0x41a04 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x90>
+   419fc:      	mov	w0, #0x0                // =0
+   41a00:      	b	0x42064 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x6f0>
+   41a04:      	ldr	w0, [sp, #0x34]
+   41a08:      	cmp	w0, #0x0
+   41a0c:      	b.ne	0x41a30 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0xbc>
+   41a10:      	adrp	x0, 0x89000 <usleep@@GLIBC_2.17+0x89000>
+   41a14:      	ldr	x0, [x0, #0xf70]
+   41a18:      	mov	w1, #0xf                // =15
+   41a1c:      	strb	w1, [x0, #0x4]
+   41a20:      	adrp	x0, 0x89000 <usleep@@GLIBC_2.17+0x89000>
+   41a24:      	ldr	x0, [x0, #0xf70]
+   41a28:      	strb	wzr, [x0, #0x5]
+   41a2c:      	b	0x41ad4 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x160>
+   41a30:      	ldr	w0, [sp, #0x34]
+   41a34:      	cmp	w0, #0x1
+   41a38:      	b.ne	0x41a5c <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0xe8>
+   41a3c:      	adrp	x0, 0x89000 <usleep@@GLIBC_2.17+0x89000>
+   41a40:      	ldr	x0, [x0, #0xf70]
+   41a44:      	mov	w1, #0x6                // =6
+   41a48:      	strb	w1, [x0, #0x4]
+   41a4c:      	adrp	x0, 0x89000 <usleep@@GLIBC_2.17+0x89000>
+   41a50:      	ldr	x0, [x0, #0xf70]
+   41a54:      	strb	wzr, [x0, #0x5]
+   41a58:      	b	0x41ad4 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x160>
+   41a5c:      	ldr	w0, [sp, #0x34]
+   41a60:      	cmp	w0, #0x2
+   41a64:      	b.ne	0x41a88 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x114>
+   41a68:      	adrp	x0, 0x89000 <usleep@@GLIBC_2.17+0x89000>
+   41a6c:      	ldr	x0, [x0, #0xf70]
+   41a70:      	mov	w1, #-0x80              // =-128
+   41a74:      	strb	w1, [x0, #0x4]
+   41a78:      	adrp	x0, 0x89000 <usleep@@GLIBC_2.17+0x89000>
+   41a7c:      	ldr	x0, [x0, #0xf70]
+   41a80:      	strb	wzr, [x0, #0x5]
+   41a84:      	b	0x41ad4 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x160>
+   41a88:      	ldr	w0, [sp, #0x34]
+   41a8c:      	cmp	w0, #0x3
+   41a90:      	b.ne	0x41ab8 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x144>
+   41a94:      	adrp	x0, 0x89000 <usleep@@GLIBC_2.17+0x89000>
+   41a98:      	ldr	x0, [x0, #0xf70]
+   41a9c:      	mov	w1, #0xf                // =15
+   41aa0:      	strb	w1, [x0, #0x4]
+   41aa4:      	adrp	x0, 0x89000 <usleep@@GLIBC_2.17+0x89000>
+   41aa8:      	ldr	x0, [x0, #0xf70]
+   41aac:      	mov	w1, #0x10               // =16
+   41ab0:      	strb	w1, [x0, #0x5]
+   41ab4:      	b	0x41ad4 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x160>
+   41ab8:      	adrp	x0, 0x89000 <usleep@@GLIBC_2.17+0x89000>
+   41abc:      	ldr	x0, [x0, #0xf70]
+   41ac0:      	mov	w1, #0x6                // =6
+   41ac4:      	strb	w1, [x0, #0x4]
+   41ac8:      	adrp	x0, 0x89000 <usleep@@GLIBC_2.17+0x89000>
+   41acc:      	ldr	x0, [x0, #0xf70]
+   41ad0:      	strb	wzr, [x0, #0x5]
+   41ad4:      	ldr	x0, [sp, #0x38]
+   41ad8:      	ldrb	w0, [x0, #0x420]
+   41adc:      	cmp	w0, #0x0
+   41ae0:      	b.eq	0x41d98 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x424>
+   41ae4:      	strb	wzr, [sp, #0x4c]
+   41ae8:      	ldr	x0, [sp, #0x38]
+   41aec:      	ldr	w1, [x0, #0x458]
+   41af0:      	ldrb	w0, [sp, #0x4c]
+   41af4:      	cmp	w1, w0
+   41af8:      	b.lt	0x41d98 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x424>
+   41afc:      	ldrb	w0, [sp, #0x4c]
+   41b00:      	add	w0, w0, #0x1
+   41b04:      	strb	w0, [sp, #0x4e]
+   41b08:      	ldr	x0, [sp, #0x38]
+   41b0c:      	ldr	x0, [x0]
+   41b10:      	add	x0, x0, #0x18
+   41b14:      	ldr	x5, [x0]
+   41b18:      	ldrb	w0, [sp, #0x4e]
+   41b1c:      	orr	w0, w0, #0x600
+   41b20:      	mov	w1, w0
+   41b24:      	adrp	x0, 0x89000 <usleep@@GLIBC_2.17+0x89000>
+   41b28:      	ldr	x4, [x0, #0xf70]
+   41b2c:      	mov	w3, #0x8                // =8
+   41b30:      	mov	w2, w1
+   41b34:      	mov	w1, #0x0                // =0
+   41b38:      	ldr	x0, [sp, #0x38]
+   41b3c:      	blr	x5
+   41b40:      	mov	w0, #0x3e8              // =1000
+   41b44:      	bl	0x37560 <usleep@plt>
+   41b48:      	add	x0, sp, #0x120
+   41b4c:      	bl	0x37c50 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC1Ev@plt>
+   41b50:      	str	wzr, [sp, #0x58]
+   41b54:      	ldr	w0, [sp, #0x58]
+   41b58:      	cmp	w0, #0x7
+   41b5c:      	b.gt	0x41c20 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x2ac>
+   41b60:      	ldrsw	x1, [sp, #0x58]
+   41b64:      	adrp	x0, 0x89000 <usleep@@GLIBC_2.17+0x89000>
+   41b68:      	ldr	x0, [x0, #0xf70]
+   41b6c:      	add	x0, x1, x0
+   41b70:      	str	x0, [sp, #0x60]
+   41b74:      	ldr	x1, [sp, #0x60]
+   41b78:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   41b7c:      	add	x0, x0, #0x718
+   41b80:      	bl	0x38ef0 <_ZN3fmt2v717make_args_checkedIJRhEA8_ccEENS0_16format_arg_storeINS0_20basic_format_contextINS0_6detail15buffer_appenderIT1_EES8_EEJDpNSt16remove_referenceIT_E4typeEEEERKT0_DpRKSE_@plt>
+   41b84:      	stp	x0, x1, [sp, #0x160]
+   41b88:      	add	x0, sp, #0x160
+   41b8c:      	str	x0, [sp, #0x68]
+   41b90:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   41b94:      	add	x0, x0, #0x718
+   41b98:      	bl	0x38390 <_ZN3fmt2v714to_string_viewIcLi0EEENS0_17basic_string_viewIT_EEPKS3_@plt>
+   41b9c:      	mov	x20, x0
+   41ba0:      	mov	x21, x1
+   41ba4:      	ldr	x0, [sp, #0x68]
+   41ba8:      	str	x0, [sp, #0x70]
+   41bac:      	add	x0, sp, #0x110
+   41bb0:      	str	x0, [sp, #0x78]
+   41bb4:      	ldr	x0, [sp, #0x70]
+   41bb8:      	str	x0, [sp, #0x80]
+   41bbc:      	ldr	x0, [sp, #0x80]
+   41bc0:      	str	x0, [sp, #0x88]
+   41bc4:      	ldr	x0, [sp, #0x88]
+   41bc8:      	mov	x2, x0
+   41bcc:      	mov	x1, #0x2                // =2
+   41bd0:      	ldr	x0, [sp, #0x78]
+   41bd4:      	bl	0x35fa0 <_ZN3fmt2v717basic_format_argsINS0_20basic_format_contextINS0_6detail15buffer_appenderIcEEcEEEC1EyPKNS3_5valueIS6_EE@plt>
+   41bd8:      	nop
+   41bdc:      	nop
+   41be0:      	add	x0, sp, #0x1a8
+   41be4:      	mov	x8, x0
+   41be8:      	ldp	x2, x3, [sp, #0x110]
+   41bec:      	mov	x0, x20
+   41bf0:      	mov	x1, x21
+   41bf4:      	bl	0x36bb0 <_ZN3fmt2v76detail7vformatB5cxx11ENS0_17basic_string_viewIcEENS0_11format_argsE@plt>
+   41bf8:      	nop
+   41bfc:      	add	x1, sp, #0x1a8
+   41c00:      	add	x0, sp, #0x120
+   41c04:      	bl	0x393e0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE6appendERKS4_@plt>
+   41c08:      	add	x0, sp, #0x1a8
+   41c0c:      	bl	0x35d40 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev@plt>
+   41c10:      	ldr	w0, [sp, #0x58]
+   41c14:      	add	w0, w0, #0x1
+   41c18:      	str	w0, [sp, #0x58]
+   41c1c:      	b	0x41b54 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x1e0>
+   41c20:      	bl	0x38d90 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   41c24:      	cmp	x0, #0x0
+   41c28:      	b.eq	0x41c4c <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x2d8>
+   41c2c:      	bl	0x38d90 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   41c30:      	mov	w1, #0x4                // =4
+   41c34:      	bl	0x36360 <_ZNK4plog6LoggerILi0EE13checkSeverityENS_8SeverityE@plt>
+   41c38:      	and	w0, w0, #0xff
+   41c3c:      	eor	w0, w0, #0x1
+   41c40:      	and	w0, w0, #0xff
+   41c44:      	cmp	w0, #0x0
+   41c48:      	b.eq	0x41c54 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x2e0>
+   41c4c:      	mov	w0, #0x1                // =1
+   41c50:      	b	0x41c58 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x2e4>
+   41c54:      	mov	w0, #0x0                // =0
+   41c58:      	cmp	w0, #0x0
+   41c5c:      	b.ne	0x41d80 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x40c>
+   41c60:      	add	x7, sp, #0x1a8
+   41c64:      	mov	w6, #0x0                // =0
+   41c68:      	mov	x5, #0x0                // =0
+   41c6c:      	adrp	x0, 0x6b000 <_ZN3fmt2v76detail12write_paddedILNS0_5align4typeE2ENS1_15buffer_appenderIcEEcRZNS1_9write_intIS6_cZNS1_10int_writerIS6_cjE6on_octEvEUlS6_E_EET_SB_iNS0_17basic_string_viewIcEERKNS0_18basic_format_specsIT0_EET1_EUlS6_E_EESF_SF_RKNSE_ISJ_EEmmOT2_+0x150>
+   41c70:      	add	x4, x0, #0xfd8
+   41c74:      	mov	x3, #0x31a              // =794
+   41c78:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   41c7c:      	add	x2, x0, #0x720
+   41c80:      	mov	w1, #0x4                // =4
+   41c84:      	mov	x0, x7
+   41c88:      	bl	0x38f50 <_ZN4plog6RecordC1ENS_8SeverityEPKcmS3_PKvi@plt>
+   41c8c:      	add	x0, sp, #0x1a8
+   41c90:      	bl	0x37ee0 <_ZN4plog6Record3refEv@plt>
+   41c94:      	mov	x19, x0
+   41c98:      	str	wzr, [sp, #0x50]
+   41c9c:      	ldrb	w0, [sp, #0x4e]
+   41ca0:      	orr	w0, w0, #0x600
+   41ca4:      	str	w0, [sp, #0x54]
+   41ca8:      	add	x3, sp, #0x120
+   41cac:      	add	x2, sp, #0x54
+   41cb0:      	add	x1, sp, #0x50
+   41cb4:      	add	x0, sp, #0x34
+   41cb8:      	add	x4, sp, #0x160
+   41cbc:      	mov	x8, x4
+   41cc0:      	mov	x4, x3
+   41cc4:      	mov	x3, x2
+   41cc8:      	mov	x2, x1
+   41ccc:      	mov	x1, x0
+   41cd0:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   41cd4:      	add	x0, x0, #0x778
+   41cd8:      	bl	0x35950 <_ZN3fmt2v717make_args_checkedIJR16JointControlType6Can_IfiRNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEEA54_ccEENS0_16format_arg_storeINS0_20basic_format_contextINS0_6detail15buffer_appenderIT1_EESH_EEJDpNSt16remove_referenceIT_E4typeEEEERKT0_DpRKSN_@plt>
+   41cdc:      	add	x0, sp, #0x160
+   41ce0:      	str	x0, [sp, #0x90]
+   41ce4:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   41ce8:      	add	x0, x0, #0x778
+   41cec:      	bl	0x38390 <_ZN3fmt2v714to_string_viewIcLi0EEENS0_17basic_string_viewIT_EEPKS3_@plt>
+   41cf0:      	mov	x20, x0
+   41cf4:      	mov	x21, x1
+   41cf8:      	ldr	x0, [sp, #0x90]
+   41cfc:      	str	x0, [sp, #0x98]
+   41d00:      	add	x0, sp, #0x110
+   41d04:      	str	x0, [sp, #0xa0]
+   41d08:      	ldr	x0, [sp, #0x98]
+   41d0c:      	str	x0, [sp, #0xa8]
+   41d10:      	ldr	x0, [sp, #0xa8]
+   41d14:      	str	x0, [sp, #0xb0]
+   41d18:      	ldr	x0, [sp, #0xb0]
+   41d1c:      	mov	x2, x0
+   41d20:      	mov	x1, #0xd121             // =53537
+   41d24:      	ldr	x0, [sp, #0xa0]
+   41d28:      	bl	0x35fa0 <_ZN3fmt2v717basic_format_argsINS0_20basic_format_contextINS0_6detail15buffer_appenderIcEEcEEEC1EyPKNS3_5valueIS6_EE@plt>
+   41d2c:      	nop
+   41d30:      	nop
+   41d34:      	add	x0, sp, #0x140
+   41d38:      	mov	x8, x0
+   41d3c:      	ldp	x2, x3, [sp, #0x110]
+   41d40:      	mov	x0, x20
+   41d44:      	mov	x1, x21
+   41d48:      	bl	0x36bb0 <_ZN3fmt2v76detail7vformatB5cxx11ENS0_17basic_string_viewIcEENS0_11format_argsE@plt>
+   41d4c:      	nop
+   41d50:      	add	x0, sp, #0x140
+   41d54:      	mov	x1, x0
+   41d58:      	mov	x0, x19
+   41d5c:      	bl	0x385f0 <_ZN4plog6RecordlsINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEEERS0_RKT_@plt>
+   41d60:      	mov	x19, x0
+   41d64:      	bl	0x38d90 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   41d68:      	mov	x1, x19
+   41d6c:      	bl	0x38020 <_ZN4plog6LoggerILi0EEpLERKNS_6RecordE@plt>
+   41d70:      	add	x0, sp, #0x140
+   41d74:      	bl	0x35d40 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev@plt>
+   41d78:      	add	x0, sp, #0x1a8
+   41d7c:      	bl	0x348f0 <_ZN4plog6RecordD1Ev@plt>
+   41d80:      	add	x0, sp, #0x120
+   41d84:      	bl	0x35d40 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev@plt>
+   41d88:      	ldrb	w0, [sp, #0x4c]
+   41d8c:      	add	w0, w0, #0x1
+   41d90:      	strb	w0, [sp, #0x4c]
+   41d94:      	b	0x41ae8 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x174>
+   41d98:      	ldr	x0, [sp, #0x38]
+   41d9c:      	ldrb	w0, [x0, #0x421]
+   41da0:      	cmp	w0, #0x0
+   41da4:      	b.eq	0x42060 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x6ec>
+   41da8:      	strb	wzr, [sp, #0x4d]
+   41dac:      	ldr	x0, [sp, #0x38]
+   41db0:      	ldr	w1, [x0, #0x458]
+   41db4:      	ldrb	w0, [sp, #0x4d]
+   41db8:      	cmp	w1, w0
+   41dbc:      	b.lt	0x42060 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x6ec>
+   41dc0:      	ldrb	w0, [sp, #0x4d]
+   41dc4:      	add	w0, w0, #0x1
+   41dc8:      	strb	w0, [sp, #0x4f]
+   41dcc:      	ldr	x0, [sp, #0x38]
+   41dd0:      	ldr	x0, [x0]
+   41dd4:      	add	x0, x0, #0x18
+   41dd8:      	ldr	x5, [x0]
+   41ddc:      	ldrb	w0, [sp, #0x4f]
+   41de0:      	orr	w0, w0, #0x600
+   41de4:      	mov	w1, w0
+   41de8:      	adrp	x0, 0x89000 <usleep@@GLIBC_2.17+0x89000>
+   41dec:      	ldr	x4, [x0, #0xf70]
+   41df0:      	mov	w3, #0x8                // =8
+   41df4:      	mov	w2, w1
+   41df8:      	mov	w1, #0x1                // =1
+   41dfc:      	ldr	x0, [sp, #0x38]
+   41e00:      	blr	x5
+   41e04:      	mov	w0, #0x3e8              // =1000
+   41e08:      	bl	0x37560 <usleep@plt>
+   41e0c:      	add	x0, sp, #0x120
+   41e10:      	bl	0x37c50 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC1Ev@plt>
+   41e14:      	str	wzr, [sp, #0x5c]
+   41e18:      	ldr	w0, [sp, #0x5c]
+   41e1c:      	cmp	w0, #0x7
+   41e20:      	b.gt	0x41ee4 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x570>
+   41e24:      	ldrsw	x1, [sp, #0x5c]
+   41e28:      	adrp	x0, 0x89000 <usleep@@GLIBC_2.17+0x89000>
+   41e2c:      	ldr	x0, [x0, #0xf70]
+   41e30:      	add	x0, x1, x0
+   41e34:      	str	x0, [sp, #0xb8]
+   41e38:      	ldr	x1, [sp, #0xb8]
+   41e3c:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   41e40:      	add	x0, x0, #0x718
+   41e44:      	bl	0x38ef0 <_ZN3fmt2v717make_args_checkedIJRhEA8_ccEENS0_16format_arg_storeINS0_20basic_format_contextINS0_6detail15buffer_appenderIT1_EES8_EEJDpNSt16remove_referenceIT_E4typeEEEERKT0_DpRKSE_@plt>
+   41e48:      	stp	x0, x1, [sp, #0x160]
+   41e4c:      	add	x0, sp, #0x160
+   41e50:      	str	x0, [sp, #0xc0]
+   41e54:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   41e58:      	add	x0, x0, #0x718
+   41e5c:      	bl	0x38390 <_ZN3fmt2v714to_string_viewIcLi0EEENS0_17basic_string_viewIT_EEPKS3_@plt>
+   41e60:      	mov	x20, x0
+   41e64:      	mov	x21, x1
+   41e68:      	ldr	x0, [sp, #0xc0]
+   41e6c:      	str	x0, [sp, #0xc8]
+   41e70:      	add	x0, sp, #0x110
+   41e74:      	str	x0, [sp, #0xd0]
+   41e78:      	ldr	x0, [sp, #0xc8]
+   41e7c:      	str	x0, [sp, #0xd8]
+   41e80:      	ldr	x0, [sp, #0xd8]
+   41e84:      	str	x0, [sp, #0xe0]
+   41e88:      	ldr	x0, [sp, #0xe0]
+   41e8c:      	mov	x2, x0
+   41e90:      	mov	x1, #0x2                // =2
+   41e94:      	ldr	x0, [sp, #0xd0]
+   41e98:      	bl	0x35fa0 <_ZN3fmt2v717basic_format_argsINS0_20basic_format_contextINS0_6detail15buffer_appenderIcEEcEEEC1EyPKNS3_5valueIS6_EE@plt>
+   41e9c:      	nop
+   41ea0:      	nop
+   41ea4:      	add	x0, sp, #0x1a8
+   41ea8:      	mov	x8, x0
+   41eac:      	ldp	x2, x3, [sp, #0x110]
+   41eb0:      	mov	x0, x20
+   41eb4:      	mov	x1, x21
+   41eb8:      	bl	0x36bb0 <_ZN3fmt2v76detail7vformatB5cxx11ENS0_17basic_string_viewIcEENS0_11format_argsE@plt>
+   41ebc:      	nop
+   41ec0:      	add	x1, sp, #0x1a8
+   41ec4:      	add	x0, sp, #0x120
+   41ec8:      	bl	0x393e0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE6appendERKS4_@plt>
+   41ecc:      	add	x0, sp, #0x1a8
+   41ed0:      	bl	0x35d40 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev@plt>
+   41ed4:      	ldr	w0, [sp, #0x5c]
+   41ed8:      	add	w0, w0, #0x1
+   41edc:      	str	w0, [sp, #0x5c]
+   41ee0:      	b	0x41e18 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x4a4>
+   41ee4:      	bl	0x38d90 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   41ee8:      	cmp	x0, #0x0
+   41eec:      	b.eq	0x41f10 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x59c>
+   41ef0:      	bl	0x38d90 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   41ef4:      	mov	w1, #0x4                // =4
+   41ef8:      	bl	0x36360 <_ZNK4plog6LoggerILi0EE13checkSeverityENS_8SeverityE@plt>
+   41efc:      	and	w0, w0, #0xff
+   41f00:      	eor	w0, w0, #0x1
+   41f04:      	and	w0, w0, #0xff
+   41f08:      	cmp	w0, #0x0
+   41f0c:      	b.eq	0x41f18 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x5a4>
+   41f10:      	mov	w0, #0x1                // =1
+   41f14:      	b	0x41f1c <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x5a8>
+   41f18:      	mov	w0, #0x0                // =0
+   41f1c:      	cmp	w0, #0x0
+   41f20:      	b.ne	0x42048 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x6d4>
+   41f24:      	add	x7, sp, #0x1a8
+   41f28:      	mov	w6, #0x0                // =0
+   41f2c:      	mov	x5, #0x0                // =0
+   41f30:      	adrp	x0, 0x6b000 <_ZN3fmt2v76detail12write_paddedILNS0_5align4typeE2ENS1_15buffer_appenderIcEEcRZNS1_9write_intIS6_cZNS1_10int_writerIS6_cjE6on_octEvEUlS6_E_EET_SB_iNS0_17basic_string_viewIcEERKNS0_18basic_format_specsIT0_EET1_EUlS6_E_EESF_SF_RKNSE_ISJ_EEmmOT2_+0x150>
+   41f34:      	add	x4, x0, #0xfd8
+   41f38:      	mov	x3, #0x32d              // =813
+   41f3c:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   41f40:      	add	x2, x0, #0x720
+   41f44:      	mov	w1, #0x4                // =4
+   41f48:      	mov	x0, x7
+   41f4c:      	bl	0x38f50 <_ZN4plog6RecordC1ENS_8SeverityEPKcmS3_PKvi@plt>
+   41f50:      	add	x0, sp, #0x1a8
+   41f54:      	bl	0x37ee0 <_ZN4plog6Record3refEv@plt>
+   41f58:      	mov	x19, x0
+   41f5c:      	mov	w0, #0x1                // =1
+   41f60:      	str	w0, [sp, #0x50]
+   41f64:      	ldrb	w0, [sp, #0x4f]
+   41f68:      	orr	w0, w0, #0x600
+   41f6c:      	str	w0, [sp, #0x54]
+   41f70:      	add	x3, sp, #0x120
+   41f74:      	add	x2, sp, #0x54
+   41f78:      	add	x1, sp, #0x50
+   41f7c:      	add	x0, sp, #0x34
+   41f80:      	add	x4, sp, #0x160
+   41f84:      	mov	x8, x4
+   41f88:      	mov	x4, x3
+   41f8c:      	mov	x3, x2
+   41f90:      	mov	x2, x1
+   41f94:      	mov	x1, x0
+   41f98:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   41f9c:      	add	x0, x0, #0x778
+   41fa0:      	bl	0x35950 <_ZN3fmt2v717make_args_checkedIJR16JointControlType6Can_IfiRNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEEA54_ccEENS0_16format_arg_storeINS0_20basic_format_contextINS0_6detail15buffer_appenderIT1_EESH_EEJDpNSt16remove_referenceIT_E4typeEEEERKT0_DpRKSN_@plt>
+   41fa4:      	add	x0, sp, #0x160
+   41fa8:      	str	x0, [sp, #0xe8]
+   41fac:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   41fb0:      	add	x0, x0, #0x778
+   41fb4:      	bl	0x38390 <_ZN3fmt2v714to_string_viewIcLi0EEENS0_17basic_string_viewIT_EEPKS3_@plt>
+   41fb8:      	mov	x20, x0
+   41fbc:      	mov	x21, x1
+   41fc0:      	ldr	x0, [sp, #0xe8]
+   41fc4:      	str	x0, [sp, #0xf0]
+   41fc8:      	add	x0, sp, #0x110
+   41fcc:      	str	x0, [sp, #0xf8]
+   41fd0:      	ldr	x0, [sp, #0xf0]
+   41fd4:      	str	x0, [sp, #0x100]
+   41fd8:      	ldr	x0, [sp, #0x100]
+   41fdc:      	str	x0, [sp, #0x108]
+   41fe0:      	ldr	x0, [sp, #0x108]
+   41fe4:      	mov	x2, x0
+   41fe8:      	mov	x1, #0xd121             // =53537
+   41fec:      	ldr	x0, [sp, #0xf8]
+   41ff0:      	bl	0x35fa0 <_ZN3fmt2v717basic_format_argsINS0_20basic_format_contextINS0_6detail15buffer_appenderIcEEcEEEC1EyPKNS3_5valueIS6_EE@plt>
+   41ff4:      	nop
+   41ff8:      	nop
+   41ffc:      	add	x0, sp, #0x140
+   42000:      	mov	x8, x0
+   42004:      	ldp	x2, x3, [sp, #0x110]
+   42008:      	mov	x0, x20
+   4200c:      	mov	x1, x21
+   42010:      	bl	0x36bb0 <_ZN3fmt2v76detail7vformatB5cxx11ENS0_17basic_string_viewIcEENS0_11format_argsE@plt>
+   42014:      	nop
+   42018:      	add	x0, sp, #0x140
+   4201c:      	mov	x1, x0
+   42020:      	mov	x0, x19
+   42024:      	bl	0x385f0 <_ZN4plog6RecordlsINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEEERS0_RKT_@plt>
+   42028:      	mov	x19, x0
+   4202c:      	bl	0x38d90 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   42030:      	mov	x1, x19
+   42034:      	bl	0x38020 <_ZN4plog6LoggerILi0EEpLERKNS_6RecordE@plt>
+   42038:      	add	x0, sp, #0x140
+   4203c:      	bl	0x35d40 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev@plt>
+   42040:      	add	x0, sp, #0x1a8
+   42044:      	bl	0x348f0 <_ZN4plog6RecordD1Ev@plt>
+   42048:      	add	x0, sp, #0x120
+   4204c:      	bl	0x35d40 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev@plt>
+   42050:      	ldrb	w0, [sp, #0x4d]
+   42054:      	add	w0, w0, #0x1
+   42058:      	strb	w0, [sp, #0x4d]
+   4205c:      	b	0x41dac <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x438>
+   42060:      	mov	w0, #0x1                // =1
+   42064:      	mov	w1, w0
+   42068:      	adrp	x0, 0x89000 <usleep@@GLIBC_2.17+0x89000>
+   4206c:      	ldr	x0, [x0, #0xe38]
+   42070:      	ldr	x2, [sp, #0x3a8]
+   42074:      	ldr	x3, [x0]
+   42078:      	subs	x2, x2, x3
+   4207c:      	mov	x3, #0x0                // =0
+   42080:      	b.eq	0x4211c <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x7a8>
+   42084:      	b	0x42118 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x7a4>
+   42088:      	mov	x19, x0
+   4208c:      	add	x0, sp, #0x1a8
+   42090:      	bl	0x35d40 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev@plt>
+   42094:      	b	0x420c0 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x74c>
+   42098:      	mov	x19, x0
+   4209c:      	add	x0, sp, #0x140
+   420a0:      	bl	0x35d40 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev@plt>
+   420a4:      	mov	x0, x19
+   420a8:      	b	0x420ac <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x738>
+   420ac:      	mov	x19, x0
+   420b0:      	add	x0, sp, #0x1a8
+   420b4:      	bl	0x348f0 <_ZN4plog6RecordD1Ev@plt>
+   420b8:      	b	0x420c0 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x74c>
+   420bc:      	mov	x19, x0
+   420c0:      	add	x0, sp, #0x120
+   420c4:      	bl	0x35d40 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev@plt>
+   420c8:      	mov	x0, x19
+   420cc:      	bl	0x38dd0 <_Unwind_Resume@plt>
+   420d0:      	mov	x19, x0
+   420d4:      	add	x0, sp, #0x1a8
+   420d8:      	bl	0x35d40 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev@plt>
+   420dc:      	b	0x42108 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x794>
+   420e0:      	mov	x19, x0
+   420e4:      	add	x0, sp, #0x140
+   420e8:      	bl	0x35d40 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev@plt>
+   420ec:      	mov	x0, x19
+   420f0:      	b	0x420f4 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x780>
+   420f4:      	mov	x19, x0
+   420f8:      	add	x0, sp, #0x1a8
+   420fc:      	bl	0x348f0 <_ZN4plog6RecordD1Ev@plt>
+   42100:      	b	0x42108 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl16sendJointControlE16JointControlType+0x794>
+   42104:      	mov	x19, x0
+   42108:      	add	x0, sp, #0x120
+   4210c:      	bl	0x35d40 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev@plt>
+   42110:      	mov	x0, x19
+   42114:      	bl	0x38dd0 <_Unwind_Resume@plt>
+   42118:      	bl	0x35140 <__stack_chk_fail@plt>
+   4211c:      	mov	w0, w1
+   42120:      	ldp	x19, x20, [sp, #0x10]
+   42124:      	ldr	x21, [sp, #0x20]
+   42128:      	ldp	x29, x30, [sp]
+   4212c:      	add	sp, sp, #0x3b0
+   42130:      	ret

@@ -1,0 +1,23 @@
+libexecutor.so.0.6.4 @ 0x164830 (pi)
+  bytes : 18 2d 44 54 fb 21 09 40
+  double: 3.141592653589793
+
+libexecutor.so.0.6.4 @ 0x164838 (2*pi; MoveEnd and sendCommandThread0 load it via adrp 0x164000 + #0x838)
+  bytes : 18 2d 44 54 fb 21 19 40
+  double: 6.283185307179586
+
+libexecutor.so.0.6.4 @ 0x164818 (resample_delta default, stored at this+0x10 before the YAML override)
+  bytes : 7b 14 ae 47 e1 7a 74 3f
+  double: 0.005
+
+libexecutor.so.0.6.4 @ 0x163ac0 (0x200 sub-frame template copied by ExecutorJuxie::ucas_can0_task_send_thread)
+  bytes : c6 00 00 00 00 00 00
+
+libexecutor.so.0.6.4 @ 0x163470 (YAML key read into this+0x10)
+  bytes : 52 65 73 61 6d 70 6c 65 00 00 00 00 00 00 00 00
+  strings: ['Resample']
+
+libexecutor.so.0.6.4 @ 0x1634c0 (YAML keys read in the constructor limits block)
+  bytes : 4c 65 66 74 4c 69 6d 69 74 73 00 00 00 00 00 00 6c 65 66 74 4c 69 6d 69 74 73 2e 73 69 7a 65 28 29 20 3a 20 00 00 00 00 55 73 65 4c 69 6d 69 74 00 00 00 00 00 00 00 00 54 68 65 20 6c 69 6d 69 74 73 20 67 69 76 65 6e 20 69 73 20 6e 6f 74 20 32 20 65 6c 65 6d 65 6e 74 73 00 00 00 00 00 00 52 69 67 68 74 4c 69 6d 69 74 73 00 00 00 00 00 45 78 65 63 75 74 6f 72 20 63 6f 6e 66 69 67 20
+  strings: ['LeftLimits', 'leftLimits.size() : ', 'UseLimit', 'The limits given is not 2 elements', 'RightLimits', 'Executor config ']
+

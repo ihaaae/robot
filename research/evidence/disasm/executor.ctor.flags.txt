@@ -1,0 +1,56 @@
+
+libexecutor.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000ec6ac <_ZN12bot_executor13ExecutorJuxieC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEE>:
+   ec7e0:      	ldr	x0, [sp, #0x58]
+   ec7e4:      	add	x0, x0, #0x4b9
+   ec7e8:      	mov	w1, #0x0                // =0
+   ec7ec:      	bl	0xdee70 <_ZNSt6atomicIbEC1Eb@plt>
+   ec7f0:      	ldr	x0, [sp, #0x58]
+   ec7f4:      	add	x0, x0, #0x4ba
+   ec7f8:      	mov	w1, #0x0                // =0
+   ec7fc:      	bl	0xdee70 <_ZNSt6atomicIbEC1Eb@plt>
+   ec800:      	ldr	x0, [sp, #0x58]
+   ec804:      	add	x0, x0, #0x4bb
+   ec808:      	mov	w1, #0x0                // =0
+   ec80c:      	bl	0xdee70 <_ZNSt6atomicIbEC1Eb@plt>
+   ec810:      	ldr	x0, [sp, #0x58]
+   ec814:      	mov	w1, #0x1                // =1
+   ec818:      	strb	w1, [x0, #0x4bc]
+   ec81c:      	ldr	x0, [sp, #0x58]
+   ec820:      	mov	w1, #0x1                // =1
+   ec824:      	strb	w1, [x0, #0x4bd]
+   ec828:      	ldr	x0, [sp, #0x58]
+   ec82c:      	add	x0, x0, #0x400
+   ec830:      	add	x0, x0, #0xc0
+   ec834:      	stp	xzr, xzr, [x0]
+   ec838:      	stp	xzr, xzr, [x0, #0x10]
+   ec83c:      	stp	xzr, xzr, [x0, #0x20]
+   ec840:      	ldr	x0, [sp, #0x58]
+   ec844:      	add	x0, x0, #0x4c0
+   ec848:      	bl	0xe19d0 <_ZNSt5mutexC1Ev@plt>
+   ec84c:      	ldr	x0, [sp, #0x58]
+   ec850:      	add	x0, x0, #0x400
+   ec854:      	add	x0, x0, #0xf0
+   ec858:      	stp	xzr, xzr, [x0]
+   ec85c:      	stp	xzr, xzr, [x0, #0x10]
+   ec860:      	stp	xzr, xzr, [x0, #0x20]
+   ec864:      	ldr	x0, [sp, #0x58]
+   ec868:      	add	x0, x0, #0x4f0
+   ec86c:      	bl	0xe19d0 <_ZNSt5mutexC1Ev@plt>
+   ec870:      	ldr	x0, [sp, #0x58]
+   ec874:      	add	x0, x0, #0x520
+   ec878:      	bl	0xdd120 <_ZNSt6chrono10time_pointINS_3_V212steady_clockENS_8durationIlSt5ratioILl1ELl1000000000EEEEEC1Ev@plt>
+   ec87c:      	ldr	x0, [sp, #0x58]
+   ec880:      	add	x0, x0, #0x528
+   ec884:      	bl	0xe9220 <_ZN20JointVelocityPlannerC1Ev@plt>
+   ec888:      	ldr	x0, [sp, #0x58]
+   ec88c:      	add	x0, x0, #0x590
+   ec890:      	bl	0xe9220 <_ZN20JointVelocityPlannerC1Ev@plt>
+   ec894:      	ldr	x0, [sp, #0x58]
+   ec898:      	mov	w1, #0x1                // =1
+   ec89c:      	strb	w1, [x0, #0x5f8]
+   ec8a0:      	ldr	x0, [sp, #0x58]
+   ec8a4:      	strb	wzr, [x0, #0x5f9]
