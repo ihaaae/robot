@@ -34,6 +34,16 @@ def test_bridge_codes_are_explained_and_sdk_codes_are_not():
     assert "on_robot()" not in str(sdk_code)
 
 
+def test_the_lifecycle_refusal_points_at_close():
+    error = sdk.SdkError("juxie_on_robot", sdk.ERR_NEEDS_NEW_CONTROLLER)
+    assert error.code == -1006
+    assert "close()" in str(error)
+    # Bridge codes stay below the SDK's own range (-104..0) and do not collide.
+    codes = [value for name, value in vars(sdk).items() if name.startswith("ERR_")]
+    assert len(codes) == len(set(codes))
+    assert all(code <= -1000 for code in codes)
+
+
 def test_doubles_validates_size_and_finiteness():
     assert sdk._doubles([0] * 17, 17, "joints").shape == (17,)
 

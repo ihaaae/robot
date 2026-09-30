@@ -8,6 +8,7 @@
 //   state_machine_probe fault       OnRobot() (lands in fault with no bus), then every gated method
 //   state_machine_probe onrobot3    OnRobot() three times in a row
 //   state_machine_probe offrobot    OnRobot() twice (starts the state thread), then OffRobot()
+//   state_machine_probe offon       OnRobot(), OffRobot(), OnRobot(), then destroy the controller
 //
 // Emulator only. With no CAN bus OnRobot() ends in fault, where no command reaches the joints.
 // On a real robot it can end in ready instead, and the calls below include EnableRobot() and
@@ -25,7 +26,7 @@
 
 namespace {
 
-const char *kUsage = "usage: state_machine_probe power_off | fault | onrobot3 | offrobot\n";
+const char *kUsage = "usage: state_machine_probe power_off | fault | onrobot3 | offrobot | offon\n";
 
 // Targets that are never reached: every call below is expected to be refused by the state.
 const Juxie::JointSpaceData kJoints{};
@@ -93,6 +94,14 @@ int run(const std::string &scenario) {
         std::printf("survived 500 ms after OffRobot()\n");
         return 0;
     }
+    if (scenario == "offon") {
+        report(c, "OffRobot", c.OffRobot());
+        report(c, "OnRobot", c.OnRobot());
+        if (!still_in_fault(c)) return 1;
+        std::printf("destroying the controller\n");
+        std::fflush(stdout);
+        return 0;   // the destructor runs here
+    }
     std::fputs(kUsage, stderr);
     return 2;
 }
@@ -104,5 +113,7 @@ int main(int argc, char **argv) {
         std::fputs(kUsage, stderr);
         return 2;
     }
-    return run(argv[1]);
+    const int status = run(argv[1]);
+    std::printf("controller destroyed\n");
+    return status;
 }

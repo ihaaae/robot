@@ -77,6 +77,8 @@ fn "$ctl" controller.Impl.InitRobot           _ZN5Juxie19ControllerJuxieImpl9Ini
 fn "$ctl" controller.Impl.EnableRobot         _ZN5Juxie19ControllerJuxieImpl11EnableRobotEv
 fn "$ctl" controller.Impl.UpdateStateThread   _ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv
 fn "$ctl" controller.GetRobotState            _ZN5Juxie15ControllerJuxie13GetRobotStateEv
+# ~ControllerJuxieImpl, inlined into the shared_ptr control block (Impl = block + 0x10).
+fn "$ctl" controller.Impl.dispose _ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv
 
 # libexecutor: the four predicates UpdateStateThread polls.
 fn "$exe" executor.isConnected _ZN12bot_executor13ExecutorJuxie11isConnectedEv

@@ -10,7 +10,7 @@
   `tools/probes/disasm_excerpts.sh` 重新生成。很多状态方法只有 4–8 字节，被链接器合并成同一个地址
   （identical code folding），哪个符号对应哪个地址见 `controller.state-symbols.txt`。
 - 在 qemu 下实测（`examples/cpp/state_machine_probe.cpp`）。实测覆盖了 `power_off` 和 `fault`
-  两列，以及 §4 里的两个崩溃。`ready / idle / running` 三列要让 `OnRobot()` 成功，也就是要有真实的
+  两列，以及 §4 里的三个崩溃。`ready / idle / running` 三列要让 `OnRobot()` 成功，也就是要有真实的
   CAN 反馈，**只有静态阅读，没有实测**。
 
 ## 1. 结构
@@ -142,7 +142,7 @@ ControllerJuxie ──► ControllerJuxieImpl ──► m_state_（shared_ptr<St
 
 ## 4. 生命周期缺陷（qemu 实测）
 
-两个都是**厂家 SDK 的缺陷**，正本在 [`sdk-usage.md`](sdk-usage.md) §6.5、§6.6，这里只说它们和状态机的关系。
+三个都是**厂家 SDK 的缺陷**，正本在 [`sdk-usage.md`](sdk-usage.md) §6.5–§6.7，这里只说它们和状态机的关系。
 
 ### 4.1 第三次 `OnRobot()` 终止进程
 
@@ -169,7 +169,14 @@ OffRobot       ->    1   state=0
 qemu: uncaught target signal 11 (Segmentation fault)
 ```
 
-也就是说，厂家 SDK 在一个进程里实际上只支持 `OnRobot()` 一次、并且永远不调 `OffRobot()`。
+### 4.3 `OffRobot()` 之后再 `OnRobot()`，析构时段错误
+
+不需要轮询线程：`OnRobot()` → `OffRobot()` → `OnRobot()` 三次都正常返回，销毁 controller 时 SIGSEGV
+（`state_machine_probe offon`）。原因没有追查。
+
+也就是说，厂家 SDK 的**一个 controller 实例**只支持一轮 `OnRobot()`（/ `OffRobot()`）。析构函数会停掉并
+`join` 轮询线程，所以销毁后新建一个实例可以重来（模拟环境实测）。Python 垫片按这条规则拒绝第二轮
+（`sdk-usage.md` §7）。
 
 ## 5. 对我们 L5（任务 8.2）的含义
 
@@ -183,7 +190,7 @@ qemu: uncaught target signal 11 (Segmentation fault)
 
 **不兼容的**（它们是缺陷，不是契约）：
 
-- §4.1、§4.2 的两个崩溃，以及 §2.2 写反的条件；
+- §4 的三个崩溃，以及 §2.2 写反的条件；
 - `running` 下 `DisableRobot()` / `OffRobot()` 无超时的忙等（注 2）；
 - 分派不加锁：我们的状态读写要么全在一把锁下，要么用原子量加单一写者。
 

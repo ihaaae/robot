@@ -139,8 +139,8 @@
 - `running` 下调 `OffRobot()`：反汇编显示判断条件写反了（该文 §2.2）
 - `ClearFault()` 在 `idle` 下调用时，状态是否先闪到 `ready` 再回到 `idle`
 
-注意：一个进程里只调一次 `OnRobot()`，并且不要调 `OffRobot()`，否则进程会被终止或段错误
-（`sdk-usage.md` §6.5、§6.6）。每个用例起一个新进程。
+注意：一个 controller 实例只走一轮 `OnRobot()` / `OffRobot()`，否则进程会被终止或段错误
+（`sdk-usage.md` §6.5–§6.7）。最稳妥的是每个用例起一个新进程；至少也要销毁 controller 再新建。
 
 **决定了什么**：上位机的错误处理策略。
 
