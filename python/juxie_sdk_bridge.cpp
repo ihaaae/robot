@@ -18,6 +18,14 @@
 //     and setJointZeroPosition. Measured one method per process: SIGSEGV for exactly those
 //     four, clean return for the other fourteen. They now return JUXIE_ERR_NO_ON_ROBOT. What
 //     the SDK needs is that OnRobot() was *called*, not that it returned true.
+//   * repeating the OnRobot()/OffRobot() cycle on one controller. The first OnRobot() that gets
+//     past the state class starts ControllerJuxieImpl::UpdateStateThread. Another OnRobot()
+//     then reassigns that std::thread member and std::terminate()s, and OffRobot() frees the
+//     executor the thread keeps reading and segfaults. Separately, OnRobot() after OffRobot()
+//     leaves the controller in a state whose destructor segfaults. All three measured under
+//     emulation (docs/sdk-usage.md 6.5-6.7). The bridge refuses them with
+//     JUXIE_ERR_NEEDS_NEW_CONTROLLER without calling in. Closing and creating a new controller
+//     is the way out, measured clean: the destructor stops and joins the thread.
 //   * getFKpose's heap overflow. It copies (n - 7) doubles into a fixed 7-double buffer, so it
 //     is in bounds while n <= 14 (measured: clean at 14, overflow at 15 and 17 under
 //     AddressSanitizer). Anything outside 7..14 is refused without calling in.
@@ -30,7 +38,10 @@
 // Build: python/build_bridge.sh. The result is aarch64 Linux, like the SDK itself.
 #include <juxie_controller/juxie_controller.h>
 
+#include <atomic>
+#include <cstdint>
 #include <cstring>
+#include <memory>
 #include <mutex>
 #include <new>
 #include <string>
@@ -49,6 +60,7 @@ constexpr int JUXIE_ERR_NO_ON_ROBOT = -1002;
 constexpr int JUXIE_ERR_BAD_SIZE = -1003;
 constexpr int JUXIE_ERR_NO_MEMORY = -1004;
 constexpr int JUXIE_ERR_EXCEPTION = -1005;
+constexpr int JUXIE_ERR_NEEDS_NEW_CONTROLLER = -1006;
 
 constexpr int kJointCount = 17;   // waist 1 + left 7 + right 7 + head 2
 constexpr int kArmCount = 14;     // left 7 + right 7
@@ -57,7 +69,40 @@ constexpr int kTcpCount = 12;     // (x, y, z, rx, ry, rz) per arm, what getFKpo
 struct Bridge {
     Juxie::ControllerJuxie controller;
     bool on_robot = false;
+    bool off_robot = false;   // OffRobot() ran; OnRobot() on this controller is no longer safe
 };
+
+// Whether the vendor's UpdateStateThread is running, read from the vendor object itself.
+//
+// Its std::thread member sits at ControllerJuxieImpl + 0xa8 in 0.6.4: InitRobot() tests that
+// word and std::terminate()s when it is non-zero, and the destructor joins it
+// (research/evidence/disasm/controller.Impl.InitRobot.txt, controller.Impl.dispose.txt).
+// Reading it is the only exact answer. The state alone cannot tell "OnRobot() ended in fault"
+// from "OnRobot() started the thread, which then saw a fault", and only the second one makes
+// the next OnRobot() fatal.
+//
+// ControllerJuxie's first member is std::shared_ptr<ControllerJuxieImpl> impl_, and libstdc++
+// keeps the object pointer first in a shared_ptr. The mirror below repeats the header's data
+// members in order; the assert catches a header that no longer matches. The offset itself is
+// tied to the vendored 0.6.4 binary, like every other finding in docs/.
+struct ControllerJuxieLayout {
+    std::shared_ptr<int> impl_;
+    std::atomic<bool> joint_stream_enable_;
+    std::atomic<int> joint_stream_freq_;
+};
+static_assert(sizeof(Juxie::ControllerJuxie) == sizeof(ControllerJuxieLayout) &&
+                  alignof(Juxie::ControllerJuxie) == alignof(ControllerJuxieLayout),
+              "ControllerJuxie's data members changed; re-check kImplThreadOffset");
+constexpr std::size_t kImplThreadOffset = 0xa8;
+
+bool state_thread_running(const Juxie::ControllerJuxie &controller) {
+    const unsigned char *impl = nullptr;
+    std::memcpy(&impl, &controller, sizeof impl);
+    if (impl == nullptr) return false;
+    std::uint64_t thread_id = 0;
+    std::memcpy(&thread_id, impl + kImplThreadOffset, sizeof thread_id);
+    return thread_id != 0;
+}
 
 std::mutex g_mutex;              // creation and destruction only; see the note above
 Bridge *g_bridge = nullptr;
@@ -140,6 +185,11 @@ int juxie_on_robot(juxie_controller *handle) {
     return guarded([&] {
         Bridge *b = bridge(handle);
         if (b == nullptr) return JUXIE_ERR_NO_INSTANCE;
+        // A second InitRobot() would std::terminate() the whole process, and after OffRobot()
+        // the controller's destructor segfaults once OnRobot() has run again.
+        if (b->off_robot || state_thread_running(b->controller)) {
+            return JUXIE_ERR_NEEDS_NEW_CONTROLLER;
+        }
         // Note: this powers the low-level board even when there is no CAN bus.
         const bool ready = b->controller.OnRobot();
         // The precondition the SDK actually needs is that this was *called*: measured one
@@ -154,8 +204,11 @@ int juxie_off_robot(juxie_controller *handle) {
     return guarded([&] {
         Bridge *b = bridge(handle);
         if (b == nullptr) return JUXIE_ERR_NO_INSTANCE;
+        // OffRobot() frees the executor under the running thread, which then segfaults.
+        if (state_thread_running(b->controller)) return JUXIE_ERR_NEEDS_NEW_CONTROLLER;
         const bool ok = b->controller.OffRobot();
         b->on_robot = false;
+        b->off_robot = true;
         return ok ? 0 : -1;
     });
 }

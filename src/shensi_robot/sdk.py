@@ -71,6 +71,7 @@ ERR_NO_ON_ROBOT = -1002
 ERR_BAD_SIZE = -1003
 ERR_NO_MEMORY = -1004
 ERR_EXCEPTION = -1005
+ERR_NEEDS_NEW_CONTROLLER = -1006
 
 _BRIDGE_CODES = {
     ERR_NO_INSTANCE: "the bridge has no controller (it was destroyed, or create() failed)",
@@ -79,6 +80,10 @@ _BRIDGE_CODES = {
     ERR_BAD_SIZE: f"wrong number or length of values (getFKpose accepts 7..{MAX_FK_VALUES})",
     ERR_NO_MEMORY: "the SDK could not allocate",
     ERR_EXCEPTION: "the SDK raised a C++ exception; the bridge caught it at the ABI boundary",
+    ERR_NEEDS_NEW_CONTROLLER: (
+        "the SDK allows one on_robot()/off_robot() cycle per controller; repeating it would "
+        "abort or segfault the process. close() this controller and create a new one"
+    ),
 }
 
 #: The environment variable the vendor's own binaries read for their configuration root.
@@ -335,11 +340,23 @@ class Controller:
         matters for the methods below is that it was *called*: without it ``get_dof()``,
         ``ik()``, ``joint_err_codes()`` and ``set_joint_zero_position()`` segfault inside the
         SDK, and the bridge refuses them instead.
+
+        Call it **once per controller**. The first call that gets far enough starts the SDK's
+        state thread (with no CAN bus that is the second call, because the first one stops in
+        ``fault``); after that another ``on_robot()`` would abort the process. After
+        ``off_robot()``, calling it again leaves a controller whose destructor segfaults. In both
+        cases the bridge raises ``SdkError`` with code ``ERR_NEEDS_NEW_CONTROLLER`` instead. To
+        start again, ``close()`` and create a new controller.
         """
         return self._flag("juxie_on_robot")
 
     def off_robot(self) -> bool:
-        """Shut the low-level board down again."""
+        """Shut the low-level board down again.
+
+        Only possible while the SDK's state thread has not started (see ``on_robot()``). Once it
+        has, ``OffRobot()`` segfaults the process, so the bridge raises ``SdkError`` with code
+        ``ERR_NEEDS_NEW_CONTROLLER``. Use ``close()`` then: the destructor stops the thread first.
+        """
         return self._flag("juxie_off_robot")
 
     def enable_robot(self) -> bool:

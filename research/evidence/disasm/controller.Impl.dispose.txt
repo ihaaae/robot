@@ -1,0 +1,484 @@
+
+libjuxie_controller.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000bceb8 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv>:
+   bceb8:      	stp	x29, x30, [sp, #-0x30]!
+   bcebc:      	mov	x29, sp
+   bcec0:      	stp	x19, x20, [sp, #0x10]
+   bcec4:      	mov	x19, x0
+   bcec8:      	str	x21, [sp, #0x20]
+   bcecc:      	add	x0, x0, #0xc0
+   bced0:      	stlrb	wzr, [x0]
+   bced4:      	ldr	x0, [x19, #0xb8]
+   bced8:      	cbnz	x0, 0xbd570 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x6b8>
+   bcedc:      	ldrb	w0, [x19, #0xf8]
+   bcee0:      	add	x20, x19, #0x10
+   bcee4:      	cbz	w0, 0xbcef8 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x40>
+   bcee8:      	ldr	x0, [x19, #0xd0]
+   bceec:      	stp	xzr, xzr, [x19, #0xc8]
+   bcef0:      	cbz	x0, 0xbcef8 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x40>
+   bcef4:      	bl	0x9fee0 <_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@plt>
+   bcef8:      	ldrb	w0, [x20, #0xe9]
+   bcefc:      	cbz	w0, 0xbcf10 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x58>
+   bcf00:      	ldr	x0, [x19, #0xe0]
+   bcf04:      	stp	xzr, xzr, [x19, #0xd8]
+   bcf08:      	cbz	x0, 0xbcf10 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x58>
+   bcf0c:      	bl	0x9fee0 <_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@plt>
+   bcf10:      	ldr	x21, [x19, #0x28]
+   bcf14:      	stp	xzr, xzr, [x19, #0x20]
+   bcf18:      	cbz	x21, 0xbcf44 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x8c>
+   bcf1c:      	adrp	x20, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   bcf20:      	ldr	x0, [x20, #0x8c0]
+   bcf24:      	cbz	x0, 0xbd1cc <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x314>
+   bcf28:      	add	x1, x21, #0x8
+   bcf2c:      	ldaxr	w0, [x1]
+   bcf30:      	sub	w2, w0, #0x1
+   bcf34:      	stlxr	w3, w2, [x1]
+   bcf38:      	cbnz	w3, 0xbcf2c <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x74>
+   bcf3c:      	cmp	w0, #0x1
+   bcf40:      	b.eq	0xbd1e0 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x328>
+   bcf44:      	ldr	x21, [x19, #0x38]
+   bcf48:      	stp	xzr, xzr, [x19, #0x30]
+   bcf4c:      	cbz	x21, 0xbcf78 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0xc0>
+   bcf50:      	adrp	x20, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   bcf54:      	ldr	x0, [x20, #0x8c0]
+   bcf58:      	cbz	x0, 0xbd33c <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x484>
+   bcf5c:      	add	x1, x21, #0x8
+   bcf60:      	ldaxr	w0, [x1]
+   bcf64:      	sub	w2, w0, #0x1
+   bcf68:      	stlxr	w3, w2, [x1]
+   bcf6c:      	cbnz	w3, 0xbcf60 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0xa8>
+   bcf70:      	cmp	w0, #0x1
+   bcf74:      	b.eq	0xbd350 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x498>
+   bcf78:      	ldr	x21, [x19, #0x48]
+   bcf7c:      	stp	xzr, xzr, [x19, #0x40]
+   bcf80:      	cbz	x21, 0xbcfac <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0xf4>
+   bcf84:      	adrp	x20, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   bcf88:      	ldr	x0, [x20, #0x8c0]
+   bcf8c:      	cbz	x0, 0xbd2e0 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x428>
+   bcf90:      	add	x1, x21, #0x8
+   bcf94:      	ldaxr	w0, [x1]
+   bcf98:      	sub	w2, w0, #0x1
+   bcf9c:      	stlxr	w3, w2, [x1]
+   bcfa0:      	cbnz	w3, 0xbcf94 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0xdc>
+   bcfa4:      	cmp	w0, #0x1
+   bcfa8:      	b.eq	0xbd2f4 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x43c>
+   bcfac:      	ldr	x21, [x19, #0x18]
+   bcfb0:      	stp	xzr, xzr, [x19, #0x10]
+   bcfb4:      	cbz	x21, 0xbcfe0 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x128>
+   bcfb8:      	adrp	x20, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   bcfbc:      	ldr	x0, [x20, #0x8c0]
+   bcfc0:      	cbz	x0, 0xbd284 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x3cc>
+   bcfc4:      	add	x1, x21, #0x8
+   bcfc8:      	ldaxr	w0, [x1]
+   bcfcc:      	sub	w2, w0, #0x1
+   bcfd0:      	stlxr	w3, w2, [x1]
+   bcfd4:      	cbnz	w3, 0xbcfc8 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x110>
+   bcfd8:      	cmp	w0, #0x1
+   bcfdc:      	b.eq	0xbd298 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x3e0>
+   bcfe0:      	ldr	x0, [x19, #0x100]
+   bcfe4:      	add	x1, x19, #0x110
+   bcfe8:      	cmp	x0, x1
+   bcfec:      	b.eq	0xbcff4 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x13c>
+   bcff0:      	bl	0xa0cf0 <_ZdlPv@plt>
+   bcff4:      	ldr	x21, [x19, #0xe0]
+   bcff8:      	cbz	x21, 0xbd024 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x16c>
+   bcffc:      	adrp	x20, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   bd000:      	ldr	x0, [x20, #0x8c0]
+   bd004:      	cbz	x0, 0xbd228 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x370>
+   bd008:      	add	x1, x21, #0x8
+   bd00c:      	ldaxr	w0, [x1]
+   bd010:      	sub	w2, w0, #0x1
+   bd014:      	stlxr	w3, w2, [x1]
+   bd018:      	cbnz	w3, 0xbd00c <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x154>
+   bd01c:      	cmp	w0, #0x1
+   bd020:      	b.eq	0xbd23c <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x384>
+   bd024:      	ldr	x21, [x19, #0xd0]
+   bd028:      	cbz	x21, 0xbd054 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x19c>
+   bd02c:      	adrp	x20, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   bd030:      	ldr	x0, [x20, #0x8c0]
+   bd034:      	cbz	x0, 0xbd170 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x2b8>
+   bd038:      	add	x1, x21, #0x8
+   bd03c:      	ldaxr	w0, [x1]
+   bd040:      	sub	w2, w0, #0x1
+   bd044:      	stlxr	w3, w2, [x1]
+   bd048:      	cbnz	w3, 0xbd03c <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x184>
+   bd04c:      	cmp	w0, #0x1
+   bd050:      	b.eq	0xbd184 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x2cc>
+   bd054:      	ldr	x0, [x19, #0xb8]
+   bd058:      	cbnz	x0, 0xbd62c <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x774>
+   bd05c:      	ldr	x21, [x19, #0x80]
+   bd060:      	cbz	x21, 0xbd08c <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x1d4>
+   bd064:      	adrp	x20, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   bd068:      	ldr	x0, [x20, #0x8c0]
+   bd06c:      	cbz	x0, 0xbd398 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x4e0>
+   bd070:      	add	x1, x21, #0x8
+   bd074:      	ldaxr	w0, [x1]
+   bd078:      	sub	w2, w0, #0x1
+   bd07c:      	stlxr	w3, w2, [x1]
+   bd080:      	cbnz	w3, 0xbd074 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x1bc>
+   bd084:      	cmp	w0, #0x1
+   bd088:      	b.eq	0xbd3ac <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x4f4>
+   bd08c:      	ldr	x0, [x19, #0x58]
+   bd090:      	add	x1, x19, #0x68
+   bd094:      	cmp	x0, x1
+   bd098:      	b.eq	0xbd0a0 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x1e8>
+   bd09c:      	bl	0xa0cf0 <_ZdlPv@plt>
+   bd0a0:      	ldr	x21, [x19, #0x48]
+   bd0a4:      	cbz	x21, 0xbd0d0 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x218>
+   bd0a8:      	adrp	x20, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   bd0ac:      	ldr	x0, [x20, #0x8c0]
+   bd0b0:      	cbz	x0, 0xbd450 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x598>
+   bd0b4:      	add	x1, x21, #0x8
+   bd0b8:      	ldaxr	w0, [x1]
+   bd0bc:      	sub	w2, w0, #0x1
+   bd0c0:      	stlxr	w3, w2, [x1]
+   bd0c4:      	cbnz	w3, 0xbd0b8 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x200>
+   bd0c8:      	cmp	w0, #0x1
+   bd0cc:      	b.eq	0xbd464 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x5ac>
+   bd0d0:      	ldr	x21, [x19, #0x38]
+   bd0d4:      	cbz	x21, 0xbd100 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x248>
+   bd0d8:      	adrp	x20, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   bd0dc:      	ldr	x0, [x20, #0x8c0]
+   bd0e0:      	cbz	x0, 0xbd3f4 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x53c>
+   bd0e4:      	add	x1, x21, #0x8
+   bd0e8:      	ldaxr	w0, [x1]
+   bd0ec:      	sub	w2, w0, #0x1
+   bd0f0:      	stlxr	w3, w2, [x1]
+   bd0f4:      	cbnz	w3, 0xbd0e8 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x230>
+   bd0f8:      	cmp	w0, #0x1
+   bd0fc:      	b.eq	0xbd408 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x550>
+   bd100:      	ldr	x21, [x19, #0x28]
+   bd104:      	cbz	x21, 0xbd130 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x278>
+   bd108:      	adrp	x20, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   bd10c:      	ldr	x0, [x20, #0x8c0]
+   bd110:      	cbz	x0, 0xbd514 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x65c>
+   bd114:      	add	x1, x21, #0x8
+   bd118:      	ldaxr	w0, [x1]
+   bd11c:      	sub	w2, w0, #0x1
+   bd120:      	stlxr	w3, w2, [x1]
+   bd124:      	cbnz	w3, 0xbd118 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x260>
+   bd128:      	cmp	w0, #0x1
+   bd12c:      	b.eq	0xbd528 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x670>
+   bd130:      	ldr	x19, [x19, #0x18]
+   bd134:      	cbz	x19, 0xbd160 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x2a8>
+   bd138:      	adrp	x20, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   bd13c:      	ldr	x0, [x20, #0x8c0]
+   bd140:      	cbz	x0, 0xbd4ac <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x5f4>
+   bd144:      	add	x1, x19, #0x8
+   bd148:      	ldaxr	w0, [x1]
+   bd14c:      	sub	w2, w0, #0x1
+   bd150:      	stlxr	w3, w2, [x1]
+   bd154:      	cbnz	w3, 0xbd148 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x290>
+   bd158:      	cmp	w0, #0x1
+   bd15c:      	b.eq	0xbd4c0 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x608>
+   bd160:      	ldp	x19, x20, [sp, #0x10]
+   bd164:      	ldr	x21, [sp, #0x20]
+   bd168:      	ldp	x29, x30, [sp], #0x30
+   bd16c:      	ret
+   bd170:      	ldr	w0, [x21, #0x8]
+   bd174:      	sub	w1, w0, #0x1
+   bd178:      	str	w1, [x21, #0x8]
+   bd17c:      	cmp	w0, #0x1
+   bd180:      	b.ne	0xbd054 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x19c>
+   bd184:      	ldr	x1, [x21]
+   bd188:      	mov	x0, x21
+   bd18c:      	ldr	x1, [x1, #0x10]
+   bd190:      	blr	x1
+   bd194:      	ldr	x20, [x20, #0x8c0]
+   bd198:      	cbz	x20, 0xbd5ec <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x734>
+   bd19c:      	add	x1, x21, #0xc
+   bd1a0:      	ldaxr	w0, [x1]
+   bd1a4:      	sub	w2, w0, #0x1
+   bd1a8:      	stlxr	w3, w2, [x1]
+   bd1ac:      	cbnz	w3, 0xbd1a0 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x2e8>
+   bd1b0:      	cmp	w0, #0x1
+   bd1b4:      	b.ne	0xbd054 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x19c>
+   bd1b8:      	ldr	x1, [x21]
+   bd1bc:      	mov	x0, x21
+   bd1c0:      	ldr	x1, [x1, #0x18]
+   bd1c4:      	blr	x1
+   bd1c8:      	b	0xbd054 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x19c>
+   bd1cc:      	ldr	w0, [x21, #0x8]
+   bd1d0:      	sub	w1, w0, #0x1
+   bd1d4:      	str	w1, [x21, #0x8]
+   bd1d8:      	cmp	w0, #0x1
+   bd1dc:      	b.ne	0xbcf44 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x8c>
+   bd1e0:      	ldr	x1, [x21]
+   bd1e4:      	mov	x0, x21
+   bd1e8:      	ldr	x1, [x1, #0x10]
+   bd1ec:      	blr	x1
+   bd1f0:      	ldr	x20, [x20, #0x8c0]
+   bd1f4:      	cbz	x20, 0xbd57c <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x6c4>
+   bd1f8:      	add	x1, x21, #0xc
+   bd1fc:      	ldaxr	w0, [x1]
+   bd200:      	sub	w2, w0, #0x1
+   bd204:      	stlxr	w3, w2, [x1]
+   bd208:      	cbnz	w3, 0xbd1fc <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x344>
+   bd20c:      	cmp	w0, #0x1
+   bd210:      	b.ne	0xbcf44 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x8c>
+   bd214:      	ldr	x1, [x21]
+   bd218:      	mov	x0, x21
+   bd21c:      	ldr	x1, [x1, #0x18]
+   bd220:      	blr	x1
+   bd224:      	b	0xbcf44 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x8c>
+   bd228:      	ldr	w0, [x21, #0x8]
+   bd22c:      	sub	w1, w0, #0x1
+   bd230:      	str	w1, [x21, #0x8]
+   bd234:      	cmp	w0, #0x1
+   bd238:      	b.ne	0xbd024 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x16c>
+   bd23c:      	ldr	x1, [x21]
+   bd240:      	mov	x0, x21
+   bd244:      	ldr	x1, [x1, #0x10]
+   bd248:      	blr	x1
+   bd24c:      	ldr	x20, [x20, #0x8c0]
+   bd250:      	cbz	x20, 0xbd5cc <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x714>
+   bd254:      	add	x1, x21, #0xc
+   bd258:      	ldaxr	w0, [x1]
+   bd25c:      	sub	w2, w0, #0x1
+   bd260:      	stlxr	w3, w2, [x1]
+   bd264:      	cbnz	w3, 0xbd258 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x3a0>
+   bd268:      	cmp	w0, #0x1
+   bd26c:      	b.ne	0xbd024 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x16c>
+   bd270:      	ldr	x1, [x21]
+   bd274:      	mov	x0, x21
+   bd278:      	ldr	x1, [x1, #0x18]
+   bd27c:      	blr	x1
+   bd280:      	b	0xbd024 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x16c>
+   bd284:      	ldr	w0, [x21, #0x8]
+   bd288:      	sub	w1, w0, #0x1
+   bd28c:      	str	w1, [x21, #0x8]
+   bd290:      	cmp	w0, #0x1
+   bd294:      	b.ne	0xbcfe0 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x128>
+   bd298:      	ldr	x1, [x21]
+   bd29c:      	mov	x0, x21
+   bd2a0:      	ldr	x1, [x1, #0x10]
+   bd2a4:      	blr	x1
+   bd2a8:      	ldr	x20, [x20, #0x8c0]
+   bd2ac:      	cbz	x20, 0xbd5bc <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x704>
+   bd2b0:      	add	x1, x21, #0xc
+   bd2b4:      	ldaxr	w0, [x1]
+   bd2b8:      	sub	w2, w0, #0x1
+   bd2bc:      	stlxr	w3, w2, [x1]
+   bd2c0:      	cbnz	w3, 0xbd2b4 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x3fc>
+   bd2c4:      	cmp	w0, #0x1
+   bd2c8:      	b.ne	0xbcfe0 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x128>
+   bd2cc:      	ldr	x1, [x21]
+   bd2d0:      	mov	x0, x21
+   bd2d4:      	ldr	x1, [x1, #0x18]
+   bd2d8:      	blr	x1
+   bd2dc:      	b	0xbcfe0 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x128>
+   bd2e0:      	ldr	w0, [x21, #0x8]
+   bd2e4:      	sub	w1, w0, #0x1
+   bd2e8:      	str	w1, [x21, #0x8]
+   bd2ec:      	cmp	w0, #0x1
+   bd2f0:      	b.ne	0xbcfac <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0xf4>
+   bd2f4:      	ldr	x1, [x21]
+   bd2f8:      	mov	x0, x21
+   bd2fc:      	ldr	x1, [x1, #0x10]
+   bd300:      	blr	x1
+   bd304:      	ldr	x20, [x20, #0x8c0]
+   bd308:      	cbz	x20, 0xbd5ac <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x6f4>
+   bd30c:      	add	x1, x21, #0xc
+   bd310:      	ldaxr	w0, [x1]
+   bd314:      	sub	w2, w0, #0x1
+   bd318:      	stlxr	w3, w2, [x1]
+   bd31c:      	cbnz	w3, 0xbd310 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x458>
+   bd320:      	cmp	w0, #0x1
+   bd324:      	b.ne	0xbcfac <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0xf4>
+   bd328:      	ldr	x1, [x21]
+   bd32c:      	mov	x0, x21
+   bd330:      	ldr	x1, [x1, #0x18]
+   bd334:      	blr	x1
+   bd338:      	b	0xbcfac <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0xf4>
+   bd33c:      	ldr	w0, [x21, #0x8]
+   bd340:      	sub	w1, w0, #0x1
+   bd344:      	str	w1, [x21, #0x8]
+   bd348:      	cmp	w0, #0x1
+   bd34c:      	b.ne	0xbcf78 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0xc0>
+   bd350:      	ldr	x1, [x21]
+   bd354:      	mov	x0, x21
+   bd358:      	ldr	x1, [x1, #0x10]
+   bd35c:      	blr	x1
+   bd360:      	ldr	x20, [x20, #0x8c0]
+   bd364:      	cbz	x20, 0xbd59c <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x6e4>
+   bd368:      	add	x1, x21, #0xc
+   bd36c:      	ldaxr	w0, [x1]
+   bd370:      	sub	w2, w0, #0x1
+   bd374:      	stlxr	w3, w2, [x1]
+   bd378:      	cbnz	w3, 0xbd36c <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x4b4>
+   bd37c:      	cmp	w0, #0x1
+   bd380:      	b.ne	0xbcf78 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0xc0>
+   bd384:      	ldr	x1, [x21]
+   bd388:      	mov	x0, x21
+   bd38c:      	ldr	x1, [x1, #0x18]
+   bd390:      	blr	x1
+   bd394:      	b	0xbcf78 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0xc0>
+   bd398:      	ldr	w0, [x21, #0x8]
+   bd39c:      	sub	w1, w0, #0x1
+   bd3a0:      	str	w1, [x21, #0x8]
+   bd3a4:      	cmp	w0, #0x1
+   bd3a8:      	b.ne	0xbd08c <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x1d4>
+   bd3ac:      	ldr	x1, [x21]
+   bd3b0:      	mov	x0, x21
+   bd3b4:      	ldr	x1, [x1, #0x10]
+   bd3b8:      	blr	x1
+   bd3bc:      	ldr	x20, [x20, #0x8c0]
+   bd3c0:      	cbz	x20, 0xbd60c <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x754>
+   bd3c4:      	add	x1, x21, #0xc
+   bd3c8:      	ldaxr	w0, [x1]
+   bd3cc:      	sub	w2, w0, #0x1
+   bd3d0:      	stlxr	w3, w2, [x1]
+   bd3d4:      	cbnz	w3, 0xbd3c8 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x510>
+   bd3d8:      	cmp	w0, #0x1
+   bd3dc:      	b.ne	0xbd08c <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x1d4>
+   bd3e0:      	ldr	x1, [x21]
+   bd3e4:      	mov	x0, x21
+   bd3e8:      	ldr	x1, [x1, #0x18]
+   bd3ec:      	blr	x1
+   bd3f0:      	b	0xbd08c <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x1d4>
+   bd3f4:      	ldr	w0, [x21, #0x8]
+   bd3f8:      	sub	w1, w0, #0x1
+   bd3fc:      	str	w1, [x21, #0x8]
+   bd400:      	cmp	w0, #0x1
+   bd404:      	b.ne	0xbd100 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x248>
+   bd408:      	ldr	x1, [x21]
+   bd40c:      	mov	x0, x21
+   bd410:      	ldr	x1, [x1, #0x10]
+   bd414:      	blr	x1
+   bd418:      	ldr	x20, [x20, #0x8c0]
+   bd41c:      	cbz	x20, 0xbd61c <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x764>
+   bd420:      	add	x1, x21, #0xc
+   bd424:      	ldaxr	w0, [x1]
+   bd428:      	sub	w2, w0, #0x1
+   bd42c:      	stlxr	w3, w2, [x1]
+   bd430:      	cbnz	w3, 0xbd424 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x56c>
+   bd434:      	cmp	w0, #0x1
+   bd438:      	b.ne	0xbd100 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x248>
+   bd43c:      	ldr	x1, [x21]
+   bd440:      	mov	x0, x21
+   bd444:      	ldr	x1, [x1, #0x18]
+   bd448:      	blr	x1
+   bd44c:      	b	0xbd100 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x248>
+   bd450:      	ldr	w0, [x21, #0x8]
+   bd454:      	sub	w1, w0, #0x1
+   bd458:      	str	w1, [x21, #0x8]
+   bd45c:      	cmp	w0, #0x1
+   bd460:      	b.ne	0xbd0d0 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x218>
+   bd464:      	ldr	x1, [x21]
+   bd468:      	mov	x0, x21
+   bd46c:      	ldr	x1, [x1, #0x10]
+   bd470:      	blr	x1
+   bd474:      	ldr	x20, [x20, #0x8c0]
+   bd478:      	cbz	x20, 0xbd5dc <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x724>
+   bd47c:      	add	x1, x21, #0xc
+   bd480:      	ldaxr	w0, [x1]
+   bd484:      	sub	w2, w0, #0x1
+   bd488:      	stlxr	w3, w2, [x1]
+   bd48c:      	cbnz	w3, 0xbd480 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x5c8>
+   bd490:      	cmp	w0, #0x1
+   bd494:      	b.ne	0xbd0d0 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x218>
+   bd498:      	ldr	x1, [x21]
+   bd49c:      	mov	x0, x21
+   bd4a0:      	ldr	x1, [x1, #0x18]
+   bd4a4:      	blr	x1
+   bd4a8:      	b	0xbd0d0 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x218>
+   bd4ac:      	ldr	w0, [x19, #0x8]
+   bd4b0:      	sub	w1, w0, #0x1
+   bd4b4:      	str	w1, [x19, #0x8]
+   bd4b8:      	cmp	w0, #0x1
+   bd4bc:      	b.ne	0xbd160 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x2a8>
+   bd4c0:      	ldr	x1, [x19]
+   bd4c4:      	mov	x0, x19
+   bd4c8:      	ldr	x1, [x1, #0x10]
+   bd4cc:      	blr	x1
+   bd4d0:      	ldr	x20, [x20, #0x8c0]
+   bd4d4:      	cbz	x20, 0xbd58c <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x6d4>
+   bd4d8:      	add	x1, x19, #0xc
+   bd4dc:      	ldaxr	w0, [x1]
+   bd4e0:      	sub	w2, w0, #0x1
+   bd4e4:      	stlxr	w3, w2, [x1]
+   bd4e8:      	cbnz	w3, 0xbd4dc <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x624>
+   bd4ec:      	cmp	w0, #0x1
+   bd4f0:      	b.ne	0xbd160 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x2a8>
+   bd4f4:      	ldr	x1, [x19]
+   bd4f8:      	mov	x0, x19
+   bd4fc:      	ldp	x19, x20, [sp, #0x10]
+   bd500:      	ldr	x21, [sp, #0x20]
+   bd504:      	ldp	x29, x30, [sp], #0x30
+   bd508:      	ldr	x1, [x1, #0x18]
+   bd50c:      	mov	x16, x1
+   bd510:      	br	x16
+   bd514:      	ldr	w0, [x21, #0x8]
+   bd518:      	sub	w1, w0, #0x1
+   bd51c:      	str	w1, [x21, #0x8]
+   bd520:      	cmp	w0, #0x1
+   bd524:      	b.ne	0xbd130 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x278>
+   bd528:      	ldr	x1, [x21]
+   bd52c:      	mov	x0, x21
+   bd530:      	ldr	x1, [x1, #0x10]
+   bd534:      	blr	x1
+   bd538:      	ldr	x20, [x20, #0x8c0]
+   bd53c:      	cbz	x20, 0xbd5fc <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x744>
+   bd540:      	add	x1, x21, #0xc
+   bd544:      	ldaxr	w0, [x1]
+   bd548:      	sub	w2, w0, #0x1
+   bd54c:      	stlxr	w3, w2, [x1]
+   bd550:      	cbnz	w3, 0xbd544 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x68c>
+   bd554:      	cmp	w0, #0x1
+   bd558:      	b.ne	0xbd130 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x278>
+   bd55c:      	ldr	x1, [x21]
+   bd560:      	mov	x0, x21
+   bd564:      	ldr	x1, [x1, #0x18]
+   bd568:      	blr	x1
+   bd56c:      	b	0xbd130 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x278>
+   bd570:      	add	x0, x19, #0xb8
+   bd574:      	bl	0xa5fe0 <_ZNSt6thread4joinEv@plt>
+   bd578:      	b	0xbcedc <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x24>
+   bd57c:      	ldr	w0, [x21, #0xc]
+   bd580:      	sub	w1, w0, #0x1
+   bd584:      	str	w1, [x21, #0xc]
+   bd588:      	b	0xbd20c <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x354>
+   bd58c:      	ldr	w0, [x19, #0xc]
+   bd590:      	sub	w1, w0, #0x1
+   bd594:      	str	w1, [x19, #0xc]
+   bd598:      	b	0xbd4ec <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x634>
+   bd59c:      	ldr	w0, [x21, #0xc]
+   bd5a0:      	sub	w1, w0, #0x1
+   bd5a4:      	str	w1, [x21, #0xc]
+   bd5a8:      	b	0xbd37c <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x4c4>
+   bd5ac:      	ldr	w0, [x21, #0xc]
+   bd5b0:      	sub	w1, w0, #0x1
+   bd5b4:      	str	w1, [x21, #0xc]
+   bd5b8:      	b	0xbd320 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x468>
+   bd5bc:      	ldr	w0, [x21, #0xc]
+   bd5c0:      	sub	w1, w0, #0x1
+   bd5c4:      	str	w1, [x21, #0xc]
+   bd5c8:      	b	0xbd2c4 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x40c>
+   bd5cc:      	ldr	w0, [x21, #0xc]
+   bd5d0:      	sub	w1, w0, #0x1
+   bd5d4:      	str	w1, [x21, #0xc]
+   bd5d8:      	b	0xbd268 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x3b0>
+   bd5dc:      	ldr	w0, [x21, #0xc]
+   bd5e0:      	sub	w1, w0, #0x1
+   bd5e4:      	str	w1, [x21, #0xc]
+   bd5e8:      	b	0xbd490 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x5d8>
+   bd5ec:      	ldr	w0, [x21, #0xc]
+   bd5f0:      	sub	w1, w0, #0x1
+   bd5f4:      	str	w1, [x21, #0xc]
+   bd5f8:      	b	0xbd1b0 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x2f8>
+   bd5fc:      	ldr	w0, [x21, #0xc]
+   bd600:      	sub	w1, w0, #0x1
+   bd604:      	str	w1, [x21, #0xc]
+   bd608:      	b	0xbd554 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x69c>
+   bd60c:      	ldr	w0, [x21, #0xc]
+   bd610:      	sub	w1, w0, #0x1
+   bd614:      	str	w1, [x21, #0xc]
+   bd618:      	b	0xbd3d8 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x520>
+   bd61c:      	ldr	w0, [x21, #0xc]
+   bd620:      	sub	w1, w0, #0x1
+   bd624:      	str	w1, [x21, #0xc]
+   bd628:      	b	0xbd434 <_ZNSt23_Sp_counted_ptr_inplaceIN5Juxie19ControllerJuxieImplESaIS1_ELN9__gnu_cxx12_Lock_policyE2EE10_M_disposeEv+0x57c>
+   bd62c:      	bl	0x9c480 <_ZSt9terminatev@plt>

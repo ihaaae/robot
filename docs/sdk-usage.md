@@ -167,7 +167,11 @@ b.OnRobot();               // 这里段错误
 
 `OffRobot()` 释放 executor，把 `ControllerJuxieImpl` 里的 executor 指针清零，但不停状态轮询线程。线程每 5 ms 解引用一次这个指针，所以 `OffRobot()` 返回 `1` 之后，进程很快就会 **SIGSEGV**。复现：`state_machine_probe offrobot`（两次 `OnRobot()` 让线程启动，然后 `OffRobot()`）。
 
-§6.5 和 §6.6 合起来的意思是：**一个进程里 `OnRobot()` 只调一次，并且不调 `OffRobot()`**，要断电就结束进程。两者在状态机里的位置见 [robot-state-machine.md](robot-state-machine.md) §4。Python 垫片目前**没有**替这两条做守卫（§7 的表）。
+### 6.7 `OffRobot()` 之后不能在同一个实例上再 `OnRobot()`
+
+即使轮询线程从没启动，`OnRobot()` → `OffRobot()` → `OnRobot()` 之后，**销毁这个 controller 时 SIGSEGV**（没有 CAN 时三次调用本身都正常返回，崩在析构里）。原因没有追查。复现：`state_machine_probe offon`。
+
+**§6.5–§6.7 合起来：一个 controller 实例只走一轮 `OnRobot()`（/ `OffRobot()`）**。要重来就销毁它、再新建一个：析构函数会先清掉轮询线程的运行标志、再 `join` 它（`Impl+0xb0` / `Impl+0xa8`），在模拟环境里实测「线程已启动 → 销毁 → 新建 → `OnRobot()`」和「`OffRobot()` → 销毁 → 新建 → `OnRobot()`」都干净。三者在状态机里的位置见 [robot-state-machine.md](robot-state-machine.md) §4；Python 垫片替这三条做了守卫（§7 的表）。
 
 ## 7. 从 Python 调用（`python/` + `shensi_robot.sdk`）
 
@@ -175,7 +179,7 @@ C++ 那边靠 `cmake/juxie-sdk.cmake` 接入；Python 这边对应的是 `python
 
 **为什么是 C ABI + ctypes，而不是 pybind11。** 不是因为 pybind11 表达不了这些类型 —— 它表达得很好。差别在构建输入：pybind11 的扩展模块要**目标架构的 `Python.h`**，还要对上 CPython 的 minor 版本（头文件布局、`pyconfig.h`、扩展名后缀都得匹配），所以从 x86 交叉编译就得额外准备板子的 Python 开发头文件 —— 这是本仓库没有、也没法从宿主机推出来的东西。C ABI 垫片对 Python 一点依赖都没有：它就是个普通的 aarch64 共享库，任何 CPython minor 版本都能用 ctypes 加载。这既是「一条命令，两台机器都适用」成立的前提，也让阻塞的 `MoveJ` / `MoveL` 顺带拿到了 GIL 释放 —— `ctypes.CDLL` 每次调用都会放掉 GIL，而 pybind11 要显式加 `py::call_guard<py::gil_scoped_release>()` 才有同样的行为。
 
-**那三个崩溃守卫和绑定方式无关**，别指望换个绑定库就少写它们：一个进程一个 controller、`OnRobot()` 之前不能调的四个方法、`getFKpose` 的 7~14 限制，都得自己实现。pybind11 能省掉的是别的东西 —— 25 个 `argtypes` 声明、512 字节的字符串缓冲、`ik()` 的 `out[:n]` 切分、`_call`/`_value`/`_flag` 三套返回约定，以及 `guarded()` 那层「把异常编码成整数」的搬运（它会自动把 C++ 异常转成 Python 异常）。代价是上面那套目标 Python 开发环境。**什么时候值得换**：如果板上固定一个 Python 版本、并且能离线提供对应的 aarch64 开发头文件（Debian 上是 `libpython3.11-dev:arm64`），那 pybind11 是更好的长期接口；否则现在这套更划算。
+**那几个崩溃守卫和绑定方式无关**，别指望换个绑定库就少写它们：一个进程一个 controller、`OnRobot()` 之前不能调的四个方法、`getFKpose` 的 7~14 限制、一个实例只走一轮 `OnRobot()` / `OffRobot()`，都得自己实现。pybind11 能省掉的是别的东西 —— 25 个 `argtypes` 声明、512 字节的字符串缓冲、`ik()` 的 `out[:n]` 切分、`_call`/`_value`/`_flag` 三套返回约定，以及 `guarded()` 那层「把异常编码成整数」的搬运（它会自动把 C++ 异常转成 Python 异常）。代价是上面那套目标 Python 开发环境。**什么时候值得换**：如果板上固定一个 Python 版本、并且能离线提供对应的 aarch64 开发头文件（Debian 上是 `libpython3.11-dev:arm64`），那 pybind11 是更好的长期接口；否则现在这套更划算。
 
 两半都是 aarch64，和 SDK 一样 —— 跑在机器人板子上（或模拟环境里），不是在笔记本上。
 
@@ -206,14 +210,14 @@ with Controller() as robot:
     print(robot.get_dof(), robot.ik([0.2, 0, 0.5, 1, 0, 0, 0] * 2))
 ```
 
-**垫片顺手把三个「会让解释器崩掉」的坑变成了异常**，这是它比单纯绑一层更有价值的地方：
+**垫片顺手把几个「会让解释器崩掉」的坑变成了异常**，这是它比单纯绑一层更有价值的地方：
 
 | 坑 | C++ 里的表现 | Python 里的表现 |
 |---|---|---|
 | 一个进程里第二个 `ControllerJuxie` + `OnRobot()` | SIGSEGV（§6.4） | `juxie_create()` 返回 NULL → `SdkError` |
 | 没调 `OnRobot()` 就调 `getDof` / `IK` / `getJointerrcode` / `setJointZeroPosition` | SIGSEGV | `SdkError`，code `-1002` |
 | `getFKpose` 传超过 14 个元素 | 堆溢出（§6.1） | `SdkError`，code `-1003`，根本不会调进去 |
-| 反复 `on_robot()`；线程启动后 `off_robot()` | `std::terminate` / SIGSEGV（§6.5、§6.6） | **未守卫**，同样会让解释器崩掉 |
+| 同一个实例上重复 `on_robot()` / `off_robot()` 这一轮 | `std::terminate` 或 SIGSEGV（§6.5–§6.7） | `SdkError`，code `-1006`（`ERR_NEEDS_NEW_CONTROLLER`）：`close()` 后新建 `Controller` |
 | SDK 里抛出 C++ 异常 | 穿过 C ABI 边界是未定义行为，实际会终止进程 | 垫片在每个导出函数外面接住，转成 code `-1004`（分配失败）/ `-1005`（其他异常） |
 
 中间那一行是逐方法实测出来的：不带 `OnRobot()` 跑一遍 `sdk_probe`，**正好这 4 个** SIGSEGV，其余（`state` / `joints` / `tcp` / `torques` / `config` / `fk` / `faulttype` / `axisfault` / `clearfault` / `stop` / `enable` / `disable` / `movej` / `moveend`）都正常返回。
@@ -223,7 +227,7 @@ with Controller() as robot:
 - 返回 `bool` 的方法（`on_robot()` / `off_robot()` / `enable_robot()` / `disable_robot()` / `stop()` / `clear_fault()` / `set_joint_zero_position()`）返回 `bool`。**`on_robot()` 返回 `False` 是正常结果**（没有 CAN 时板子起不来），不是失败；对后面那几个方法来说要紧的是**调用过**它 —— 实测的崩溃条件正是这个。
 - 返回状态/数值的查询（`state()`、`get_dof()`）直接返回那个数：`0` 是 `power_off`、`4` 是 `fault`、`get_dof()` 是 `7`。这些是答案，不是错误码。
 - 操作类（`move_j()` / `move_j_p()` / `move_l()` / `move_j_canfd()` / `move_p_canfd()` / `move_end()` / `ik()` / `break_*()`）返回非 0 就抛 `SdkError`，`SdkError.code` 是 SDK 自己的码（`0` 成功、`-1` 被拒），可以用 `fault_type(code)` 解码。
-- 垫片自己的码是 `-1000`…`-1005`，SDK 自己的码范围是 `-104`…`0`（`state/error_code.h`），两者不会撞。
+- 垫片自己的码是 `-1000`…`-1006`，SDK 自己的码范围是 `-104`…`0`（`state/error_code.h`），两者不会撞。
 
 **线程**：垫片只把「创建/销毁」串行化（一个互斥量 + 拒绝非当前句柄的销毁），**调用中的方法不受保护**。所以一个 `Controller` 用一个线程，也不要在别的线程还在调用时 `close()`。之所以不做「整调用加锁」：那会让阻塞的 `MoveJ` 把并发的 `stop()` 也一起挡住 —— 在机器人上那是更糟的取舍。
 
@@ -240,7 +244,7 @@ with Controller() as robot:
 | `examples/cpp/07_replay_trajectory.cpp` | **Demo**：按 50 Hz 流式回放厂家录制的轨迹 |
 | `examples/cpp/fk_overflow_repro.cpp` | **故障复现程序（会崩）**：证明 §6.1 的越界，头部带 ASan 编译命令 |
 | `examples/cpp/sdk_probe.cpp` | 逐方法探针，每个方法一次运行，可选 `onrobot` 参数 |
-| `examples/cpp/state_machine_probe.cpp` | 状态机探针：`power_off` / `fault` 两列逐方法，以及 §6.5、§6.6 两个崩溃。只用于模拟环境 |
+| `examples/cpp/state_machine_probe.cpp` | 状态机探针：`power_off` / `fault` 两列逐方法，以及 §6.5–§6.7 三个崩溃。只用于模拟环境 |
 | `examples/cpp/sdk_min_example.cpp` | 最小可用示例（只含 `juxie_controller.h`） |
 | `python/juxie_sdk_bridge.cpp` | **C ABI 垫片**：把 SDK 包成 Python 能调的 C 接口（§7） |
 | `python/build_bridge.sh` | 编译垫片，产出 `python/build/juxie_sdk_bridge.so` |
