@@ -32,7 +32,9 @@ aarch64-linux-gnu-g++ -std=c++17 -O1 \
 - **链接期必须加 `-Wl,-rpath-link`。** `libjuxie_controller.so` 依赖 `libexecutor`、`libbot_servo`、`libbot_planner`、`libbot_traj_planner`、`libbot_kinematics`，不加搜索路径会报一堆 `undefined reference` —— 那是**链接期找不到传递依赖**，不是头文件缺失，别被误导。
 - **运行期要么加 `-Wl,--disable-new-dtags`，要么设 `LD_LIBRARY_PATH`。** 那五个库自己都不带 RPATH，只能靠可执行文件带。现代工具链默认发 `DT_RUNPATH`，而 `DT_RUNPATH` **不用于传递依赖**：`libjuxie_controller` 能找到，它依赖的 `libexecutor` 找不到，程序直接死在 `libexecutor.so.3: cannot open shared object file`。`--disable-new-dtags` 让链接器改发 `DT_RPATH`（可传递搜索）。两条路都实测过。
 
-运行期还需要 arm64 的 `libboost_thread` / `libboost_system` / `libboost_regex`（deb 的 control 里没声明，见主报告 §8）。
+**你的程序运行期不需要 Boost。** SDK 的 10 个库没有一个在 `DT_NEEDED` 里列 Boost（`readelf -d` 实测）。
+需要 `libboost_thread` / `libboost_system` / `libboost_regex` 1.74.0 的是厂家自己的 WebSocket 应用
+`dual_arm_app_interface_node`（deb 的 control 里没声明，见主报告 §8），不是 SDK。
 
 ## 3. ⚠️ 必须先调 `OnRobot()`
 
@@ -72,10 +74,8 @@ robot.OnRobot();               // 必须！否则一半 API 段错误
 - `GetJointPositions` / `GetTCPPose` 在未初始化时返回 `-100.0`，**说明 `-100` 不只是命令侧的哨兵，也是"暂无数据"的返回值**。你的上位机必须判这个值，别直接拿去算。`OnRobot()` 之后即使没有 CAN，这两个读也变成全 `0.0` —— 所以 `0` 和 `-100` 都得判。
 - `GetTCPPose()` 在 `OnRobot()` 后返回 `z = 0.6752`，与 yml 的 `M` 完全一致。注意 `getFKpose()` 在同一零位返回 **0.6755**，两者差约 0.3 mm —— 这是三方模型不一致的一部分，不是笔误，见 [kinematics.md](kinematics.md)。
 - 运动指令（`MoveJ` / `MoveEnd`）在无 CAN 时返回 **-1**（`bot_common::ErrorCode::Error`）。**`IK` 不是这个行为**：它不碰 CAN，两臂位姿都有效时照常解出 14 维关节角（模拟环境实测）；只有位姿里带 `-100` 时才返回 -1。
-  **注意**：这里以前写的是 -101 `RobotConnectFailed`，那是错的 —— 实测复现的是 -1，-101 我们从没观察到过。
-  真机上成功应该是 0。
-- ~~`getFKpose` 从 C++ 调用完全正常，包括 17 元素、LeftNum=7、RightNum=7。所以堆损坏不在 `getFKpose` 里。~~
-  **这条已被推翻，见 §6.1。** `getFKpose` 传 17 个元素确实会堆溢出；探针之所以没崩，是因为它每个进程只调一个方法，越界之后没有下一次分配，glibc 没机会发现。
+  真机上成功应该是 0。返回码的完整表见 [`error-codes.md`](error-codes.md)。
+- 逐方法探针里 `getFKpose` 传 17 个元素**没有崩**，但这不说明它安全 —— 它确实堆溢出（§6.1）。探针每个进程只调一个方法，越界之后没有下一次分配，glibc 没机会发现。
 
 ## 5. 关节向量布局（实测确定）
 
@@ -108,7 +108,7 @@ AddressSanitizer 下的实测（`-fsanitize=address -static-libasan`，这是**�
 
 **不加 sanitizer 时会怎样**：`getFKpose` 照常返回一个看起来正常的位姿，不报错；越界破坏堆元数据，**在下一次分配时才可能被发现**。能不能被发现取决于二进制和之前的分配历史 —— 所以「没崩」不代表安全，也可能是**静默的内存损坏**。这正是逐方法探针漏掉它的原因（每个进程只调一个方法，越界后没有下一次分配）。
 
-复现程序：`examples/cpp/fk_overflow_repro.cpp`，头部带 ASan 编译命令。完整分析见 [sdk.md](sdk.md) 的「已知问题」一节。
+复现程序：`examples/cpp/fk_overflow_repro.cpp`，头部带 ASan 编译命令。**本节是这个缺陷的正本**；它在厂家 WebSocket 应用里表现为整个进程崩溃，那一侧的观察见 [sdk.md](sdk.md) §9「已知问题」。
 
 ### 6.2 `IK()` 返回的向量析构时越界读（独立问题）
 
@@ -122,7 +122,13 @@ allocated by ... malloc inside Juxie::State::i_IK(...)
 
 `i_IK` 用普通 `malloc` 分配输出向量的存储，交回来的却是 `Eigen::VectorXd`，析构时走 Eigen 的对齐释放路径去读指针前的记账字节。属于分配方/释放方不匹配。
 
-这是越界**读**而非写，实测中 `IK` 一直没崩，所以**目前不认为它会立刻破坏内存**；但它是未定义行为，别把「IK 很稳」当成结论。详见 [sdk.md](sdk.md)。
+这是越界**读**而非写，读的是相邻的堆元数据。实测中 `IK` 一直没崩（几十次调用），所以**目前不认为它会立刻破坏内存**；但它是未定义行为，换分配器、编译选项或 glibc 版本都可能变成崩溃：
+
+- 不要依赖「`IK` 很稳」这个观察；
+- 上真机后把它和 §6.1 一起报给厂家；
+- 自己重新实现 IK 就不受这条影响。
+
+**归属存疑**：这是 ASan 下的观察。也可能是 ASan 构建与厂家的 Eigen 用法 / 构建配置不兼容造成的，不一定是厂家 SDK 的固有问题。要在真机上用厂家自己的构建复现一次才能定性。
 
 ### 6.3 `IK` 要求两条臂都带有效位姿
 

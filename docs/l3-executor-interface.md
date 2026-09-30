@@ -69,7 +69,7 @@ L3 回答的是：**谁拥有时钟。**
 |---|---|---|
 | `ExecutorJuxie.hpp`：`double resample_delta {0.005}; //200hz` | 5 ms | 头文件里的默认值 |
 | `usr/etc/juxie_73/executor_arm.yml`：`Resample: 0.002` | **2 ms** | 本机型（`params.yml` 里 `type: "ARM_73"`）的配置。`juxie_53` / `62` / `62KML` 都是 0.005 |
-| 驱动里的 `SLEEP_TIME` | 0.2 ms | 这是驱动收发循环的休眠，不是控制周期（`hardware-acceptance.md`） |
+| 驱动里的 `SLEEP_TIME` | 0.2 ms | 驱动收发循环里的休眠。它是否等于控制周期没有证据，实际循环周期要实测（`hardware-acceptance.md` P1-1）。本文**推测**它不是：200 µs 与两份 yml 的量级都对不上 |
 
 `Resample` 究竟是「轨迹重采样步长」还是「发送周期」，或者两者都是，还没有确认。所以
 **周期是构造参数**，默认取 2 ms（与本机型的配置一致），真机测过之后再定。L4 不得假设周期，
@@ -243,8 +243,8 @@ public:
 | 单拍步长 `|Δq| ≤ v_max · T` | 截断到上限，`clamped_ticks` 加一 | 截断只会让运动变慢，不会让它变危险 |
 | 连续截断超过 M 拍 | 该臂 `halt`，返回 `CommandStep` | 上层持续给出过快的目标，说明上层有 bug |
 
-限位值**不能**取随包 `params.yml` 里的值：那里 `UseLimit: false`，限位全是 `1.5 / 6.5` 这样的
-占位值。真实限位要在真机上标定（`hardware-acceptance.md` P0-4）。在那之前，
+限位值**不能**取随包 `params.yml` 里的值：那里 `UseLimit: false`，每轴限位都是 `[1.5, 6.5]`
+这样的占位值（下限连零位都不包含）。真实限位要在真机上标定（`hardware-acceptance.md` P0-4）。在那之前，
 `SimExecutor` 用 `getConfig()` 在模拟环境里返回的值做测试即可，真实的 `Executor` 构造时必须
 显式传入限位，**不提供默认值**。
 
@@ -285,3 +285,5 @@ public:
 
 - v0：初稿。从 v0 开发计划里的 2.5 / 3.4 / 5.1 / 6.5 抽出「节拍、新鲜度、组包、安全门」合成一层；
   接口对照厂家 `ExecutorBase`；新增两个假实现。
+- v0.1：更正两处——占位限位是 `[1.5, 6.5]`（不是 `1.5 / 6.5` 的含糊写法）；`SLEEP_TIME`
+  不是控制周期只是推测，不是 `hardware-acceptance.md` 的结论。

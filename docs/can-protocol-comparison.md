@@ -5,11 +5,11 @@
 | 来源 | 文件 |
 |---|---|
 | 文档 | [PR0002 关节模组 CANFD/CANopen 使用协议](https://docs.juxieservo.com/docs/protocol/joint-module-canopen)（网页版，Rev 1.0，固件 1.16.07+） |
-| 文档 | `docs/CANopen-V0.6.xlsx`（字典表 / SDO 详解 / 自定义 PDO / PDO 示例） |
-| 文档 | `docs/_V1.0.1.docx`（JXJM-CLIE-FPL-001，35 项故障报警与保护逻辑） |
-| 文档 | `docs/V1.3.xlsx`（按产品分的报错逻辑：R120/120MAX、R80、手臂分体式、Z48 等） |
-| 代码 | `lib/librk3576_can_canfd.so.0.6.4` + `include/rk3576_can_canfd/rk3576_can_canfd.h` |
-| 代码 | `lib/libexecutor.so.0.6.4`（`bot_executor::ExecutorJuxie`） |
+| 文档 | `vendor/originals/documents/CANopen-V0.6.xlsx`（字典表 / SDO 详解 / 自定义 PDO / PDO 示例） |
+| 文档 | `vendor/originals/documents/_V1.0.1.docx`（JXJM-CLIE-FPL-001，35 项故障报警与保护逻辑） |
+| 文档 | `vendor/originals/documents/V1.3.xlsx`（按产品分的报错逻辑：R120/120MAX、R80、手臂分体式、Z48 等） |
+| 代码 | `vendor/sdk/dual-arm-app/0.6.4/usr/lib/librk3576_can_canfd.so.0.6.4` + `usr/include/rk3576_can_canfd/rk3576_can_canfd/rk3576_can_canfd.h` |
+| 代码 | `vendor/sdk/dual-arm-app/0.6.4/usr/lib/libexecutor.so.0.6.4`（`bot_executor::ExecutorJuxie`） |
 
 结论先说：**驱动的 CAN 层与文档基本逐位吻合**，只有少数几处需要留意（见文末「差异与坑」）。
 

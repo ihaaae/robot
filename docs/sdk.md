@@ -135,7 +135,7 @@ GoHomeTest                         MoveJArray04Test    MoveJ_P_Test
 MoveLRectTest                      MoveJCanfdTest      Move_StopTest
 ```
 
-**注意这两条容易搞混**（我一开始就搞错了）：
+**注意这两条容易搞混**：
 
 - `MoveJCanfdTest` 才是**读 CSV 的那一条**：它按 `getenv("DUAL_ARM_SDK_CONFIG") + "/data/array0_all/array04_2.csv"` 拼路径，用 `csv::CSVReader` 逐行读、`strtod` 转数值，然后 `MoveJ_Canfd(joints17, **50**)` 以 50 Hz 流式下发。**这是包内唯一使用在线流控接口的地方**，也是那份 CSV 存在的意义。
 - `MoveJArray04Test` **不读 CSV**：它只是 `memcpy` 两个写死的 17 维位姿，各 `MoveJ(..., 100)` 一次，中间 `sleep(1)`。
@@ -176,7 +176,7 @@ CSV 列到 17 槽的映射（从 `MoveJCanfdTest` 的指令里读出来的，不
 
 实测：`get_FK_pose` 在零位返回 `[0,0,0.6755, 0,-0,0]`；`get_tcp_pose` 零位返回 `z = 0.6752`，与 `M` 完全一致。两者相差 0.3 mm —— 这不是笔误，是三方模型不一致的一部分，别把它当成相符。
 
-> **已经实现了**：见 [`src/shensi_robot/kinematics.py`](../src/shensi_robot/kinematics.py)（FK + 数值 IK，不依赖机器人）和 [`kinematics.md`](kinematics.md)（模型、RPY 约定、TCP 偏置、校验结果）。用厂家二进制校验到 **0.089 mm / 0.0000°**。
+> **已经实现了**：见 [`src/shensi_robot/kinematics.py`](../src/shensi_robot/kinematics.py)（FK + 数值 IK，不依赖机器人）和 [`kinematics.md`](kinematics.md)（模型、RPY 约定、TCP 偏置、校验结果）。**只部分校验**：本库 FK 加拟合的 84.721 mm 偏置能复现厂家 IK 的目标位姿；本库 IK 未与厂家比过；与厂家 FK 对不上。范围见 kinematics.md 开头。
 
 `/usr/etc/params.yml` 里注意 `MaxVelocityFactor: 0.04`（默认速度系数被压到 4%）、`UseLimit: false`（关节限位默认不生效！）。
 
@@ -274,7 +274,7 @@ DUAL_ARM_SDK_CONFIG=/usr/etc qemu-aarch64-static -L $ROOT $ROOT/usr/bin/dual_arm
 
 启动约 20 秒后监听 `0.0.0.0:5566`（HTTP+WS）和 `192.168.10.95:30485`（另一个 TCP 服务，需要先把该 IP 加到网卡上才能 bind 成功）。
 
-（那个应用不属于 SDK，本仓库不提供驱动它的客户端；下面的已知问题都是通过它观察到的。）
+（那个应用不属于 SDK，本仓库不提供驱动它的客户端；下面 `get_FK_pose` 那个已知问题是通过它观察到的。）
 
 **要在模拟环境里跑 Python 那条路**（`shensi_robot.sdk`，见 `sdk-usage.md` §7），sysroot 里还需要一个 aarch64 的解释器。它和 SDK 一样是 arm64，所以宿主机的 python 不行：
 
@@ -296,9 +296,13 @@ qemu-aarch64-static -L $ROOT $ROOT/usr/bin/python3.11 examples/python/sdk_min_ex
 
 （qemu-user 的 guest 进程直接跑在宿主内核上，所以 `PYTHONPATH`、`JUXIE_SDK_BRIDGE` 这些用宿主绝对路径就行；`-L $ROOT` 只影响动态库的搜索前缀。）
 
-### 已知问题：`getFKpose` 输入超过 14 个元素会堆溢出（`get_FK_pose` 因此会崩）
+### 已知问题：`get_FK_pose` 会让整个应用崩溃
 
-`get_FK_pose` 会**直接 abort 整个进程**。栈顶看到的是受害者，真正的越界写发生在它调用的 `getFKpose` 里。用 qemu gdbstub + gdb-multiarch 抓到的栈：
+**根因与机制的正本在 [`sdk-usage.md`](sdk-usage.md) §6.1**：`getFKpose` 分配固定 7 个 double，却拷入 `n - 7` 个，
+所以输入超过 14 个元素就堆溢出（ASan 确定性复现，复现程序 `examples/cpp/fk_overflow_repro.cpp`）。
+这一节只记录**从厂家应用这一侧**观察到的现象，因为它们只能在应用里看到。
+
+`get_FK_pose` 会**直接 abort 整个进程**。用 qemu gdbstub + gdb-multiarch 抓到的栈：
 
 ```
 #0  abort ()
@@ -315,113 +319,40 @@ Fatal glibc error: malloc assertion failure in sysmalloc:
  && prev_inuse (old_top) && ((unsigned long) old_end & (pagesize - 1)) == 0)
 ```
 
-**这是堆损坏（heap corruption），不是业务异常。** 即有人写越界，glibc 在下一次 `malloc` 时才检测到。
+栈顶的 `operator new` 是**受害者**：处理器构造响应的那段代码本身是对的（12 个 `double` 装进 12 元素的 json 数组，
+分配 192 字节，写偏移最大 184）。越界写发生在它之前调用的 `getFKpose` 里 —— 处理器传的正是 17 个元素
+（LeftNum = RightNum = 7），glibc 在下一次 `malloc` 才发现堆被破坏。
 
-进一步看：崩溃的 `operator new` 属于 FK 处理器构造响应的地方，而那处代码是**正确的** —— 12 个 `double` 装进 12 元素的 nlohmann json 数组，分配 `0xc0` = 192 字节，写偏移最大 184，没有越界。
-
-**根因（已定位，AddressSanitizer 实测复现）：`getFKpose` 的输入拷贝越界。**
-
-早期我用逐方法探针验证过 `getFKpose(17 元素, LeftNum=7, RightNum=7)`「完全正常」，据此判断越界不在 `getFKpose` 里。**那个判断是错的**，因为探针每个进程只调一个方法：越界确实发生了，但**没人做下一次分配**，所以 glibc 没机会发现。
-
-用 `-fsanitize=address` 重新编译后，机制完全清楚了：
-
-```
-WRITE of size 80 at ... 0 bytes to the right of 56-byte region
-  #1 Juxie::State::getFKpose(std::vector<double> const&, int, int)
-allocated by ... operator new inside Juxie::State::getFKpose
-```
-
-`getFKpose` 分配一个**固定的 7 个 double（56 字节）**的缓冲区，然后把 **`n - 7`** 个 double `memmove` 进去（`n` = 你传的 vector 元素个数）。所以只要 `n - 7 ≤ 7`，也就是 **`n ≤ 14`**，就在界内；`LeftNum` / `RightNum` 不参与缓冲区尺寸。
-
-| 输入 `n` | `memmove` 长度 | 结果 |
-|---|---|---|
-| 14 | 56 字节 | 界内 |
-| 15 | 64 字节 | 越界 8 字节 |
-| 17 | 80 字节 | 越界 24 字节 |
-| 20 | 104 字节 | 越界 48 字节 |
-
-`LeftNum` 取 3 / 5 / 7 / 9 / 10 / 11 都一样：边界只看 `n ≤ 14`。
-
-这同时解释了 WebSocket `get_FK_pose` 为什么会崩：它的处理器**正是**传 17 个元素（LeftNum=RightNum=7），越界写在 `getFKpose` 内部完成，而崩在处理器随后的 `operator new` 上 —— 栈上看到的是受害者，不是凶手。
-
-**结论：这是厂家代码里一个真实的内存安全缺陷，位置在 `getFKpose` 的输入拷贝上。** 绕过办法只有一个：**调用 `getFKpose` 时元素个数不要超过 14，并且只用实测过的 14 元素 / LeftNum=RightNum=7 这一组**（`v[14..16]` 并不是「被忽略」，而是**溢出**）。WebSocket 的 `get_FK_pose` 没有任何请求形态是安全的，只能不调。上真机后请优先复现一次；如果真机也崩，这就是必须报给厂家的 P0 问题（会整个进程挂掉，Web 界面和运动控制一起停）。
-
-复现程序：`examples/cpp/fk_overflow_repro.cpp`（自带 ASan 编译命令）。
-
-### 已知问题（另一个，独立）：`IK()` 返回的 Eigen 向量析构时越界读
-
-这一条和上面的 FK 越界**无关**，单独调 `IK()` 就会触发，`getFKpose` 完全不参与。同样是 ASan 发现的：
-
-```
-READ of size 8 at ... 8 bytes to the left of 112-byte region [..., ...)
-  #0 Eigen::DenseStorage<double, -1, -1, 1, 0>::~DenseStorage()
-allocated by ... malloc inside Juxie::State::i_IK(std::array<double,14> const&, Eigen::Matrix<double,-1,1,0,-1,1>&)
-```
-
-`i_IK` 用**普通 `malloc`** 分配输出向量的存储，但交回来的是一个 `Eigen::VectorXd`，它析构时走 Eigen 的对齐释放路径，会去读指针前面 8 字节的记账信息。这是**分配方与释放方不匹配**。
-
-严重性判断：这是一个越界**读**，读的是相邻的堆元数据，不是越界写。实测中 `IK` 一直「稳定」（几十次调用没问题），所以**目前不认为它会直接破坏内存**。但它是未定义行为，换分配器、换编译选项、换 glibc 版本都可能变成崩溃，所以：
-
-- 不要依赖「`IK` 很稳」这个观察；
-- 上真机后把它和 FK 越界一起报给厂家；
-- 如果你们自己重新实现 IK，就不受这条影响。
-
-**归属存疑（别过度解读）**：以上是「ASan 下的观察」。我**没有**确认它一定是厂家 SDK 的固有问题—— 也可能是我的 ASan 构建与厂家 Eigen 用法/构建配置不兼容造成的。这条要等真机上用厂家自己的构建复现一次才能定性。
-
-（顺带更正一处我早先的说法：`shensi_robot.kinematics` 的数值 IK **并没有**被验证到与厂家 IK 一致0.089 mm —— 0.089 mm 是「本库 FK + 84.721 mm 偏置 vs 厂家 IK 的目标位姿」，没有调用本库的 `ik()`。）
-
-其他观察：
+应用侧的其他观察：
 
 - **空闲 60 秒不崩**（systemd 重启计数 +0），不是自发的定时崩溃。
 - 一旦开始调用 `get_FK_pose`，往往第一次就崩（新起的进程也一样），因此**无法用它做闭环校验**。
+- 崩掉的是整个 `dual_arm_app_interface_node` 进程，不只是那一个 WebSocket 连接。systemd 会重启它（观察到重启计数涨到 11），期间界面和所有控制通道都不可用。
 - `get_device_state` / `get_joint_position` / `get_tcp_pose` / `get_config` / `get_IK_joint_position` 都稳定，几十次调用没问题。
-- 早先偶尔能成功调用 `get_FK_pose`（记录了零位返回 `[0,0,0.6755,0,-0,0]`），所以不是 100% 必崩，但复现率很高。这个 0.6755 与直接调 `getFKpose` 的零位结果一致（而 `get_tcp_pose` 是 0.6752），进一步印证 `get_FK_pose` 就是 `getFKpose` 的一层薄包装，越界发生在被包装的那个函数里。
+- 早先偶尔能成功调用 `get_FK_pose`（零位返回 `[0,0,0.6755,0,-0,0]`），所以不是 100% 必崩。这个 0.6755 与直接调 `getFKpose` 的零位结果一致（而 `get_tcp_pose` 是 0.6752），印证 `get_FK_pose` 是 `getFKpose` 的薄包装。
 
-结论：**这是厂家代码里一个真实的内存安全缺陷**，位置在 `getFKpose` 的输入拷贝上（见上一节）。上真机后请优先复现一次；如果真机也崩，这就是必须报给厂家的 P0 问题（会整个进程挂掉，Web 界面和运动控制一起停）。
+WebSocket 的 `get_FK_pose` 没有任何请求形态是安全的，只能不调。真机上的复现步骤见 [`hardware-acceptance.md`](hardware-acceptance.md) P0-3。
 
-> 注意：`get_FK_pose` 崩掉的是整个 `dual_arm_app_interface_node` 进程 —— 不只是那一个 WebSocket 连接。systemd 会重启它（我们观察到重启计数涨到 11），期间界面和所有控制通道都不可用。
+### 已知问题（另一个，独立）：`IK()` 返回的 Eigen 向量析构时越界读
+
+见 [`sdk-usage.md`](sdk-usage.md) §6.2（正本，含归属存疑的说明）。
 
 ### 其他观察到的崩溃
 
 还见过 SIGSEGV，以及两个客户端并发轮询时的一次崩溃。这些没拿到栈。建议在真机上做一轮稳定性测试（长时间轮询 + 并发客户端）。
 
-## 离线运动学：已还原并校验
-
-详见 [`kinematics.md`](kinematics.md)。摘要：
-
-- 厂家用**旋量法（PoE）**：\(T(q) = e^{[S_1]q_1}\cdots e^{[S_7]q_7} M\)，7 自由度/臂，参数全在 yml 里。
-- **RPY 是 ZYX 顺序**（\(R = R_z R_y R_x\)）；用 XYZ 会有 0.687° 误差。
-- 本库的离线 **FK**（加 `0.084721` m 工具偏置）复现了厂家 IK 被要求到达的目标位姿：7 个位姿 × 双臂，最大误差 **0.089 mm / 0.0000°**。**注意这条的边界**：它是「本库 FK + 该偏置 vs 目标位姿」，不是「本库 IK vs 厂家 IK」—— 本库的数值 IK 没有和厂家比过；那个偏置是**拟合**出来的，不是推导出来的。
-- **那个 84.721 mm 偏置只是拟合结果**：它说明「往本库的 yml FK 上加这么多，能让厂家 IK 解出的关节角落回它被要求到达的目标位姿」。它**没有**证明厂家 IK 与 `get_tcp_pose` / `get_FK_pose` 之间存在恒定偏置（那条链子没测过），也不是「IK 的结果拿去 `MoveJ_P` 会差 84.7 mm」—— `MoveJ_P` 收笛卡尔位姿、不收关节角，两者不构成可直接串联的调用链（我之前写错了，见 kinematics.md）。
-- ⚠️ **但 yml / `get_FK_pose` / `get_IK_joint_position` 三者互不一致**：我的模型与厂家 FK 在一般位姿下差 200–700 mm（旋转也差 100°+），虽然单关节激励全部吻合、旋转总是精确一致。试过空间系/体系、正序/逆序、以及全部 5040 种螺旋轴排列，都不成立。详见 [kinematics.md](kinematics.md)。
-  所以：**离线 FK 暂时不能用来预测 TCP 位置**；离线 IK 与厂家 IK 也没有直接比对过 —— 别把上面那个偏置当成两者之间的确定关系。
-
-校验命令：
-
-```bash
-python3 validate_fk_direct.py --probe run/sysroot/usr/bin/sdk_probe --sysroot run/sysroot
-shensi-kin --arm left fk --joints "0 0 0 0 0 0 0"
-```
-
 ---
 
 ## 10. 交付物索引
 
+文档索引只维护一份：[`index.md`](index.md)。代码与示例见 README 的 Layout / Demos 两节。
+
+证据文件（本报告的结论出自这里）：
+
 | 文件 | 说明 |
 |---|---|
-| [`sdk.md`](sdk.md) | 本文件 |
-| [`kinematics.md`](kinematics.md) | 离线运动学说明、校验结果、以及三方模型不一致的分析 |
-| [`hardware-acceptance.md`](hardware-acceptance.md) | 真机到货后的验收与验证清单（P0/P1/P2） |
-| [`sdk-usage.md`](sdk-usage.md) | **C++ SDK 实测可用性**：缺头文件的影响、编译链接命令、`OnRobot()` 强制初始化坑、逐方法结果 |
-| [`examples/cpp/sdk_probe.cpp`](../examples/cpp/sdk_probe.cpp) | C++ SDK 逐方法探针（可带任意关节角做 FK） |
-| [`examples/cpp/06_vendor_cyclic_motion.cpp`](../examples/cpp/06_vendor_cyclic_motion.cpp) | 同一个动作，但直接用 C++ SDK 做，不经过节点的 `fixed_action` |
-| [`examples/cpp/07_replay_trajectory.cpp`](../examples/cpp/07_replay_trajectory.cpp) | 按 50 Hz `MoveJ_Canfd` 回放厂家录制的轨迹（对应厂家 `MoveJCanfdTest`） |
-| [`examples/cpp/sdk_min_example.cpp`](../examples/cpp/sdk_min_example.cpp) | 最小可用 C++ 示例 |
-| [`can-protocol-comparison.md`](can-protocol-comparison.md) | 厂家 CAN 文档 vs 驱动实现逐项比对 |
-| [`src/shensi_robot/kinematics.py`](../src/shensi_robot/kinematics.py) | **离线运动学库（FK + IK，已校验）**，不依赖机器人 |
-| [`tools/probes/validate_fk_direct.py`](../tools/probes/validate_fk_direct.py) | 用厂家 `getFKpose` 直接校验离线 FK 的脚本 |
-| `syms/*.syms` | 全部库与可执行文件的 demangle 符号表 |
-| `dwarf_sources.txt` | DWARF 里的编译单元 / 源文件清单 |
-| `doc_canopen.txt` | `CANopen-V0.6.xlsx` 文本化 |
-| `doc_v13.txt` | `V1.3.xlsx` 文本化 |
-| `doc_v101.txt` | `_V1.0.1.docx` 文本化 |
+| `research/evidence/syms/*.syms` | 全部库与可执行文件的 demangle 符号表 |
+| `research/evidence/dwarf_sources.txt` | DWARF 里的编译单元 / 源文件清单 |
+| `research/vendor-derived/doc_canopen.txt` | `CANopen-V0.6.xlsx` 文本化 |
+| `research/vendor-derived/doc_v13.txt` | `V1.3.xlsx` 文本化 |
+| `research/vendor-derived/doc_v101.txt` | `_V1.0.1.docx` 文本化 |

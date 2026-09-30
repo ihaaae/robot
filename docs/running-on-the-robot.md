@@ -29,13 +29,15 @@ your code
   documentation frame for frame.
 * **How the host reaches the CAN controller** is direct register mapping instead of Linux
   SocketCAN. That is a host-side access mechanism one layer below the protocol.
-* **This repository gives you the top layer.** With `Juxie::ControllerJuxie` you never see a
-  CAN frame or `/dev/mem`; both are implementation detail of the vendor's stack.
+* **The vendor SDK is the top layer.** With `Juxie::ControllerJuxie` you never see a CAN frame
+  or `/dev/mem`; both are implementation detail of the vendor's stack. This page is about
+  deploying a program that links it. Our own replacement lives in `cpp/` and takes the second
+  path below ([`development-plan.md`](development-plan.md)).
 
 Which means there are two independent ways to drive the joints, and `/dev/mem` only matters
 for one of them:
 
-| | Use the SDK (this repository) | Write your own CAN layer |
+| | Use the vendor SDK | Write your own CAN layer (our `cpp/` SDK) |
 |---|---|---|
 | When | control software on the vendor's board | replacing the board, or driving the joints from a PC |
 | You write | `MoveJ`, `IK`, `MoveJ_Canfd`, … | the CAN frames themselves |
@@ -126,9 +128,7 @@ makes `LD_LIBRARY_PATH` unnecessary **only if you deploy the tree to exactly tha
 
 Linking by hand without that flag, or deploying to a different path, needs `LD_LIBRARY_PATH`.
 Without either one the loader finds `libjuxie_controller` and then fails on its own dependency:
-`libexecutor.so.3: cannot open shared object file`. Both ways were measured under emulation —
-the five libraries `libjuxie_controller` needs carry no RPATH of their own, and the modern
-`DT_RUNPATH` tag is not searched transitively.
+`libexecutor.so.3: cannot open shared object file`. Why: [`sdk-usage.md`](sdk-usage.md) §2.
 
 ⚠️ The paths above are a suggestion, not a vendor convention. Nothing in the package dictates
 where a user program or the SDK tree should live.
@@ -141,13 +141,9 @@ a network hop.
 
 The package also contains a vendor application, `dual_arm_app_interface_node`, which serves a
 JSON-over-WebSocket API and a web UI on port 5566, plus a second TCP service on 30485. It is
-**built on top of the SDK, not part of it**: it is `interface_adaptor.cpp` — a table of 25
-command lambdas — plus `libweb_interface` and `libbot_interface`, and it links
-`Juxie::ControllerJuxie` exactly like any consumer of the SDK does. The dependency runs one way
-only: the 25 command names appear in the node executable and in none of the vendor libraries,
-and `libjuxie_controller.so` contains no WebSocket and no JSON symbols at all. This repository
-neither documents that application nor vendors its libraries — its executable is inside the
-`.deb`.
+**built on top of the SDK, not part of it** — it links `Juxie::ControllerJuxie` like any other
+consumer (evidence: [`sdk.md`](sdk.md) §4). This repository neither documents that application
+nor vendors its libraries; its executable is inside the `.deb`.
 
 ⚠️ **It matters anyway, because it owns the CAN bus while it runs.** The node opens the bus
 through `/dev/mem` and owns the joint bus; a second process doing the same would at best
@@ -164,7 +160,8 @@ installed there.
 In order, before writing anything that moves:
 
 1. **Which image is on the board** — `uname -a`, `cat /etc/os-release`. Does it match
-   `Architecture: arm64` and provide Boost 1.74.0?
+   `Architecture: arm64`? (Boost 1.74.0 matters only if you want to run the vendor's own node;
+   your program does not need it — see the table above.)
 2. **Is the node running** — `ss -ltnp | grep -E '5566|30485'`, and if so what started it.
 3. **Device access** — `ls -l /dev/mem /dev/misc_shm_can*`, and whether your user can open them.
 4. **A no-power program first** — `examples/cpp/01_offline_kinematics.cpp` in its default mode
