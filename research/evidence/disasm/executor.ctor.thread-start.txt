@@ -1,0 +1,77 @@
+
+libexecutor.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000eb204 <_ZZN12bot_executor13ExecutorJuxieC4ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEEENKUlR10JointStateSF_E_clESF_SF_>:
+   ec5c0:      	add	sp, sp, #0x730
+   ec5c4:      	ret
+
+00000000000ec5c8 <_ZZN12bot_executor13ExecutorJuxieC4ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEEENKUlPvE0_clESE_>:
+   ec5c8:      	stp	x29, x30, [sp, #-0x20]!
+   ec5cc:      	mov	x29, sp
+   ec5d0:      	str	x0, [sp, #0x18]
+   ec5d4:      	str	x1, [sp, #0x10]
+   ec5d8:      	mov	x1, #0x0                // =0
+   ec5dc:      	ldr	x0, [sp, #0x10]
+   ec5e0:      	bl	0xdbcd0 <_ZN12bot_executor13ExecutorJuxie26ucas_can0_task_send_threadEPv@plt>
+   ec5e4:      	mov	x0, #0x0                // =0
+   ec5e8:      	ldp	x29, x30, [sp], #0x20
+   ec5ec:      	ret
+
+00000000000ec5f0 <_ZZN12bot_executor13ExecutorJuxieC4ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEEENUlPvE0_4_FUNESE_>:
+   ec5f0:      	stp	x29, x30, [sp, #-0x20]!
+   ec5f4:      	mov	x29, sp
+   ec5f8:      	str	x0, [sp, #0x18]
+   ec5fc:      	ldr	x1, [sp, #0x18]
+   ec600:      	mov	x0, #0x0                // =0
+   ec604:      	bl	0xec5c8 <_ZZN12bot_executor13ExecutorJuxieC4ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEEENKUlPvE0_clESE_>
+   ec608:      	ldp	x29, x30, [sp], #0x20
+   ec60c:      	ret
+
+00000000000ec610 <_ZZN12bot_executor13ExecutorJuxieC4ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEEENKUlPvE0_cvPFSE_SE_EEv>:
+   ec610:      	sub	sp, sp, #0x10
+   ec614:      	str	x0, [sp, #0x8]
+   ec618:      	adrp	x0, 0xec000 <_ZZN12bot_executor13ExecutorJuxieC4ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEEENKUlR10JointStateSF_E_clESF_SF_+0xdfc>
+   ec61c:      	add	x0, x0, #0x5f0
+   ec620:      	add	sp, sp, #0x10
+   ec624:      	ret
+
+00000000000ec628 <_ZZN12bot_executor13ExecutorJuxieC4ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEEENKUlPvE1_clESE_>:
+   ec628:      	stp	x29, x30, [sp, #-0x20]!
+   ec62c:      	mov	x29, sp
+   ec630:      	str	x0, [sp, #0x18]
+   ec634:      	str	x1, [sp, #0x10]
+   ec638:      	mov	x1, #0x0                // =0
+   ec63c:      	ldr	x0, [sp, #0x10]
+   ec640:      	bl	0xe0be0 <_ZN12bot_executor13ExecutorJuxie26ucas_can1_task_send_threadEPv@plt>
+   ec644:      	mov	x0, #0x0                // =0
+   ec648:      	ldp	x29, x30, [sp], #0x20
+   ec64c:      	ret
+
+00000000000ec650 <_ZZN12bot_executor13ExecutorJuxieC4ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEEENUlPvE1_4_FUNESE_>:
+   ec650:      	stp	x29, x30, [sp, #-0x20]!
+   ec654:      	mov	x29, sp
+   ec658:      	str	x0, [sp, #0x18]
+   ec65c:      	ldr	x1, [sp, #0x18]
+   ec660:      	mov	x0, #0x0                // =0
+   ec664:      	bl	0xec628 <_ZZN12bot_executor13ExecutorJuxieC4ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEEENKUlPvE1_clESE_>
+   ec668:      	ldp	x29, x30, [sp], #0x20
+   ec66c:      	ret
+
+00000000000ec670 <_ZZN12bot_executor13ExecutorJuxieC4ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEEENKUlPvE1_cvPFSE_SE_EEv>:
+   ec670:      	sub	sp, sp, #0x10
+   ec674:      	str	x0, [sp, #0x8]
+   ec678:      	adrp	x0, 0xec000 <_ZZN12bot_executor13ExecutorJuxieC4ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEEENKUlR10JointStateSF_E_clESF_SF_+0xdfc>
+   ec67c:      	add	x0, x0, #0x650
+   ec680:      	add	sp, sp, #0x10
+   ec684:      	ret
+
+00000000000ec688 <_ZZN12bot_executor13ExecutorJuxieC4ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEEENKUlvE2_clEv>:
+   ec688:      	stp	x29, x30, [sp, #-0x20]!
+   ec68c:      	mov	x29, sp
+   ec690:      	str	x0, [sp, #0x18]
+   ec694:      	ldr	x0, [sp, #0x18]
+   ec698:      	ldr	x0, [x0]
+   ec69c:      	bl	0xea1f0 <_ZN12bot_executor13ExecutorJuxie8watchdogEv@plt>
+   ec6a0:      	nop

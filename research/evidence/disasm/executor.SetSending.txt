@@ -1,0 +1,45 @@
+
+libexecutor.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000f3ccc <_ZN12bot_executor13ExecutorJuxie10SetSendingEbi>:
+   f3ccc:      	stp	x29, x30, [sp, #-0x20]!
+   f3cd0:      	mov	x29, sp
+   f3cd4:      	str	x0, [sp, #0x18]
+   f3cd8:      	strb	w1, [sp, #0x17]
+   f3cdc:      	str	w2, [sp, #0x10]
+   f3ce0:      	ldr	w0, [sp, #0x10]
+   f3ce4:      	cmp	w0, #0x1
+   f3ce8:      	b.ne	0xf3d20 <_ZN12bot_executor13ExecutorJuxie10SetSendingEbi+0x54>
+   f3cec:      	ldrb	w0, [sp, #0x17]
+   f3cf0:      	cmp	w0, #0x0
+   f3cf4:      	b.eq	0xf3d0c <_ZN12bot_executor13ExecutorJuxie10SetSendingEbi+0x40>
+   f3cf8:      	ldr	x0, [sp, #0x18]
+   f3cfc:      	add	x0, x0, #0x4ba
+   f3d00:      	mov	w1, #0x1                // =1
+   f3d04:      	bl	0xdb270 <_ZNSt6atomicIbEaSEb@plt>
+   f3d08:      	b	0xf3d5c <_ZN12bot_executor13ExecutorJuxie10SetSendingEbi+0x90>
+   f3d0c:      	ldr	x0, [sp, #0x18]
+   f3d10:      	add	x0, x0, #0x4ba
+   f3d14:      	mov	w1, #0x0                // =0
+   f3d18:      	bl	0xdb270 <_ZNSt6atomicIbEaSEb@plt>
+   f3d1c:      	b	0xf3d5c <_ZN12bot_executor13ExecutorJuxie10SetSendingEbi+0x90>
+   f3d20:      	ldr	w0, [sp, #0x10]
+   f3d24:      	cmp	w0, #0x2
+   f3d28:      	b.ne	0xf3d5c <_ZN12bot_executor13ExecutorJuxie10SetSendingEbi+0x90>
+   f3d2c:      	ldrb	w0, [sp, #0x17]
+   f3d30:      	cmp	w0, #0x0
+   f3d34:      	b.eq	0xf3d4c <_ZN12bot_executor13ExecutorJuxie10SetSendingEbi+0x80>
+   f3d38:      	ldr	x0, [sp, #0x18]
+   f3d3c:      	add	x0, x0, #0x4bb
+   f3d40:      	mov	w1, #0x1                // =1
+   f3d44:      	bl	0xdb270 <_ZNSt6atomicIbEaSEb@plt>
+   f3d48:      	b	0xf3d5c <_ZN12bot_executor13ExecutorJuxie10SetSendingEbi+0x90>
+   f3d4c:      	ldr	x0, [sp, #0x18]
+   f3d50:      	add	x0, x0, #0x4bb
+   f3d54:      	mov	w1, #0x0                // =0
+   f3d58:      	bl	0xdb270 <_ZNSt6atomicIbEaSEb@plt>
+   f3d5c:      	nop
+   f3d60:      	ldp	x29, x30, [sp], #0x20
+   f3d64:      	ret

@@ -1,0 +1,458 @@
+
+librk3576_can_canfd.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000422b8 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType>:
+   422b8:      	sub	sp, sp, #0x370
+   422bc:      	stp	x29, x30, [sp]
+   422c0:      	mov	x29, sp
+   422c4:      	stp	x19, x20, [sp, #0x10]
+   422c8:      	str	x21, [sp, #0x20]
+   422cc:      	str	x0, [sp, #0x48]
+   422d0:      	str	x1, [sp, #0x40]
+   422d4:      	str	w2, [sp, #0x3c]
+   422d8:      	adrp	x0, 0x89000 <usleep@@GLIBC_2.17+0x89000>
+   422dc:      	ldr	x0, [x0, #0xe38]
+   422e0:      	ldr	x1, [x0]
+   422e4:      	str	x1, [sp, #0x368]
+   422e8:      	mov	x1, #0x0                // =0
+   422ec:      	str	xzr, [sp, #0x360]
+   422f0:      	ldr	x0, [sp, #0x48]
+   422f4:      	ldrb	w0, [x0, #0x420]
+   422f8:      	cmp	w0, #0x0
+   422fc:      	b.eq	0x42320 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x68>
+   42300:      	ldr	x0, [sp, #0x48]
+   42304:      	ldrb	w0, [x0, #0x380]
+   42308:      	eor	w0, w0, #0x1
+   4230c:      	and	w0, w0, #0xff
+   42310:      	cmp	w0, #0x0
+   42314:      	b.eq	0x42320 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x68>
+   42318:      	mov	w0, #0x0                // =0
+   4231c:      	b	0x42928 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x670>
+   42320:      	ldr	x0, [sp, #0x48]
+   42324:      	ldrb	w0, [x0, #0x421]
+   42328:      	cmp	w0, #0x0
+   4232c:      	b.eq	0x42350 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x98>
+   42330:      	ldr	x0, [sp, #0x48]
+   42334:      	ldrb	w0, [x0, #0x414]
+   42338:      	eor	w0, w0, #0x1
+   4233c:      	and	w0, w0, #0xff
+   42340:      	cmp	w0, #0x0
+   42344:      	b.eq	0x42350 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x98>
+   42348:      	mov	w0, #0x0                // =0
+   4234c:      	b	0x42928 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x670>
+   42350:      	ldr	w0, [sp, #0x3c]
+   42354:      	cmp	w0, #0x0
+   42358:      	cset	w0, ne
+   4235c:      	and	w0, w0, #0xff
+   42360:      	strb	w0, [sp, #0x5b]
+   42364:      	str	xzr, [sp, #0x70]
+   42368:      	ldr	x0, [sp, #0x40]
+   4236c:      	bl	0x39550 <_ZNKSt6vectorIiSaIiEE4sizeEv@plt>
+   42370:      	mov	x1, x0
+   42374:      	ldr	x0, [sp, #0x70]
+   42378:      	cmp	x0, x1
+   4237c:      	cset	w0, lo
+   42380:      	and	w0, w0, #0xff
+   42384:      	cmp	w0, #0x0
+   42388:      	b.eq	0x42924 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x66c>
+   4238c:      	ldr	x1, [sp, #0x70]
+   42390:      	ldr	x0, [sp, #0x40]
+   42394:      	bl	0x37970 <_ZNKSt6vectorIiSaIiEEixEm@plt>
+   42398:      	ldr	w0, [x0]
+   4239c:      	str	w0, [sp, #0x6c]
+   423a0:      	ldr	w0, [sp, #0x6c]
+   423a4:      	cmp	w0, #0x0
+   423a8:      	b.le	0x423c4 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x10c>
+   423ac:      	ldr	x0, [sp, #0x48]
+   423b0:      	ldr	w0, [x0, #0x458]
+   423b4:      	lsl	w0, w0, #1
+   423b8:      	ldr	w1, [sp, #0x6c]
+   423bc:      	cmp	w1, w0
+   423c0:      	b.le	0x424b4 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x1fc>
+   423c4:      	bl	0x38d90 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   423c8:      	cmp	x0, #0x0
+   423cc:      	b.eq	0x423f0 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x138>
+   423d0:      	bl	0x38d90 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   423d4:      	mov	w1, #0x2                // =2
+   423d8:      	bl	0x36360 <_ZNK4plog6LoggerILi0EE13checkSeverityENS_8SeverityE@plt>
+   423dc:      	and	w0, w0, #0xff
+   423e0:      	eor	w0, w0, #0x1
+   423e4:      	and	w0, w0, #0xff
+   423e8:      	cmp	w0, #0x0
+   423ec:      	b.eq	0x423f8 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x140>
+   423f0:      	mov	w0, #0x1                // =1
+   423f4:      	b	0x423fc <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x144>
+   423f8:      	mov	w0, #0x0                // =0
+   423fc:      	cmp	w0, #0x0
+   42400:      	b.ne	0x424ac <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x1f4>
+   42404:      	add	x7, sp, #0x160
+   42408:      	mov	w6, #0x0                // =0
+   4240c:      	mov	x5, #0x0                // =0
+   42410:      	adrp	x0, 0x6b000 <_ZN3fmt2v76detail12write_paddedILNS0_5align4typeE2ENS1_15buffer_appenderIcEEcRZNS1_9write_intIS6_cZNS1_10int_writerIS6_cjE6on_octEvEUlS6_E_EET_SB_iNS0_17basic_string_viewIcEERKNS0_18basic_format_specsIT0_EET1_EUlS6_E_EESF_SF_RKNSE_ISJ_EEmmOT2_+0x150>
+   42414:      	add	x4, x0, #0xfd8
+   42418:      	mov	x3, #0x359              // =857
+   4241c:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   42420:      	add	x2, x0, #0x7b0
+   42424:      	mov	w1, #0x2                // =2
+   42428:      	mov	x0, x7
+   4242c:      	bl	0x38f50 <_ZN4plog6RecordC1ENS_8SeverityEPKcmS3_PKvi@plt>
+   42430:      	add	x0, sp, #0x160
+   42434:      	bl	0x37ee0 <_ZN4plog6Record3refEv@plt>
+   42438:      	mov	x2, x0
+   4243c:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   42440:      	add	x1, x0, #0x818
+   42444:      	mov	x0, x2
+   42448:      	bl	0x346e0 <_ZN4plog6RecordlsIA17_cEERS0_RKT_@plt>
+   4244c:      	mov	x2, x0
+   42450:      	ldr	x0, [sp, #0x70]
+   42454:      	add	x0, x0, #0x1
+   42458:      	str	x0, [sp, #0xd0]
+   4245c:      	add	x0, sp, #0xd0
+   42460:      	mov	x1, x0
+   42464:      	mov	x0, x2
+   42468:      	bl	0x37b20 <_ZN4plog6RecordlsImEERS0_RKT_@plt>
+   4246c:      	mov	x2, x0
+   42470:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   42474:      	add	x1, x0, #0x830
+   42478:      	mov	x0, x2
+   4247c:      	bl	0x347f0 <_ZN4plog6RecordlsIA10_cEERS0_RKT_@plt>
+   42480:      	mov	x2, x0
+   42484:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   42488:      	add	x1, x0, #0x840
+   4248c:      	mov	x0, x2
+   42490:      	bl	0x35080 <_ZN4plog6RecordlsIA12_cEERS0_RKT_@plt>
+   42494:      	mov	x19, x0
+   42498:      	bl	0x38d90 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   4249c:      	mov	x1, x19
+   424a0:      	bl	0x38020 <_ZN4plog6LoggerILi0EEpLERKNS_6RecordE@plt>
+   424a4:      	add	x0, sp, #0x160
+   424a8:      	bl	0x348f0 <_ZN4plog6RecordD1Ev@plt>
+   424ac:      	mov	w0, #0x0                // =0
+   424b0:      	b	0x42928 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x670>
+   424b4:      	ldr	w0, [sp, #0x6c]
+   424b8:      	sub	w0, w0, #0x1
+   424bc:      	str	w0, [sp, #0x64]
+   424c0:      	mov	w0, #0x1                // =1
+   424c4:      	strb	w0, [sp, #0x58]
+   424c8:      	ldr	x0, [sp, #0x48]
+   424cc:      	ldr	w0, [x0, #0x458]
+   424d0:      	ldr	w1, [sp, #0x6c]
+   424d4:      	cmp	w1, w0
+   424d8:      	b.le	0x424f4 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x23c>
+   424dc:      	ldr	x0, [sp, #0x48]
+   424e0:      	ldr	w0, [x0, #0x458]
+   424e4:      	ldr	w1, [sp, #0x64]
+   424e8:      	sub	w0, w1, w0
+   424ec:      	str	w0, [sp, #0x64]
+   424f0:      	strb	wzr, [sp, #0x58]
+   424f4:      	strb	wzr, [sp, #0x59]
+   424f8:      	strb	wzr, [sp, #0x5a]
+   424fc:      	ldrb	w0, [sp, #0x58]
+   42500:      	cmp	w0, #0x0
+   42504:      	b.eq	0x4257c <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x2c4>
+   42508:      	ldr	x1, [sp, #0x48]
+   4250c:      	ldrsw	x0, [sp, #0x64]
+   42510:      	add	x0, x1, x0
+   42514:      	ldrb	w0, [x0, #0x2f0]
+   42518:      	lsr	w0, w0, #7
+   4251c:      	strb	w0, [sp, #0x59]
+   42520:      	ldr	x1, [sp, #0x48]
+   42524:      	ldrsw	x0, [sp, #0x64]
+   42528:      	add	x0, x1, x0
+   4252c:      	ldrb	w0, [x0, #0x2f7]
+   42530:      	strb	w0, [sp, #0x5a]
+   42534:      	ldr	x1, [sp, #0x48]
+   42538:      	ldrsw	x0, [sp, #0x64]
+   4253c:      	add	x0, x0, #0xd8
+   42540:      	lsl	x0, x0, #2
+   42544:      	add	x0, x1, x0
+   42548:      	ldr	w0, [x0, #0x4]
+   4254c:      	asr	w0, w0, #8
+   42550:      	and	w0, w0, #0xff
+   42554:      	strb	w0, [sp, #0x361]
+   42558:      	ldr	x1, [sp, #0x48]
+   4255c:      	ldrsw	x0, [sp, #0x64]
+   42560:      	add	x0, x0, #0xd8
+   42564:      	lsl	x0, x0, #2
+   42568:      	add	x0, x1, x0
+   4256c:      	ldr	w0, [x0, #0x4]
+   42570:      	and	w0, w0, #0xff
+   42574:      	strb	w0, [sp, #0x362]
+   42578:      	b	0x425ec <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x334>
+   4257c:      	ldr	x1, [sp, #0x48]
+   42580:      	ldrsw	x0, [sp, #0x64]
+   42584:      	add	x0, x1, x0
+   42588:      	ldrb	w0, [x0, #0x384]
+   4258c:      	lsr	w0, w0, #7
+   42590:      	strb	w0, [sp, #0x59]
+   42594:      	ldr	x1, [sp, #0x48]
+   42598:      	ldrsw	x0, [sp, #0x64]
+   4259c:      	add	x0, x1, x0
+   425a0:      	ldrb	w0, [x0, #0x38b]
+   425a4:      	strb	w0, [sp, #0x5a]
+   425a8:      	ldr	x1, [sp, #0x48]
+   425ac:      	ldrsw	x0, [sp, #0x64]
+   425b0:      	add	x0, x0, #0xfc
+   425b4:      	lsl	x0, x0, #2
+   425b8:      	add	x0, x1, x0
+   425bc:      	ldr	w0, [x0, #0x8]
+   425c0:      	asr	w0, w0, #8
+   425c4:      	and	w0, w0, #0xff
+   425c8:      	strb	w0, [sp, #0x361]
+   425cc:      	ldr	x1, [sp, #0x48]
+   425d0:      	ldrsw	x0, [sp, #0x64]
+   425d4:      	add	x0, x0, #0xfc
+   425d8:      	lsl	x0, x0, #2
+   425dc:      	add	x0, x1, x0
+   425e0:      	ldr	w0, [x0, #0x8]
+   425e4:      	and	w0, w0, #0xff
+   425e8:      	strb	w0, [sp, #0x362]
+   425ec:      	ldrb	w0, [sp, #0x59]
+   425f0:      	ubfiz	w0, w0, #7, #1
+   425f4:      	and	w0, w0, #0xff
+   425f8:      	sxtb	w1, w0
+   425fc:      	ldrb	w0, [sp, #0x5b]
+   42600:      	lsl	w0, w0, #6
+   42604:      	sxtb	w0, w0
+   42608:      	orr	w0, w1, w0
+   4260c:      	sxtb	w1, w0
+   42610:      	ldrb	w0, [sp, #0x5a]
+   42614:      	lsl	w0, w0, #1
+   42618:      	sxtb	w0, w0
+   4261c:      	orr	w0, w1, w0
+   42620:      	sxtb	w0, w0
+   42624:      	and	w0, w0, #0xff
+   42628:      	strb	w0, [sp, #0x360]
+   4262c:      	ldrb	w0, [sp, #0x58]
+   42630:      	cmp	w0, #0x0
+   42634:      	b.eq	0x42678 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x3c0>
+   42638:      	ldr	x0, [sp, #0x48]
+   4263c:      	ldr	x0, [x0]
+   42640:      	add	x0, x0, #0x18
+   42644:      	ldr	x5, [x0]
+   42648:      	ldr	w0, [sp, #0x64]
+   4264c:      	add	w0, w0, #0x1
+   42650:      	orr	w0, w0, #0x100
+   42654:      	mov	w1, w0
+   42658:      	add	x0, sp, #0x360
+   4265c:      	mov	x4, x0
+   42660:      	mov	w3, #0x7                // =7
+   42664:      	mov	w2, w1
+   42668:      	mov	w1, #0x0                // =0
+   4266c:      	ldr	x0, [sp, #0x48]
+   42670:      	blr	x5
+   42674:      	b	0x426b4 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x3fc>
+   42678:      	ldr	x0, [sp, #0x48]
+   4267c:      	ldr	x0, [x0]
+   42680:      	add	x0, x0, #0x18
+   42684:      	ldr	x5, [x0]
+   42688:      	ldr	w0, [sp, #0x64]
+   4268c:      	add	w0, w0, #0x1
+   42690:      	orr	w0, w0, #0x100
+   42694:      	mov	w1, w0
+   42698:      	add	x0, sp, #0x360
+   4269c:      	mov	x4, x0
+   426a0:      	mov	w3, #0x7                // =7
+   426a4:      	mov	w2, w1
+   426a8:      	mov	w1, #0x1                // =1
+   426ac:      	ldr	x0, [sp, #0x48]
+   426b0:      	blr	x5
+   426b4:      	add	x0, sp, #0xe0
+   426b8:      	bl	0x37c50 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC1Ev@plt>
+   426bc:      	str	wzr, [sp, #0x68]
+   426c0:      	ldr	w0, [sp, #0x68]
+   426c4:      	cmp	w0, #0x7
+   426c8:      	b.gt	0x42788 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x4d0>
+   426cc:      	add	x1, sp, #0x360
+   426d0:      	ldrsw	x0, [sp, #0x68]
+   426d4:      	add	x0, x1, x0
+   426d8:      	str	x0, [sp, #0x78]
+   426dc:      	ldr	x1, [sp, #0x78]
+   426e0:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   426e4:      	add	x0, x0, #0x718
+   426e8:      	bl	0x38ef0 <_ZN3fmt2v717make_args_checkedIJRhEA8_ccEENS0_16format_arg_storeINS0_20basic_format_contextINS0_6detail15buffer_appenderIT1_EES8_EEJDpNSt16remove_referenceIT_E4typeEEEERKT0_DpRKSE_@plt>
+   426ec:      	stp	x0, x1, [sp, #0x120]
+   426f0:      	add	x0, sp, #0x120
+   426f4:      	str	x0, [sp, #0x80]
+   426f8:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   426fc:      	add	x0, x0, #0x718
+   42700:      	bl	0x38390 <_ZN3fmt2v714to_string_viewIcLi0EEENS0_17basic_string_viewIT_EEPKS3_@plt>
+   42704:      	mov	x20, x0
+   42708:      	mov	x21, x1
+   4270c:      	ldr	x0, [sp, #0x80]
+   42710:      	str	x0, [sp, #0x88]
+   42714:      	add	x0, sp, #0xd0
+   42718:      	str	x0, [sp, #0x90]
+   4271c:      	ldr	x0, [sp, #0x88]
+   42720:      	str	x0, [sp, #0x98]
+   42724:      	ldr	x0, [sp, #0x98]
+   42728:      	str	x0, [sp, #0xa0]
+   4272c:      	ldr	x0, [sp, #0xa0]
+   42730:      	mov	x2, x0
+   42734:      	mov	x1, #0x2                // =2
+   42738:      	ldr	x0, [sp, #0x90]
+   4273c:      	bl	0x35fa0 <_ZN3fmt2v717basic_format_argsINS0_20basic_format_contextINS0_6detail15buffer_appenderIcEEcEEEC1EyPKNS3_5valueIS6_EE@plt>
+   42740:      	nop
+   42744:      	nop
+   42748:      	add	x0, sp, #0x160
+   4274c:      	mov	x8, x0
+   42750:      	ldp	x2, x3, [sp, #0xd0]
+   42754:      	mov	x0, x20
+   42758:      	mov	x1, x21
+   4275c:      	bl	0x36bb0 <_ZN3fmt2v76detail7vformatB5cxx11ENS0_17basic_string_viewIcEENS0_11format_argsE@plt>
+   42760:      	nop
+   42764:      	add	x1, sp, #0x160
+   42768:      	add	x0, sp, #0xe0
+   4276c:      	bl	0x393e0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE6appendERKS4_@plt>
+   42770:      	add	x0, sp, #0x160
+   42774:      	bl	0x35d40 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev@plt>
+   42778:      	ldr	w0, [sp, #0x68]
+   4277c:      	add	w0, w0, #0x1
+   42780:      	str	w0, [sp, #0x68]
+   42784:      	b	0x426c0 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x408>
+   42788:      	bl	0x38d90 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   4278c:      	cmp	x0, #0x0
+   42790:      	b.eq	0x427b4 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x4fc>
+   42794:      	bl	0x38d90 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   42798:      	mov	w1, #0x4                // =4
+   4279c:      	bl	0x36360 <_ZNK4plog6LoggerILi0EE13checkSeverityENS_8SeverityE@plt>
+   427a0:      	and	w0, w0, #0xff
+   427a4:      	eor	w0, w0, #0x1
+   427a8:      	and	w0, w0, #0xff
+   427ac:      	cmp	w0, #0x0
+   427b0:      	b.eq	0x427bc <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x504>
+   427b4:      	mov	w0, #0x1                // =1
+   427b8:      	b	0x427c0 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x508>
+   427bc:      	mov	w0, #0x0                // =0
+   427c0:      	cmp	w0, #0x0
+   427c4:      	b.ne	0x42904 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x64c>
+   427c8:      	add	x7, sp, #0x160
+   427cc:      	mov	w6, #0x0                // =0
+   427d0:      	mov	x5, #0x0                // =0
+   427d4:      	adrp	x0, 0x6b000 <_ZN3fmt2v76detail12write_paddedILNS0_5align4typeE2ENS1_15buffer_appenderIcEEcRZNS1_9write_intIS6_cZNS1_10int_writerIS6_cjE6on_octEvEUlS6_E_EET_SB_iNS0_17basic_string_viewIcEERKNS0_18basic_format_specsIT0_EET1_EUlS6_E_EESF_SF_RKNSE_ISJ_EEmmOT2_+0x150>
+   427d8:      	add	x4, x0, #0xfd8
+   427dc:      	mov	x3, #0x37d              // =893
+   427e0:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   427e4:      	add	x2, x0, #0x7b0
+   427e8:      	mov	w1, #0x4                // =4
+   427ec:      	mov	x0, x7
+   427f0:      	bl	0x38f50 <_ZN4plog6RecordC1ENS_8SeverityEPKcmS3_PKvi@plt>
+   427f4:      	add	x0, sp, #0x160
+   427f8:      	bl	0x37ee0 <_ZN4plog6Record3refEv@plt>
+   427fc:      	mov	x19, x0
+   42800:      	ldrb	w0, [sp, #0x58]
+   42804:      	cmp	w0, #0x0
+   42808:      	b.eq	0x42814 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x55c>
+   4280c:      	mov	w0, #0x0                // =0
+   42810:      	b	0x42818 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x560>
+   42814:      	mov	w0, #0x1                // =1
+   42818:      	str	w0, [sp, #0x5c]
+   4281c:      	ldr	w0, [sp, #0x64]
+   42820:      	add	w0, w0, #0x1
+   42824:      	orr	w0, w0, #0x100
+   42828:      	str	w0, [sp, #0x60]
+   4282c:      	add	x3, sp, #0xe0
+   42830:      	add	x2, sp, #0x60
+   42834:      	add	x1, sp, #0x5c
+   42838:      	add	x0, sp, #0x3c
+   4283c:      	add	x4, sp, #0x120
+   42840:      	mov	x8, x4
+   42844:      	mov	x4, x3
+   42848:      	mov	x3, x2
+   4284c:      	mov	x2, x1
+   42850:      	mov	x1, x0
+   42854:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   42858:      	add	x0, x0, #0x778
+   4285c:      	bl	0x34ca0 <_ZN3fmt2v717make_args_checkedIJR9BreakType6Can_IfiRNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEEA54_ccEENS0_16format_arg_storeINS0_20basic_format_contextINS0_6detail15buffer_appenderIT1_EESH_EEJDpNSt16remove_referenceIT_E4typeEEEERKT0_DpRKSN_@plt>
+   42860:      	add	x0, sp, #0x120
+   42864:      	str	x0, [sp, #0xa8]
+   42868:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   4286c:      	add	x0, x0, #0x778
+   42870:      	bl	0x38390 <_ZN3fmt2v714to_string_viewIcLi0EEENS0_17basic_string_viewIT_EEPKS3_@plt>
+   42874:      	mov	x20, x0
+   42878:      	mov	x21, x1
+   4287c:      	ldr	x0, [sp, #0xa8]
+   42880:      	str	x0, [sp, #0xb0]
+   42884:      	add	x0, sp, #0xd0
+   42888:      	str	x0, [sp, #0xb8]
+   4288c:      	ldr	x0, [sp, #0xb0]
+   42890:      	str	x0, [sp, #0xc0]
+   42894:      	ldr	x0, [sp, #0xc0]
+   42898:      	str	x0, [sp, #0xc8]
+   4289c:      	ldr	x0, [sp, #0xc8]
+   428a0:      	mov	x2, x0
+   428a4:      	mov	x1, #0xd121             // =53537
+   428a8:      	ldr	x0, [sp, #0xb8]
+   428ac:      	bl	0x35fa0 <_ZN3fmt2v717basic_format_argsINS0_20basic_format_contextINS0_6detail15buffer_appenderIcEEcEEEC1EyPKNS3_5valueIS6_EE@plt>
+   428b0:      	nop
+   428b4:      	nop
+   428b8:      	add	x0, sp, #0x100
+   428bc:      	mov	x8, x0
+   428c0:      	ldp	x2, x3, [sp, #0xd0]
+   428c4:      	mov	x0, x20
+   428c8:      	mov	x1, x21
+   428cc:      	bl	0x36bb0 <_ZN3fmt2v76detail7vformatB5cxx11ENS0_17basic_string_viewIcEENS0_11format_argsE@plt>
+   428d0:      	nop
+   428d4:      	add	x0, sp, #0x100
+   428d8:      	mov	x1, x0
+   428dc:      	mov	x0, x19
+   428e0:      	bl	0x385f0 <_ZN4plog6RecordlsINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEEERS0_RKT_@plt>
+   428e4:      	mov	x19, x0
+   428e8:      	bl	0x38d90 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   428ec:      	mov	x1, x19
+   428f0:      	bl	0x38020 <_ZN4plog6LoggerILi0EEpLERKNS_6RecordE@plt>
+   428f4:      	add	x0, sp, #0x100
+   428f8:      	bl	0x35d40 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev@plt>
+   428fc:      	add	x0, sp, #0x160
+   42900:      	bl	0x348f0 <_ZN4plog6RecordD1Ev@plt>
+   42904:      	mov	w0, #0x3e8              // =1000
+   42908:      	bl	0x37560 <usleep@plt>
+   4290c:      	add	x0, sp, #0xe0
+   42910:      	bl	0x35d40 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev@plt>
+   42914:      	ldr	x0, [sp, #0x70]
+   42918:      	add	x0, x0, #0x1
+   4291c:      	str	x0, [sp, #0x70]
+   42920:      	b	0x42368 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0xb0>
+   42924:      	mov	w0, #0x1                // =1
+   42928:      	mov	w1, w0
+   4292c:      	adrp	x0, 0x89000 <usleep@@GLIBC_2.17+0x89000>
+   42930:      	ldr	x0, [x0, #0xe38]
+   42934:      	ldr	x2, [sp, #0x368]
+   42938:      	ldr	x3, [x0]
+   4293c:      	subs	x2, x2, x3
+   42940:      	mov	x3, #0x0                // =0
+   42944:      	b.eq	0x429b0 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x6f8>
+   42948:      	b	0x429ac <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x6f4>
+   4294c:      	mov	x19, x0
+   42950:      	add	x0, sp, #0x160
+   42954:      	bl	0x348f0 <_ZN4plog6RecordD1Ev@plt>
+   42958:      	mov	x0, x19
+   4295c:      	b	0x429a8 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x6f0>
+   42960:      	mov	x19, x0
+   42964:      	add	x0, sp, #0x160
+   42968:      	bl	0x35d40 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev@plt>
+   4296c:      	b	0x42998 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x6e0>
+   42970:      	mov	x19, x0
+   42974:      	add	x0, sp, #0x100
+   42978:      	bl	0x35d40 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev@plt>
+   4297c:      	mov	x0, x19
+   42980:      	b	0x42984 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x6cc>
+   42984:      	mov	x19, x0
+   42988:      	add	x0, sp, #0x160
+   4298c:      	bl	0x348f0 <_ZN4plog6RecordD1Ev@plt>
+   42990:      	b	0x42998 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x6e0>
+   42994:      	mov	x19, x0
+   42998:      	add	x0, sp, #0xe0
+   4299c:      	bl	0x35d40 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev@plt>
+   429a0:      	mov	x0, x19
+   429a4:      	b	0x429a8 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl14sendJointBreakERKSt6vectorIiSaIiEE9BreakType+0x6f0>
+   429a8:      	bl	0x38dd0 <_Unwind_Resume@plt>
+   429ac:      	bl	0x35140 <__stack_chk_fail@plt>
+   429b0:      	mov	w0, w1
+   429b4:      	ldp	x19, x20, [sp, #0x10]
+   429b8:      	ldr	x21, [sp, #0x20]
+   429bc:      	ldp	x29, x30, [sp]
+   429c0:      	add	sp, sp, #0x370
+   429c4:      	ret

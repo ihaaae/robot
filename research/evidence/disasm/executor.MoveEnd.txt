@@ -1,0 +1,116 @@
+
+libexecutor.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000f1c88 <_ZN12bot_executor13ExecutorJuxie7MoveEndEdi>:
+   f1c88:      	stp	x29, x30, [sp, #-0x50]!
+   f1c8c:      	mov	x29, sp
+   f1c90:      	str	x0, [sp, #0x28]
+   f1c94:      	str	d0, [sp, #0x20]
+   f1c98:      	str	w1, [sp, #0x1c]
+   f1c9c:      	adrp	x0, 0x1a8000 <_ZTVSt23_Sp_counted_ptr_inplaceISt5mutexSaIS0_ELN9__gnu_cxx12_Lock_policyE2EE+0x20>
+   f1ca0:      	ldr	x0, [x0, #0xbd8]
+   f1ca4:      	ldr	x1, [x0]
+   f1ca8:      	str	x1, [sp, #0x48]
+   f1cac:      	mov	x1, #0x0                // =0
+   f1cb0:      	mov	w0, #0x3e8              // =1000
+   f1cb4:      	bl	0xe3760 <usleep@plt>
+   f1cb8:      	mov	x0, #0xc4               // =196
+   f1cbc:      	movk	x0, #0x300, lsl #16
+   f1cc0:      	movk	x0, #0xe8, lsl #32
+   f1cc4:      	str	x0, [sp, #0x40]
+   f1cc8:      	adrp	x0, 0x164000 <_ZN8nlohmann16json_abi_v3_11_26detail9dtoa_implL6kGammaE+0x1668>
+   f1ccc:      	ldr	d1, [x0, #0x838]
+   f1cd0:      	ldr	d0, [sp, #0x20]
+   f1cd4:      	fdiv	d0, d0, d1
+   f1cd8:      	mov	x0, #0x404e000000000000 // =4633641066610819072
+   f1cdc:      	fmov	d1, x0
+   f1ce0:      	fmul	d0, d0, d1
+   f1ce4:      	mov	x0, #0x400000000000     // =70368744177664
+   f1ce8:      	movk	x0, #0x4059, lsl #48
+   f1cec:      	fmov	d1, x0
+   f1cf0:      	fmul	d0, d0, d1
+   f1cf4:      	fcvtzs	w0, d0
+   f1cf8:      	str	w0, [sp, #0x38]
+   f1cfc:      	ldr	w0, [sp, #0x38]
+   f1d00:      	asr	w0, w0, #8
+   f1d04:      	and	w0, w0, #0xff
+   f1d08:      	strb	w0, [sp, #0x41]
+   f1d0c:      	ldr	w0, [sp, #0x38]
+   f1d10:      	and	w0, w0, #0xff
+   f1d14:      	strb	w0, [sp, #0x42]
+   f1d18:      	mov	w0, #0x108              // =264
+   f1d1c:      	str	w0, [sp, #0x3c]
+   f1d20:      	ldr	w0, [sp, #0x1c]
+   f1d24:      	cmp	w0, #0x0
+   f1d28:      	b.ne	0xf1d90 <_ZN12bot_executor13ExecutorJuxie7MoveEndEdi+0x108>
+   f1d2c:      	ldr	x0, [sp, #0x28]
+   f1d30:      	add	x0, x0, #0x4a8
+   f1d34:      	bl	0xdae30 <_ZNKSt19__shared_ptr_accessIN16rk3576_can_canfd14RK3576CanCanfdELN9__gnu_cxx12_Lock_policyE2ELb0ELb0EEptEv@plt>
+   f1d38:      	ldr	x1, [x0]
+   f1d3c:      	add	x1, x1, #0x18
+   f1d40:      	ldr	x5, [x1]
+   f1d44:      	add	x1, sp, #0x40
+   f1d48:      	mov	x4, x1
+   f1d4c:      	mov	w3, #0x7                // =7
+   f1d50:      	ldr	w2, [sp, #0x3c]
+   f1d54:      	mov	w1, #0x0                // =0
+   f1d58:      	blr	x5
+   f1d5c:      	ldr	x0, [sp, #0x28]
+   f1d60:      	add	x0, x0, #0x4a8
+   f1d64:      	bl	0xdae30 <_ZNKSt19__shared_ptr_accessIN16rk3576_can_canfd14RK3576CanCanfdELN9__gnu_cxx12_Lock_policyE2ELb0ELb0EEptEv@plt>
+   f1d68:      	ldr	x1, [x0]
+   f1d6c:      	add	x1, x1, #0x18
+   f1d70:      	ldr	x5, [x1]
+   f1d74:      	add	x1, sp, #0x40
+   f1d78:      	mov	x4, x1
+   f1d7c:      	mov	w3, #0x7                // =7
+   f1d80:      	ldr	w2, [sp, #0x3c]
+   f1d84:      	mov	w1, #0x1                // =1
+   f1d88:      	blr	x5
+   f1d8c:      	b	0xf1e0c <_ZN12bot_executor13ExecutorJuxie7MoveEndEdi+0x184>
+   f1d90:      	ldr	w0, [sp, #0x1c]
+   f1d94:      	cmp	w0, #0x1
+   f1d98:      	b.ne	0xf1dd0 <_ZN12bot_executor13ExecutorJuxie7MoveEndEdi+0x148>
+   f1d9c:      	ldr	x0, [sp, #0x28]
+   f1da0:      	add	x0, x0, #0x4a8
+   f1da4:      	bl	0xdae30 <_ZNKSt19__shared_ptr_accessIN16rk3576_can_canfd14RK3576CanCanfdELN9__gnu_cxx12_Lock_policyE2ELb0ELb0EEptEv@plt>
+   f1da8:      	ldr	x1, [x0]
+   f1dac:      	add	x1, x1, #0x18
+   f1db0:      	ldr	x5, [x1]
+   f1db4:      	add	x1, sp, #0x40
+   f1db8:      	mov	x4, x1
+   f1dbc:      	mov	w3, #0x7                // =7
+   f1dc0:      	ldr	w2, [sp, #0x3c]
+   f1dc4:      	mov	w1, #0x0                // =0
+   f1dc8:      	blr	x5
+   f1dcc:      	b	0xf1e0c <_ZN12bot_executor13ExecutorJuxie7MoveEndEdi+0x184>
+   f1dd0:      	ldr	w0, [sp, #0x1c]
+   f1dd4:      	cmp	w0, #0x2
+   f1dd8:      	b.ne	0xf1e0c <_ZN12bot_executor13ExecutorJuxie7MoveEndEdi+0x184>
+   f1ddc:      	ldr	x0, [sp, #0x28]
+   f1de0:      	add	x0, x0, #0x4a8
+   f1de4:      	bl	0xdae30 <_ZNKSt19__shared_ptr_accessIN16rk3576_can_canfd14RK3576CanCanfdELN9__gnu_cxx12_Lock_policyE2ELb0ELb0EEptEv@plt>
+   f1de8:      	ldr	x1, [x0]
+   f1dec:      	add	x1, x1, #0x18
+   f1df0:      	ldr	x5, [x1]
+   f1df4:      	add	x1, sp, #0x40
+   f1df8:      	mov	x4, x1
+   f1dfc:      	mov	w3, #0x7                // =7
+   f1e00:      	ldr	w2, [sp, #0x3c]
+   f1e04:      	mov	w1, #0x1                // =1
+   f1e08:      	blr	x5
+   f1e0c:      	mov	w0, #0x0                // =0
+   f1e10:      	mov	w1, w0
+   f1e14:      	adrp	x0, 0x1a8000 <_ZTVSt23_Sp_counted_ptr_inplaceISt5mutexSaIS0_ELN9__gnu_cxx12_Lock_policyE2EE+0x20>
+   f1e18:      	ldr	x0, [x0, #0xbd8]
+   f1e1c:      	ldr	x2, [sp, #0x48]
+   f1e20:      	ldr	x3, [x0]
+   f1e24:      	subs	x2, x2, x3
+   f1e28:      	mov	x3, #0x0                // =0
+   f1e2c:      	b.eq	0xf1e34 <_ZN12bot_executor13ExecutorJuxie7MoveEndEdi+0x1ac>
+   f1e30:      	bl	0xdb1e0 <__stack_chk_fail@plt>
+   f1e34:      	mov	w0, w1
+   f1e38:      	ldp	x29, x30, [sp], #0x50
+   f1e3c:      	ret

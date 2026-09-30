@@ -1,0 +1,388 @@
+
+librk3576_can_canfd.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+0000000000042bec <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv>:
+   42bec:      	sub	sp, sp, #0x380
+   42bf0:      	stp	x29, x30, [sp]
+   42bf4:      	mov	x29, sp
+   42bf8:      	stp	x19, x20, [sp, #0x10]
+   42bfc:      	str	x21, [sp, #0x20]
+   42c00:      	str	x0, [sp, #0x38]
+   42c04:      	str	x1, [sp, #0x30]
+   42c08:      	adrp	x0, 0x89000 <usleep@@GLIBC_2.17+0x89000>
+   42c0c:      	ldr	x0, [x0, #0xe38]
+   42c10:      	ldr	x1, [x0]
+   42c14:      	str	x1, [sp, #0x378]
+   42c18:      	mov	x1, #0x0                // =0
+   42c1c:      	mov	w0, #0x3e8              // =1000
+   42c20:      	bl	0x37560 <usleep@plt>
+   42c24:      	ldr	x0, [sp, #0x38]
+   42c28:      	add	x0, x0, #0x8
+   42c2c:      	mov	w1, #0x5                // =5
+   42c30:      	bl	0x389b0 <_ZNKSt6atomicIbE4loadESt12memory_order@plt>
+   42c34:      	and	w0, w0, #0xff
+   42c38:      	cmp	w0, #0x0
+   42c3c:      	b.eq	0x4306c <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x480>
+   42c40:      	ldr	x0, [sp, #0x38]
+   42c44:      	add	x1, x0, #0x10
+   42c48:      	add	x0, sp, #0xa0
+   42c4c:      	bl	0x361f0 <_ZNSt11unique_lockISt5mutexEC1ERS0_@plt>
+   42c50:      	ldr	x0, [sp, #0x38]
+   42c54:      	add	x0, x0, #0x110
+   42c58:      	ldr	x2, [sp, #0x38]
+   42c5c:      	add	x1, sp, #0xa0
+   42c60:      	bl	0x36340 <_ZNSt18condition_variable4waitIZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPvEUlvE_EEvRSt11unique_lockISt5mutexET_@plt>
+   42c64:      	ldr	x0, [sp, #0x38]
+   42c68:      	add	x0, x0, #0x8
+   42c6c:      	mov	w1, #0x5                // =5
+   42c70:      	bl	0x389b0 <_ZNKSt6atomicIbE4loadESt12memory_order@plt>
+   42c74:      	and	w0, w0, #0xff
+   42c78:      	eor	w0, w0, #0x1
+   42c7c:      	and	w0, w0, #0xff
+   42c80:      	cmp	w0, #0x0
+   42c84:      	b.eq	0x42d30 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x144>
+   42c88:      	bl	0x38d90 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   42c8c:      	cmp	x0, #0x0
+   42c90:      	b.eq	0x42cb4 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0xc8>
+   42c94:      	bl	0x38d90 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   42c98:      	mov	w1, #0x2                // =2
+   42c9c:      	bl	0x36360 <_ZNK4plog6LoggerILi0EE13checkSeverityENS_8SeverityE@plt>
+   42ca0:      	and	w0, w0, #0xff
+   42ca4:      	eor	w0, w0, #0x1
+   42ca8:      	and	w0, w0, #0xff
+   42cac:      	cmp	w0, #0x0
+   42cb0:      	b.eq	0x42cbc <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0xd0>
+   42cb4:      	mov	w0, #0x1                // =1
+   42cb8:      	b	0x42cc0 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0xd4>
+   42cbc:      	mov	w0, #0x0                // =0
+   42cc0:      	cmp	w0, #0x0
+   42cc4:      	b.ne	0x42d28 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x13c>
+   42cc8:      	add	x7, sp, #0x178
+   42ccc:      	mov	w6, #0x0                // =0
+   42cd0:      	mov	x5, #0x0                // =0
+   42cd4:      	adrp	x0, 0x6b000 <_ZN3fmt2v76detail12write_paddedILNS0_5align4typeE2ENS1_15buffer_appenderIcEEcRZNS1_9write_intIS6_cZNS1_10int_writerIS6_cjE6on_octEvEUlS6_E_EET_SB_iNS0_17basic_string_viewIcEERKNS0_18basic_format_specsIT0_EET1_EUlS6_E_EESF_SF_RKNSE_ISJ_EEmmOT2_+0x150>
+   42cd8:      	add	x4, x0, #0xfd8
+   42cdc:      	mov	x3, #0x3b1              // =945
+   42ce0:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   42ce4:      	add	x2, x0, #0x850
+   42ce8:      	mov	w1, #0x2                // =2
+   42cec:      	mov	x0, x7
+   42cf0:      	bl	0x38f50 <_ZN4plog6RecordC1ENS_8SeverityEPKcmS3_PKvi@plt>
+   42cf4:      	add	x0, sp, #0x178
+   42cf8:      	bl	0x37ee0 <_ZN4plog6Record3refEv@plt>
+   42cfc:      	mov	x2, x0
+   42d00:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   42d04:      	add	x1, x0, #0x8a0
+   42d08:      	mov	x0, x2
+   42d0c:      	bl	0x34660 <_ZN4plog6RecordlsIA32_cEERS0_RKT_@plt>
+   42d10:      	mov	x19, x0
+   42d14:      	bl	0x38d90 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   42d18:      	mov	x1, x19
+   42d1c:      	bl	0x38020 <_ZN4plog6LoggerILi0EEpLERKNS_6RecordE@plt>
+   42d20:      	add	x0, sp, #0x178
+   42d24:      	bl	0x348f0 <_ZN4plog6RecordD1Ev@plt>
+   42d28:      	mov	w19, #0x0               // =0
+   42d2c:      	b	0x43058 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x46c>
+   42d30:      	adrp	x0, 0x8d000 <_ZN3fmt2v76detail10basic_dataIvE31dragonbox_pow10_significands_64E+0xd0>
+   42d34:      	add	x1, x0, #0x580
+   42d38:      	mov	w0, #0x1                // =1
+   42d3c:      	bl	0x369d0 <clock_gettime@plt>
+   42d40:      	ldr	x0, [sp, #0x38]
+   42d44:      	add	x0, x0, #0x70
+   42d48:      	bl	0x39210 <_ZNSt5dequeI11canfd_frameSaIS0_EE5frontEv@plt>
+   42d4c:      	mov	x1, x0
+   42d50:      	add	x0, sp, #0x130
+   42d54:      	ldp	x2, x3, [x1]
+   42d58:      	stp	x2, x3, [x0]
+   42d5c:      	ldp	x2, x3, [x1, #0x10]
+   42d60:      	stp	x2, x3, [x0, #0x10]
+   42d64:      	ldp	x2, x3, [x1, #0x20]
+   42d68:      	stp	x2, x3, [x0, #0x20]
+   42d6c:      	ldp	x2, x3, [x1, #0x30]
+   42d70:      	stp	x2, x3, [x0, #0x30]
+   42d74:      	ldr	x1, [x1, #0x40]
+   42d78:      	str	x1, [x0, #0x40]
+   42d7c:      	ldr	x0, [sp, #0x38]
+   42d80:      	add	x0, x0, #0x70
+   42d84:      	bl	0x38c60 <_ZNSt5dequeI11canfd_frameSaIS0_EE9pop_frontEv@plt>
+   42d88:      	ldr	w1, [sp, #0x130]
+   42d8c:      	ldrb	w0, [sp, #0x134]
+   42d90:      	mov	w2, w0
+   42d94:      	add	x0, sp, #0x130
+   42d98:      	add	x0, x0, #0x8
+   42d9c:      	mov	x4, x0
+   42da0:      	mov	w3, w2
+   42da4:      	mov	w2, w1
+   42da8:      	mov	w1, #0x1                // =1
+   42dac:      	mov	w0, #0x0                // =0
+   42db0:      	bl	0x37fa0 <can_send_data@plt>
+   42db4:      	ldr	x0, [sp, #0x38]
+   42db8:      	ldrb	w0, [x0, #0x45c]
+   42dbc:      	cmp	w0, #0x0
+   42dc0:      	b.eq	0x4300c <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x420>
+   42dc4:      	add	x0, sp, #0xc0
+   42dc8:      	bl	0x37c50 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC1Ev@plt>
+   42dcc:      	str	wzr, [sp, #0x44]
+   42dd0:      	ldrb	w0, [sp, #0x134]
+   42dd4:      	mov	w1, w0
+   42dd8:      	ldr	w0, [sp, #0x44]
+   42ddc:      	cmp	w0, w1
+   42de0:      	b.ge	0x42ea4 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x2b8>
+   42de4:      	add	x1, sp, #0x130
+   42de8:      	ldrsw	x0, [sp, #0x44]
+   42dec:      	add	x0, x1, x0
+   42df0:      	add	x0, x0, #0x8
+   42df4:      	str	x0, [sp, #0x48]
+   42df8:      	ldr	x1, [sp, #0x48]
+   42dfc:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   42e00:      	add	x0, x0, #0x718
+   42e04:      	bl	0x38ef0 <_ZN3fmt2v717make_args_checkedIJRhEA8_ccEENS0_16format_arg_storeINS0_20basic_format_contextINS0_6detail15buffer_appenderIT1_EES8_EEJDpNSt16remove_referenceIT_E4typeEEEERKT0_DpRKSE_@plt>
+   42e08:      	stp	x0, x1, [sp, #0x100]
+   42e0c:      	add	x0, sp, #0x100
+   42e10:      	str	x0, [sp, #0x50]
+   42e14:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   42e18:      	add	x0, x0, #0x718
+   42e1c:      	bl	0x38390 <_ZN3fmt2v714to_string_viewIcLi0EEENS0_17basic_string_viewIT_EEPKS3_@plt>
+   42e20:      	mov	x20, x0
+   42e24:      	mov	x21, x1
+   42e28:      	ldr	x0, [sp, #0x50]
+   42e2c:      	str	x0, [sp, #0x58]
+   42e30:      	add	x0, sp, #0xb0
+   42e34:      	str	x0, [sp, #0x60]
+   42e38:      	ldr	x0, [sp, #0x58]
+   42e3c:      	str	x0, [sp, #0x68]
+   42e40:      	ldr	x0, [sp, #0x68]
+   42e44:      	str	x0, [sp, #0x70]
+   42e48:      	ldr	x0, [sp, #0x70]
+   42e4c:      	mov	x2, x0
+   42e50:      	mov	x1, #0x2                // =2
+   42e54:      	ldr	x0, [sp, #0x60]
+   42e58:      	bl	0x35fa0 <_ZN3fmt2v717basic_format_argsINS0_20basic_format_contextINS0_6detail15buffer_appenderIcEEcEEEC1EyPKNS3_5valueIS6_EE@plt>
+   42e5c:      	nop
+   42e60:      	nop
+   42e64:      	add	x0, sp, #0x178
+   42e68:      	mov	x8, x0
+   42e6c:      	ldp	x2, x3, [sp, #0xb0]
+   42e70:      	mov	x0, x20
+   42e74:      	mov	x1, x21
+   42e78:      	bl	0x36bb0 <_ZN3fmt2v76detail7vformatB5cxx11ENS0_17basic_string_viewIcEENS0_11format_argsE@plt>
+   42e7c:      	nop
+   42e80:      	add	x1, sp, #0x178
+   42e84:      	add	x0, sp, #0xc0
+   42e88:      	bl	0x393e0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE6appendERKS4_@plt>
+   42e8c:      	add	x0, sp, #0x178
+   42e90:      	bl	0x35d40 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev@plt>
+   42e94:      	ldr	w0, [sp, #0x44]
+   42e98:      	add	w0, w0, #0x1
+   42e9c:      	str	w0, [sp, #0x44]
+   42ea0:      	b	0x42dd0 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x1e4>
+   42ea4:      	bl	0x38d90 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   42ea8:      	cmp	x0, #0x0
+   42eac:      	b.eq	0x42ed0 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x2e4>
+   42eb0:      	bl	0x38d90 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   42eb4:      	mov	w1, #0x5                // =5
+   42eb8:      	bl	0x36360 <_ZNK4plog6LoggerILi0EE13checkSeverityENS_8SeverityE@plt>
+   42ebc:      	and	w0, w0, #0xff
+   42ec0:      	eor	w0, w0, #0x1
+   42ec4:      	and	w0, w0, #0xff
+   42ec8:      	cmp	w0, #0x0
+   42ecc:      	b.eq	0x42ed8 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x2ec>
+   42ed0:      	mov	w0, #0x1                // =1
+   42ed4:      	b	0x42edc <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x2f0>
+   42ed8:      	mov	w0, #0x0                // =0
+   42edc:      	cmp	w0, #0x0
+   42ee0:      	b.ne	0x43004 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x418>
+   42ee4:      	add	x7, sp, #0x178
+   42ee8:      	mov	w6, #0x0                // =0
+   42eec:      	mov	x5, #0x0                // =0
+   42ef0:      	adrp	x0, 0x6b000 <_ZN3fmt2v76detail12write_paddedILNS0_5align4typeE2ENS1_15buffer_appenderIcEEcRZNS1_9write_intIS6_cZNS1_10int_writerIS6_cjE6on_octEvEUlS6_E_EET_SB_iNS0_17basic_string_viewIcEERKNS0_18basic_format_specsIT0_EET1_EUlS6_E_EESF_SF_RKNSE_ISJ_EEmmOT2_+0x150>
+   42ef4:      	add	x4, x0, #0xfd8
+   42ef8:      	mov	x3, #0x3c2              // =962
+   42efc:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   42f00:      	add	x2, x0, #0x850
+   42f04:      	mov	w1, #0x5                // =5
+   42f08:      	mov	x0, x7
+   42f0c:      	bl	0x38f50 <_ZN4plog6RecordC1ENS_8SeverityEPKcmS3_PKvi@plt>
+   42f10:      	add	x0, sp, #0x178
+   42f14:      	bl	0x37ee0 <_ZN4plog6Record3refEv@plt>
+   42f18:      	mov	x2, x0
+   42f1c:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   42f20:      	add	x1, x0, #0x8c0
+   42f24:      	mov	x0, x2
+   42f28:      	bl	0x38f00 <_ZN4plog6RecordlsIA4_cEERS0_RKT_@plt>
+   42f2c:      	mov	x19, x0
+   42f30:      	str	wzr, [sp, #0x40]
+   42f34:      	add	x2, sp, #0xc0
+   42f38:      	add	x1, sp, #0x130
+   42f3c:      	add	x0, sp, #0x40
+   42f40:      	add	x3, sp, #0x100
+   42f44:      	mov	x8, x3
+   42f48:      	mov	x3, x2
+   42f4c:      	mov	x2, x1
+   42f50:      	mov	x1, x0
+   42f54:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   42f58:      	add	x0, x0, #0x8c8
+   42f5c:      	bl	0x393a0 <_ZN3fmt2v717make_args_checkedIJ6Can_IfRjRNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEEA36_ccEENS0_16format_arg_storeINS0_20basic_format_contextINS0_6detail15buffer_appenderIT1_EESG_EEJDpNSt16remove_referenceIT_E4typeEEEERKT0_DpRKSM_@plt>
+   42f60:      	add	x0, sp, #0x100
+   42f64:      	str	x0, [sp, #0x78]
+   42f68:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   42f6c:      	add	x0, x0, #0x8c8
+   42f70:      	bl	0x38390 <_ZN3fmt2v714to_string_viewIcLi0EEENS0_17basic_string_viewIT_EEPKS3_@plt>
+   42f74:      	mov	x20, x0
+   42f78:      	mov	x21, x1
+   42f7c:      	ldr	x0, [sp, #0x78]
+   42f80:      	str	x0, [sp, #0x80]
+   42f84:      	add	x0, sp, #0xb0
+   42f88:      	str	x0, [sp, #0x88]
+   42f8c:      	ldr	x0, [sp, #0x80]
+   42f90:      	str	x0, [sp, #0x90]
+   42f94:      	ldr	x0, [sp, #0x90]
+   42f98:      	str	x0, [sp, #0x98]
+   42f9c:      	ldr	x0, [sp, #0x98]
+   42fa0:      	mov	x2, x0
+   42fa4:      	mov	x1, #0xd22              // =3362
+   42fa8:      	ldr	x0, [sp, #0x88]
+   42fac:      	bl	0x35fa0 <_ZN3fmt2v717basic_format_argsINS0_20basic_format_contextINS0_6detail15buffer_appenderIcEEcEEEC1EyPKNS3_5valueIS6_EE@plt>
+   42fb0:      	nop
+   42fb4:      	nop
+   42fb8:      	add	x0, sp, #0xe0
+   42fbc:      	mov	x8, x0
+   42fc0:      	ldp	x2, x3, [sp, #0xb0]
+   42fc4:      	mov	x0, x20
+   42fc8:      	mov	x1, x21
+   42fcc:      	bl	0x36bb0 <_ZN3fmt2v76detail7vformatB5cxx11ENS0_17basic_string_viewIcEENS0_11format_argsE@plt>
+   42fd0:      	nop
+   42fd4:      	add	x0, sp, #0xe0
+   42fd8:      	mov	x1, x0
+   42fdc:      	mov	x0, x19
+   42fe0:      	bl	0x385f0 <_ZN4plog6RecordlsINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEEERS0_RKT_@plt>
+   42fe4:      	mov	x19, x0
+   42fe8:      	bl	0x38d90 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   42fec:      	mov	x1, x19
+   42ff0:      	bl	0x38020 <_ZN4plog6LoggerILi0EEpLERKNS_6RecordE@plt>
+   42ff4:      	add	x0, sp, #0xe0
+   42ff8:      	bl	0x35d40 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev@plt>
+   42ffc:      	add	x0, sp, #0x178
+   43000:      	bl	0x348f0 <_ZN4plog6RecordD1Ev@plt>
+   43004:      	add	x0, sp, #0xc0
+   43008:      	bl	0x35d40 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev@plt>
+   4300c:      	adrp	x0, 0x8d000 <_ZN3fmt2v76detail10basic_dataIvE31dragonbox_pow10_significands_64E+0xd0>
+   43010:      	add	x0, x0, #0x580
+   43014:      	ldr	x1, [x0, #0x8]
+   43018:      	mov	x0, #0xd40              // =3392
+   4301c:      	movk	x0, #0x3, lsl #16
+   43020:      	add	x1, x1, x0
+   43024:      	adrp	x0, 0x8d000 <_ZN3fmt2v76detail10basic_dataIvE31dragonbox_pow10_significands_64E+0xd0>
+   43028:      	add	x0, x0, #0x580
+   4302c:      	str	x1, [x0, #0x8]
+   43030:      	adrp	x0, 0x8d000 <_ZN3fmt2v76detail10basic_dataIvE31dragonbox_pow10_significands_64E+0xd0>
+   43034:      	add	x0, x0, #0x580
+   43038:      	bl	0x39868 <tsnorm>
+   4303c:      	mov	x3, #0x0                // =0
+   43040:      	adrp	x0, 0x8d000 <_ZN3fmt2v76detail10basic_dataIvE31dragonbox_pow10_significands_64E+0xd0>
+   43044:      	add	x2, x0, #0x580
+   43048:      	mov	w1, #0x1                // =1
+   4304c:      	mov	w0, #0x1                // =1
+   43050:      	bl	0x39310 <clock_nanosleep@plt>
+   43054:      	mov	w19, #0x1               // =1
+   43058:      	add	x0, sp, #0xa0
+   4305c:      	bl	0x355a0 <_ZNSt11unique_lockISt5mutexED1Ev@plt>
+   43060:      	cmp	w19, #0x1
+   43064:      	b.ne	0x4306c <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x480>
+   43068:      	b	0x42c24 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x38>
+   4306c:      	mov	x0, #0x0                // =0
+   43070:      	mov	x1, x0
+   43074:      	adrp	x0, 0x89000 <usleep@@GLIBC_2.17+0x89000>
+   43078:      	ldr	x0, [x0, #0xe38]
+   4307c:      	ldr	x2, [sp, #0x378]
+   43080:      	ldr	x3, [x0]
+   43084:      	subs	x2, x2, x3
+   43088:      	mov	x3, #0x0                // =0
+   4308c:      	b.eq	0x431cc <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x5e0>
+   43090:      	b	0x431c8 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x5dc>
+   43094:      	mov	x19, x0
+   43098:      	add	x0, sp, #0x178
+   4309c:      	bl	0x348f0 <_ZN4plog6RecordD1Ev@plt>
+   430a0:      	b	0x430e8 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x4fc>
+   430a4:      	mov	x19, x0
+   430a8:      	add	x0, sp, #0x178
+   430ac:      	bl	0x35d40 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev@plt>
+   430b0:      	b	0x430d8 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x4ec>
+   430b4:      	mov	x19, x0
+   430b8:      	add	x0, sp, #0xe0
+   430bc:      	bl	0x35d40 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev@plt>
+   430c0:      	b	0x430c8 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x4dc>
+   430c4:      	mov	x19, x0
+   430c8:      	add	x0, sp, #0x178
+   430cc:      	bl	0x348f0 <_ZN4plog6RecordD1Ev@plt>
+   430d0:      	b	0x430d8 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x4ec>
+   430d4:      	mov	x19, x0
+   430d8:      	add	x0, sp, #0xc0
+   430dc:      	bl	0x35d40 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev@plt>
+   430e0:      	b	0x430e8 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x4fc>
+   430e4:      	mov	x19, x0
+   430e8:      	add	x0, sp, #0xa0
+   430ec:      	bl	0x355a0 <_ZNSt11unique_lockISt5mutexED1Ev@plt>
+   430f0:      	mov	x0, x19
+   430f4:      	b	0x430f8 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x50c>
+   430f8:      	bl	0x353c0 <__cxa_begin_catch@plt>
+   430fc:      	bl	0x38d90 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   43100:      	cmp	x0, #0x0
+   43104:      	b.eq	0x43128 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x53c>
+   43108:      	bl	0x38d90 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   4310c:      	mov	w1, #0x2                // =2
+   43110:      	bl	0x36360 <_ZNK4plog6LoggerILi0EE13checkSeverityENS_8SeverityE@plt>
+   43114:      	and	w0, w0, #0xff
+   43118:      	eor	w0, w0, #0x1
+   4311c:      	and	w0, w0, #0xff
+   43120:      	cmp	w0, #0x0
+   43124:      	b.eq	0x43130 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x544>
+   43128:      	mov	w0, #0x1                // =1
+   4312c:      	b	0x43134 <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x548>
+   43130:      	mov	w0, #0x0                // =0
+   43134:      	cmp	w0, #0x0
+   43138:      	b.ne	0x4319c <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x5b0>
+   4313c:      	add	x7, sp, #0x178
+   43140:      	mov	w6, #0x0                // =0
+   43144:      	mov	x5, #0x0                // =0
+   43148:      	adrp	x0, 0x6b000 <_ZN3fmt2v76detail12write_paddedILNS0_5align4typeE2ENS1_15buffer_appenderIcEEcRZNS1_9write_intIS6_cZNS1_10int_writerIS6_cjE6on_octEvEUlS6_E_EET_SB_iNS0_17basic_string_viewIcEERKNS0_18basic_format_specsIT0_EET1_EUlS6_E_EESF_SF_RKNSE_ISJ_EEmmOT2_+0x150>
+   4314c:      	add	x4, x0, #0xfd8
+   43150:      	mov	x3, #0x3ca              // =970
+   43154:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   43158:      	add	x2, x0, #0x850
+   4315c:      	mov	w1, #0x2                // =2
+   43160:      	mov	x0, x7
+   43164:      	bl	0x38f50 <_ZN4plog6RecordC1ENS_8SeverityEPKcmS3_PKvi@plt>
+   43168:      	add	x0, sp, #0x178
+   4316c:      	bl	0x37ee0 <_ZN4plog6Record3refEv@plt>
+   43170:      	mov	x2, x0
+   43174:      	adrp	x0, 0x6c000 <_ZN3fmt2v76detailL5microE+0x90>
+   43178:      	add	x1, x0, #0x8f0
+   4317c:      	mov	x0, x2
+   43180:      	bl	0x374b0 <_ZN4plog6RecordlsIA25_cEERS0_RKT_@plt>
+   43184:      	mov	x19, x0
+   43188:      	bl	0x38d90 <_ZN4plog3getILi0EEEPNS_6LoggerIXT_EEEv@plt>
+   4318c:      	mov	x1, x19
+   43190:      	bl	0x38020 <_ZN4plog6LoggerILi0EEpLERKNS_6RecordE@plt>
+   43194:      	add	x0, sp, #0x178
+   43198:      	bl	0x348f0 <_ZN4plog6RecordD1Ev@plt>
+   4319c:      	nop
+   431a0:      	bl	0x38840 <__cxa_end_catch@plt>
+   431a4:      	b	0x4306c <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x480>
+   431a8:      	mov	x19, x0
+   431ac:      	add	x0, sp, #0x178
+   431b0:      	bl	0x348f0 <_ZN4plog6RecordD1Ev@plt>
+   431b4:      	b	0x431bc <_ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv+0x5d0>
+   431b8:      	mov	x19, x0
+   431bc:      	bl	0x38840 <__cxa_end_catch@plt>
+   431c0:      	mov	x0, x19
+   431c4:      	bl	0x38dd0 <_Unwind_Resume@plt>
+   431c8:      	bl	0x35140 <__stack_chk_fail@plt>
+   431cc:      	mov	x0, x1
+   431d0:      	ldp	x19, x20, [sp, #0x10]
+   431d4:      	ldr	x21, [sp, #0x20]
+   431d8:      	ldp	x29, x30, [sp]
+   431dc:      	add	sp, sp, #0x380
+   431e0:      	ret

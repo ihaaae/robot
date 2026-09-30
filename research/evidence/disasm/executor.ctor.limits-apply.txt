@@ -1,0 +1,144 @@
+
+libexecutor.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000ec6ac <_ZN12bot_executor13ExecutorJuxieC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEE>:
+   ee480:      	add	x1, sp, #0x448
+   ee484:      	add	x0, sp, #0x2d8
+   ee488:      	bl	0xd8fd0 <_ZN5Eigen6MatrixIdLin1ELi1ELi0ELin1ELi1EEC1INS_5BlockINS3_IS1_Lin1ELi1ELb0EEELin1ELi1ELb0EEEEERKNS_9EigenBaseIT_EE@plt>
+   ee48c:      	add	x0, sp, #0x298
+   ee490:      	add	x1, sp, #0x368
+   ee494:      	mov	x8, x1
+   ee498:      	mov	x1, #0x0                // =0
+   ee49c:      	bl	0xe34e0 <_ZN5Eigen9DenseBaseINS_6MatrixIdLin1ELi2ELi0ELin1ELi2EEEE3colEl@plt>
+   ee4a0:      	add	x0, sp, #0x368
+   ee4a4:      	str	x0, [sp, #0xe8]
+   ee4a8:      	add	x0, sp, #0x298
+   ee4ac:      	add	x1, sp, #0x3a0
+   ee4b0:      	mov	x8, x1
+   ee4b4:      	mov	x1, #0x1                // =1
+   ee4b8:      	bl	0xe34e0 <_ZN5Eigen9DenseBaseINS_6MatrixIdLin1ELi2ELi0ELin1ELi2EEEE3colEl@plt>
+   ee4bc:      	add	x0, sp, #0x3a0
+   ee4c0:      	str	x0, [sp, #0xf0]
+   ee4c4:      	add	x0, sp, #0x2a8
+   ee4c8:      	add	x1, sp, #0x3d8
+   ee4cc:      	mov	x8, x1
+   ee4d0:      	mov	x1, #0x0                // =0
+   ee4d4:      	bl	0xe34e0 <_ZN5Eigen9DenseBaseINS_6MatrixIdLin1ELi2ELi0ELin1ELi2EEEE3colEl@plt>
+   ee4d8:      	add	x0, sp, #0x3d8
+   ee4dc:      	str	x0, [sp, #0xf8]
+   ee4e0:      	add	x0, sp, #0x2a8
+   ee4e4:      	add	x1, sp, #0x410
+   ee4e8:      	mov	x8, x1
+   ee4ec:      	mov	x1, #0x1                // =1
+   ee4f0:      	bl	0xe34e0 <_ZN5Eigen9DenseBaseINS_6MatrixIdLin1ELi2ELi0ELin1ELi2EEEE3colEl@plt>
+   ee4f4:      	add	x0, sp, #0x410
+   ee4f8:      	str	x0, [sp, #0x100]
+   ee4fc:      	ldr	x0, [sp, #0xe8]
+   ee500:      	bl	0xdf570 <_ZNK5Eigen9EigenBaseINS_5BlockINS_6MatrixIdLin1ELi2ELi0ELin1ELi2EEELin1ELi1ELb1EEEE4sizeEv@plt>
+   ee504:      	mov	x1, x0
+   ee508:      	ldr	x0, [sp, #0x58]
+   ee50c:      	ldr	w0, [x0, #0x5fc]
+   ee510:      	sxtw	x0, w0
+   ee514:      	cmp	x1, x0
+   ee518:      	b.lt	0xee57c <_ZN12bot_executor13ExecutorJuxieC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEE+0x1ed0>
+   ee51c:      	ldr	x0, [sp, #0xf0]
+   ee520:      	bl	0xdf570 <_ZNK5Eigen9EigenBaseINS_5BlockINS_6MatrixIdLin1ELi2ELi0ELin1ELi2EEELin1ELi1ELb1EEEE4sizeEv@plt>
+   ee524:      	mov	x1, x0
+   ee528:      	ldr	x0, [sp, #0x58]
+   ee52c:      	ldr	w0, [x0, #0x5fc]
+   ee530:      	sxtw	x0, w0
+   ee534:      	cmp	x1, x0
+   ee538:      	b.lt	0xee57c <_ZN12bot_executor13ExecutorJuxieC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEE+0x1ed0>
+   ee53c:      	ldr	x0, [sp, #0xf8]
+   ee540:      	bl	0xdf570 <_ZNK5Eigen9EigenBaseINS_5BlockINS_6MatrixIdLin1ELi2ELi0ELin1ELi2EEELin1ELi1ELb1EEEE4sizeEv@plt>
+   ee544:      	mov	x1, x0
+   ee548:      	ldr	x0, [sp, #0x58]
+   ee54c:      	ldr	w0, [x0, #0x5fc]
+   ee550:      	sxtw	x0, w0
+   ee554:      	cmp	x1, x0
+   ee558:      	b.lt	0xee57c <_ZN12bot_executor13ExecutorJuxieC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEE+0x1ed0>
+   ee55c:      	ldr	x0, [sp, #0x100]
+   ee560:      	bl	0xdf570 <_ZNK5Eigen9EigenBaseINS_5BlockINS_6MatrixIdLin1ELi2ELi0ELin1ELi2EEELin1ELi1ELb1EEEE4sizeEv@plt>
+   ee564:      	mov	x1, x0
+   ee568:      	ldr	x0, [sp, #0x58]
+   ee56c:      	ldr	w0, [x0, #0x5fc]
+   ee570:      	sxtw	x0, w0
+   ee574:      	cmp	x1, x0
+   ee578:      	b.ge	0xee584 <_ZN12bot_executor13ExecutorJuxieC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEE+0x1ed8>
+   ee57c:      	mov	w0, #0x1                // =1
+   ee580:      	b	0xee588 <_ZN12bot_executor13ExecutorJuxieC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEE+0x1edc>
+   ee584:      	mov	w0, #0x0                // =0
+   ee588:      	cmp	w0, #0x0
+   ee58c:      	b.eq	0xee598 <_ZN12bot_executor13ExecutorJuxieC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEE+0x1eec>
+   ee590:      	mov	w19, #0x0               // =0
+   ee594:      	b	0xeec20 <_ZN12bot_executor13ExecutorJuxieC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEE+0x2574>
+   ee598:      	str	wzr, [sp, #0x94]
+   ee59c:      	ldr	x0, [sp, #0x58]
+   ee5a0:      	ldr	w0, [x0, #0x5fc]
+   ee5a4:      	ldr	w1, [sp, #0x94]
+   ee5a8:      	cmp	w1, w0
+   ee5ac:      	b.ge	0xee6a8 <_ZN12bot_executor13ExecutorJuxieC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEE+0x1ffc>
+   ee5b0:      	ldrsw	x1, [sp, #0x94]
+   ee5b4:      	add	x0, sp, #0x2c8
+   ee5b8:      	bl	0xe8180 <_ZN5Eigen15DenseCoeffsBaseINS_6MatrixIdLin1ELi1ELi0ELin1ELi1EEELi1EEixEl@plt>
+   ee5bc:      	ldr	d8, [x0]
+   ee5c0:      	ldr	x0, [sp, #0x58]
+   ee5c4:      	add	x0, x0, #0x558
+   ee5c8:      	ldrsw	x1, [sp, #0x94]
+   ee5cc:      	bl	0xe1a90 <_ZNSt6vectorIdSaIdEEixEm@plt>
+   ee5d0:      	str	d8, [x0]
+   ee5d4:      	ldrsw	x0, [sp, #0x94]
+   ee5d8:      	mov	x1, x0
+   ee5dc:      	ldr	x0, [sp, #0xe8]
+   ee5e0:      	bl	0xe1630 <_ZNK5Eigen15DenseCoeffsBaseINS_5BlockINS_6MatrixIdLin1ELi2ELi0ELin1ELi2EEELin1ELi1ELb1EEELi0EEixEl@plt>
+   ee5e4:      	ldr	d8, [x0]
+   ee5e8:      	ldr	x0, [sp, #0x58]
+   ee5ec:      	add	x0, x0, #0x528
+   ee5f0:      	ldrsw	x1, [sp, #0x94]
+   ee5f4:      	bl	0xe1a90 <_ZNSt6vectorIdSaIdEEixEm@plt>
+   ee5f8:      	str	d8, [x0]
+   ee5fc:      	ldrsw	x0, [sp, #0x94]
+   ee600:      	mov	x1, x0
+   ee604:      	ldr	x0, [sp, #0xf0]
+   ee608:      	bl	0xe1630 <_ZNK5Eigen15DenseCoeffsBaseINS_5BlockINS_6MatrixIdLin1ELi2ELi0ELin1ELi2EEELin1ELi1ELb1EEELi0EEixEl@plt>
+   ee60c:      	ldr	d8, [x0]
+   ee610:      	ldr	x0, [sp, #0x58]
+   ee614:      	add	x0, x0, #0x540
+   ee618:      	ldrsw	x1, [sp, #0x94]
+   ee61c:      	bl	0xe1a90 <_ZNSt6vectorIdSaIdEEixEm@plt>
+   ee620:      	str	d8, [x0]
+   ee624:      	ldrsw	x1, [sp, #0x94]
+   ee628:      	add	x0, sp, #0x2d8
+   ee62c:      	bl	0xe8180 <_ZN5Eigen15DenseCoeffsBaseINS_6MatrixIdLin1ELi1ELi0ELin1ELi1EEELi1EEixEl@plt>
+   ee630:      	ldr	d8, [x0]
+   ee634:      	ldr	x0, [sp, #0x58]
+   ee638:      	add	x0, x0, #0x5c0
+   ee63c:      	ldrsw	x1, [sp, #0x94]
+   ee640:      	bl	0xe1a90 <_ZNSt6vectorIdSaIdEEixEm@plt>
+   ee644:      	str	d8, [x0]
+   ee648:      	ldrsw	x0, [sp, #0x94]
+   ee64c:      	mov	x1, x0
+   ee650:      	ldr	x0, [sp, #0xf8]
+   ee654:      	bl	0xe1630 <_ZNK5Eigen15DenseCoeffsBaseINS_5BlockINS_6MatrixIdLin1ELi2ELi0ELin1ELi2EEELin1ELi1ELb1EEELi0EEixEl@plt>
+   ee658:      	ldr	d8, [x0]
+   ee65c:      	ldr	x0, [sp, #0x58]
+   ee660:      	add	x0, x0, #0x590
+   ee664:      	ldrsw	x1, [sp, #0x94]
+   ee668:      	bl	0xe1a90 <_ZNSt6vectorIdSaIdEEixEm@plt>
+   ee66c:      	str	d8, [x0]
+   ee670:      	ldrsw	x0, [sp, #0x94]
+   ee674:      	mov	x1, x0
+   ee678:      	ldr	x0, [sp, #0x100]
+   ee67c:      	bl	0xe1630 <_ZNK5Eigen15DenseCoeffsBaseINS_5BlockINS_6MatrixIdLin1ELi2ELi0ELin1ELi2EEELin1ELi1ELb1EEELi0EEixEl@plt>
+   ee680:      	ldr	d8, [x0]
+   ee684:      	ldr	x0, [sp, #0x58]
+   ee688:      	add	x0, x0, #0x5a8
+   ee68c:      	ldrsw	x1, [sp, #0x94]
+   ee690:      	bl	0xe1a90 <_ZNSt6vectorIdSaIdEEixEm@plt>
+   ee694:      	str	d8, [x0]
+   ee698:      	ldr	w0, [sp, #0x94]
+   ee69c:      	add	w0, w0, #0x1
+   ee6a0:      	str	w0, [sp, #0x94]
+   ee6a4:      	b	0xee59c <_ZN12bot_executor13ExecutorJuxieC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEE+0x1ef0>

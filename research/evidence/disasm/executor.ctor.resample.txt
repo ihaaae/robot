@@ -1,0 +1,18 @@
+
+libexecutor.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000ec6ac <_ZN12bot_executor13ExecutorJuxieC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKN5Eigen6MatrixIdLin1ELi5ELi0ELin1ELi5EEE>:
+   ed22c:      	bl	0xe2f30 <_ZN5Eigen9DenseBaseINS_6MatrixIdLi27ELi1ELi0ELi27ELi1EEEE7setZeroEv@plt>
+   ed230:      	add	x2, sp, #0x540
+   ed234:      	add	x0, sp, #0x7b8
+   ed238:      	mov	x8, x0
+   ed23c:      	adrp	x0, 0x163000 <_ZN8nlohmann16json_abi_v3_11_26detail9dtoa_implL6kGammaE+0x668>
+   ed240:      	add	x1, x0, #0x470
+   ed244:      	mov	x0, x2
+   ed248:      	bl	0xda020 <_ZN4YAML4NodeixIA9_cEES0_RKT_@plt>
+   ed24c:      	add	x0, sp, #0x7b8
+   ed250:      	bl	0xd8c90 <_ZNK4YAML4Node2asIdEET_v@plt>
+   ed254:      	ldr	x0, [sp, #0x58]
+   ed258:      	str	d0, [x0, #0x10]

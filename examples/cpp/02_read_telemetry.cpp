@@ -134,6 +134,6 @@ int main() {
     std::printf("\n=== limits as the controller reports them ===\n");
     std::printf("  lower[0]=%+.4f upper[0]=%+.4f   (all 14 are the same +-pi defaults;\n",
                 config.lower[0], config.upper[0]);
-    std::printf("  params.yml carries placeholders and sets UseLimit: false)\n");
+    std::printf("  whether any path enforces them is unverified)\n");
     return 0;
 }

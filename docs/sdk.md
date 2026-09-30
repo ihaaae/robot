@@ -178,7 +178,7 @@ CSV 列到 17 槽的映射（从 `MoveJCanfdTest` 的指令里读出来的，不
 
 > **已经实现了**：见 [`src/shensi_robot/kinematics.py`](../src/shensi_robot/kinematics.py)（FK + 数值 IK，不依赖机器人）和 [`kinematics.md`](kinematics.md)（模型、RPY 约定、TCP 偏置、校验结果）。**只部分校验**：本库 FK 加拟合的 84.721 mm 偏置能复现厂家 IK 的目标位姿；本库 IK 未与厂家比过；与厂家 FK 对不上。范围见 kinematics.md 开头。
 
-`/usr/etc/params.yml` 里注意 `MaxVelocityFactor: 0.04`（默认速度系数被压到 4%）、`UseLimit: false`（关节限位默认不生效！）。
+`/usr/etc/params.yml` 里注意 `MaxVelocityFactor: 0.04`（默认速度系数被压到 4%）、`UseLimit: false`（关掉的是每拍的速度 / 加速度限制，`LeftLimits` / `RightLimits` 的 `[1.5, 6.5]` 就是这两个上限；不是位置限位，见 `hardware-acceptance.md` P0-4）。
 
 ---
 
@@ -187,8 +187,8 @@ CSV 列到 17 槽的映射（从 `MoveJCanfdTest` 的指令里读出来的，不
 详细比对见 [`can-protocol-comparison.md`](can-protocol-comparison.md)。摘要：
 
 - 不走 Linux SocketCAN。通过 `/dev/mem` 直接映射 RK3576 CAN-FD 控制器寄存器（`0x2AC00000` / `0x2AC10000`），用 `/dev/misc_shm_can0/1` 做共享内存帧队列。
-- 每路 CAN 挂 7 个关节；两路共 14 个（对应 14 个臂关节）。
-- 报文：`0x600`（SDO，状态控制）、`0x100`（单轴快控，抱闸）、`0x200`（多轴广播，运动主通道，在 `libexecutor` 里组包）、`0x110`（MIT 单轴）、`0x300`（反馈）。
+- 每路 CAN 挂 7 个关节；两路共 14 个（对应 14 个臂关节）。另有 Dev_ID 8（`MoveEnd` 的目标），是什么未知。
+- 厂家栈实际发的报文：`0x600`（SDO，状态控制；没找到读应答的代码）、`0x100`（单轴快控，抱闸）、`0x108`（`MoveEnd`，给 Dev_ID 8 的单轴速度帧）、`0x200`（多轴广播，运动主通道，每 `Resample` 一帧，在 `libexecutor` 里组包）、`0x80`（同步帧，空闲拍代替 `0x200`）；收 `0x301`…`0x307`（反馈）。文档里的 `0x110` MIT 帧厂家栈没用。
 - 单位换算：下发 `cnt = θ_rad/2π × 65536`，反馈 `θ_rad = cnt × π/32768`（与厂家文档一致，已从 `.rodata` 常量确认）。
 
 ---
@@ -233,7 +233,7 @@ dual_arm_app_interface_node ──CAN-FD──> 14 个关节模组
 
 `CiA 402` / `DS402` 是**设备行规**（drive profile，规定状态机与对象字典），不是总线 —— 读文档时不要把行规当成总线。
 
-> 补充：`JointSpaceData` 是 17 维（腰 1 + 左臂 7 + 右臂 7 + 头 2），但 CAN 层只有 14 个电机，代码里也没有 waist/head 的概念。所以 17 是产品族的超集 API，这台机器只实现了双臂 14 轴。**没有第三条未解释的传输路径。**
+> 补充：`JointSpaceData` 是 17 维（腰 1 + 左臂 7 + 右臂 7 + 头 2），但 CAN 层只有 14 个电机，代码里也没有 waist/head 的概念。所以 17 是产品族的超集 API，这个安装包只管双臂 14 个关节（另外 `MoveEnd` 会给每路的 Dev_ID 8 发帧，可能是末端，见 `can-protocol-comparison.md` §2）。**没有第三条未解释的传输路径。**
 
 ## 8. 打包问题（建议反馈给厂家）
 

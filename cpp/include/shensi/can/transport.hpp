@@ -43,12 +43,9 @@ public:
 
     virtual bool healthy() const = 0;
 
-    // Escape hatch for frames with no published layout -- for example the 7-byte frame that
-    // MoveEnd emits on 0x108. Note that 0x108 is 0x100 | 0x08, inside the single-axis command
-    // range: the joints use Dev_ID 01..07 (PR0002 §5.3), so 08 is free, and on identifier and
-    // length alone that frame is indistinguishable from "a single-axis command to device 8".
-    // Whether it is one is unresolved, which is why it gets no type here.
-    // See docs/l0-interface.md §3.7.
+    // Escape hatch for frames with no published layout, so they need not be forced into the
+    // typed encoders. (The vendor's MoveEnd frame on 0x108 is not one of them: it is an ordinary
+    // single-axis command to Dev_ID 8 -- docs/l0-interface.md §3.7.)
     void send_raw(Bus bus, std::uint32_t id, const std::uint8_t* data, std::uint8_t len,
                   bool brs = true, bool fdf = true);
 };

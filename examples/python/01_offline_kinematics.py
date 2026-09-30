@@ -100,8 +100,10 @@ def main() -> int:
         print(f"  J{i + 1}  [{a:+.4f}, {b:+.4f}] rad  = [{np.degrees(a):+7.2f}, "
               f"{np.degrees(b):+7.2f}] deg")
     print()
-    print("  NOTE: params.yml sets UseLimit: false, so the controller does not enforce these")
-    print("        by default. Your own planner has to.")
+    print("  NOTE: these +-pi values look like placeholders. params.yml's UseLimit and")
+    print("        [1.5, 6.5] pairs are per-joint max velocity / acceleration, not these.")
+    print("        Whether the controller enforces these position limits on every path is")
+    print("        unverified. Your own planner has to.")
     return 0
 
 

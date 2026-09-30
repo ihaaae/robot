@@ -78,24 +78,43 @@ SHENSI_TEST_CASE(an_unhealthy_transport_refuses_to_send) {
 SHENSI_TEST_CASE(send_raw_carries_frames_with_no_modelled_layout) {
     FakeTransport bus;
 
-    // The 7-byte frame the vendor's MoveEnd emits on 0x108. On identifier and length alone it
-    // is indistinguishable from a single-axis command to Dev_ID 8, which is why it goes through
-    // send_raw instead of a typed encoder -- see docs/l0-interface.md §3.7.
     const std::vector<std::uint8_t> payload = from_hex("01 02 03 04 05 06 07");
-    bus.send_raw(Bus::Can1, 0x108, payload.data(), 7);
+    bus.send_raw(Bus::Can1, 0x123, payload.data(), 7);
 
     CHECK_EQ(bus.sent_count(), static_cast<std::size_t>(1));
     const Frame& sent = bus.sent()[0];
-    CHECK_EQ(sent.id, static_cast<std::uint32_t>(0x108));
+    CHECK_EQ(sent.id, static_cast<std::uint32_t>(0x123));
     CHECK_EQ(static_cast<int>(sent.len), 7);
     CHECK_EQ(static_cast<int>(sent.bus), static_cast<int>(Bus::Can1));
     CHECK(sent.brs);
     CHECK(sent.fdf);
     CHECK_EQ(to_hex(sent.data.data(), sent.len), to_hex(payload.data(), payload.size()));
+}
 
-    // Recorded, not resolved: the identifier sits inside the single-axis range.
+SHENSI_TEST_CASE(vendor_moveend_frame_is_a_single_axis_command_to_dev8) {
+    // The vendor's MoveEnd builds C4 HI LO 03 E8 00 00 and sends it on 0x108, DLC 7
+    // (research/evidence/disasm/executor.MoveEnd.txt). Here HI LO = 01 2C, i.e. 300.
+    FakeTransport bus;
+    const std::vector<std::uint8_t> payload = from_hex("C4 01 2C 03 E8 00 00");
+    bus.send_raw(Bus::Can0, 0x108, payload.data(), 7);
+    const Frame& sent = bus.sent()[0];
+
     CHECK_EQ(static_cast<int>(classify(sent)), static_cast<int>(FrameClass::SingleAxisCommand));
     CHECK_EQ(static_cast<int>(dev_id_of(sent)), 8);
+
+    ControlSubframe sub;
+    CHECK(decode_single_axis(sent, sub));
+    CHECK(sub.enable);
+    CHECK(sub.brake_release);
+    CHECK(!sub.clear_error);
+    CHECK_EQ(static_cast<int>(sub.mode), 2);  // profile velocity
+    CHECK_EQ(static_cast<int>(sub.target1), 300);
+    CHECK_EQ(static_cast<int>(sub.target2), 1000);  // acceleration, RPM/s
+    CHECK_EQ(static_cast<int>(sub.feedforward), 0);
+
+    // So the typed encoder reproduces it byte for byte.
+    const Frame typed = encode_single_axis(Bus::Can0, 8, sub);
+    CHECK_EQ(to_hex(typed.data.data(), typed.len), to_hex(payload.data(), payload.size()));
 }
 
 SHENSI_TEST_CASE(send_raw_can_disable_the_fd_flags) {
