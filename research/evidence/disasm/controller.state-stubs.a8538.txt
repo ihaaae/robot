@@ -1,0 +1,62 @@
+
+libjuxie_controller.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000a8538 <_ZN5Juxie13StatePowerOff11EnableRobotEv>:
+   a8538:      	ldr	x1, [x0]
+   a853c:      	ldr	x1, [x1]
+   a8540:      	mov	x16, x1
+   a8544:      	br	x16
+
+00000000000a8548 <_ZN5Juxie10StateFault4StopEv>:
+   a8548:      	ldr	x1, [x0]
+   a854c:      	ldr	x1, [x1]
+   a8550:      	mov	x16, x1
+   a8554:      	br	x16
+
+00000000000a8558 <_ZN5Juxie12StateRunning11EnableRobotEv>:
+   a8558:      	ldr	x1, [x0]
+   a855c:      	ldr	x1, [x1]
+   a8560:      	mov	x16, x1
+   a8564:      	br	x16
+
+00000000000a8568 <_ZN5Juxie13StatePowerOff7MoveJ_PERKSt5arrayIdLm14EEi>:
+   a8568:      	mov	w0, #-0x65              // =-101
+   a856c:      	ret
+
+00000000000a8570 <_ZN5Juxie10StateReady7MoveJ_PERKSt5arrayIdLm14EEi>:
+   a8570:      	mov	w0, #-0x13              // =-19
+   a8574:      	ret
+
+00000000000a8578 <_ZN5Juxie10StateFault7MoveJ_PERKSt5arrayIdLm14EEi>:
+   a8578:      	mov	w0, #-0x1               // =-1
+   a857c:      	ret
+
+00000000000a8580 <_ZN5Juxie12StateRunning7MoveJ_PERKSt5arrayIdLm14EEi>:
+   a8580:      	mov	w0, #-0x67              // =-103
+   a8584:      	ret
+
+00000000000a8588 <_ZN5Juxie13StatePowerOff7MoveEndEdi>:
+   a8588:      	mov	w0, #-0x65              // =-101
+   a858c:      	ret
+
+00000000000a8590 <_ZN5Juxie10StateReady7MoveEndEdi>:
+   a8590:      	mov	w0, #-0x13              // =-19
+   a8594:      	ret
+
+00000000000a8598 <_ZN5Juxie10StateFault7MoveEndEdi>:
+   a8598:      	mov	w0, #-0x1               // =-1
+   a859c:      	ret
+
+00000000000a85a0 <_ZN5Juxie13StatePowerOff12BreakReleaseERKSt6vectorIiSaIiEE>:
+   a85a0:      	mov	w0, #-0x65              // =-101
+   a85a4:      	ret
+
+00000000000a85a8 <_ZN5Juxie12StateRunning12BreakReleaseERKSt6vectorIiSaIiEE>:
+   a85a8:      	mov	w0, #-0x67              // =-103
+   a85ac:      	ret
+
+00000000000a85b0 <_ZN5Juxie10StateFault12BreakReleaseERKSt6vectorIiSaIiEE>:
+   a85b0:      	mov	w0, #-0x1               // =-1
+   a85b4:      	ret

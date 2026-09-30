@@ -89,7 +89,7 @@ robot.OnRobot();               // 必须！否则一半 API 段错误
 
 ## 6. 调用顺序与参数的硬性约束
 
-三条都是实测出来的，违反任何一条都不会给你清晰的报错。
+都是实测出来的，违反任何一条都不会给你清晰的报错。
 
 ### 6.1 `getFKpose` 的输入最多 14 个元素（只验证过 14 元素 / 7+7 这一组）
 
@@ -154,6 +154,21 @@ b.OnRobot();               // 这里段错误
 
 `State::m_impl` 是 `static`（见 `juxie_state.hpp`），第二个实例的 `OnRobot()` 会踩掉第一个已经建立的状态。写测试或写长驻服务时注意：**不要每个用例都新建一个 controller**，用一个实例反复调用。
 
+### 6.5 同一个实例也不能反复 `OnRobot()`
+
+`Impl::InitRobot()` 每次都把一个新的 `std::thread`（状态轮询线程 `UpdateStateThread`）赋给同一个成员；成员已经持有线程时，C++ 规定调用 `std::terminate()`。线程只在状态类的 `OnRobot()` 返回 `true` 时才启动，所以：
+
+- 没有 CAN（qemu 下）：第一次 `OnRobot()` 停在 `fault`、不启动线程；第二次启动；**第三次终止进程**（`terminate called without an active exception`，SIGABRT）；
+- 有 CAN、第一次就成功：按同样的逻辑，**第二次**就会终止进程（静态推断，未实测）。
+
+复现：`examples/cpp/state_machine_probe.cpp onrobot3`。
+
+### 6.6 线程启动之后不能 `OffRobot()`
+
+`OffRobot()` 释放 executor，把 `ControllerJuxieImpl` 里的 executor 指针清零，但不停状态轮询线程。线程每 5 ms 解引用一次这个指针，所以 `OffRobot()` 返回 `1` 之后，进程很快就会 **SIGSEGV**。复现：`state_machine_probe offrobot`（两次 `OnRobot()` 让线程启动，然后 `OffRobot()`）。
+
+§6.5 和 §6.6 合起来的意思是：**一个进程里 `OnRobot()` 只调一次，并且不调 `OffRobot()`**，要断电就结束进程。两者在状态机里的位置见 [robot-state-machine.md](robot-state-machine.md) §4。Python 垫片目前**没有**替这两条做守卫（§7 的表）。
+
 ## 7. 从 Python 调用（`python/` + `shensi_robot.sdk`）
 
 C++ 那边靠 `cmake/juxie-sdk.cmake` 接入；Python 这边对应的是 `python/juxie_sdk_bridge.cpp` —— 一个把 SDK 包成 C ABI 的垫片，配合 `src/shensi_robot/sdk.py` 用 ctypes 调用。原因很直接：SDK 的公开签名里有 `std::array` / `std::vector` / `Eigen`，ctypes 一个都表达不了。
@@ -198,6 +213,7 @@ with Controller() as robot:
 | 一个进程里第二个 `ControllerJuxie` + `OnRobot()` | SIGSEGV（§6.4） | `juxie_create()` 返回 NULL → `SdkError` |
 | 没调 `OnRobot()` 就调 `getDof` / `IK` / `getJointerrcode` / `setJointZeroPosition` | SIGSEGV | `SdkError`，code `-1002` |
 | `getFKpose` 传超过 14 个元素 | 堆溢出（§6.1） | `SdkError`，code `-1003`，根本不会调进去 |
+| 反复 `on_robot()`；线程启动后 `off_robot()` | `std::terminate` / SIGSEGV（§6.5、§6.6） | **未守卫**，同样会让解释器崩掉 |
 | SDK 里抛出 C++ 异常 | 穿过 C ABI 边界是未定义行为，实际会终止进程 | 垫片在每个导出函数外面接住，转成 code `-1004`（分配失败）/ `-1005`（其他异常） |
 
 中间那一行是逐方法实测出来的：不带 `OnRobot()` 跑一遍 `sdk_probe`，**正好这 4 个** SIGSEGV，其余（`state` / `joints` / `tcp` / `torques` / `config` / `fk` / `faulttype` / `axisfault` / `clearfault` / `stop` / `enable` / `disable` / `movej` / `moveend`）都正常返回。
@@ -224,6 +240,7 @@ with Controller() as robot:
 | `examples/cpp/07_replay_trajectory.cpp` | **Demo**：按 50 Hz 流式回放厂家录制的轨迹 |
 | `examples/cpp/fk_overflow_repro.cpp` | **故障复现程序（会崩）**：证明 §6.1 的越界，头部带 ASan 编译命令 |
 | `examples/cpp/sdk_probe.cpp` | 逐方法探针，每个方法一次运行，可选 `onrobot` 参数 |
+| `examples/cpp/state_machine_probe.cpp` | 状态机探针：`power_off` / `fault` 两列逐方法，以及 §6.5、§6.6 两个崩溃。只用于模拟环境 |
 | `examples/cpp/sdk_min_example.cpp` | 最小可用示例（只含 `juxie_controller.h`） |
 | `python/juxie_sdk_bridge.cpp` | **C ABI 垫片**：把 SDK 包成 Python 能调的 C 接口（§7） |
 | `python/build_bridge.sh` | 编译垫片，产出 `python/build/juxie_sdk_bridge.so` |

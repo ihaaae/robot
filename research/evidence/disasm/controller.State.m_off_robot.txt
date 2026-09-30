@@ -1,0 +1,56 @@
+
+libjuxie_controller.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000ad628 <_ZN5Juxie5State11m_off_robotEv>:
+   ad628:      	stp	x29, x30, [sp, #-0x20]!
+   ad62c:      	adrp	x0, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   ad630:      	mov	x29, sp
+   ad634:      	ldr	x0, [x0, #0x988]
+   ad638:      	stp	x19, x20, [sp, #0x10]
+   ad63c:      	ldr	x0, [x0]
+   ad640:      	ldr	x19, [x0, #0x8]
+   ad644:      	stp	xzr, xzr, [x0]
+   ad648:      	cbz	x19, 0xad674 <_ZN5Juxie5State11m_off_robotEv+0x4c>
+   ad64c:      	adrp	x20, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   ad650:      	ldr	x0, [x20, #0x8c0]
+   ad654:      	cbz	x0, 0xad684 <_ZN5Juxie5State11m_off_robotEv+0x5c>
+   ad658:      	add	x1, x19, #0x8
+   ad65c:      	ldaxr	w0, [x1]
+   ad660:      	sub	w2, w0, #0x1
+   ad664:      	stlxr	w3, w2, [x1]
+   ad668:      	cbnz	w3, 0xad65c <_ZN5Juxie5State11m_off_robotEv+0x34>
+   ad66c:      	cmp	w0, #0x1
+   ad670:      	b.eq	0xad698 <_ZN5Juxie5State11m_off_robotEv+0x70>
+   ad674:      	mov	w0, #0x1                // =1
+   ad678:      	ldp	x19, x20, [sp, #0x10]
+   ad67c:      	ldp	x29, x30, [sp], #0x20
+   ad680:      	ret
+   ad684:      	ldr	w0, [x19, #0x8]
+   ad688:      	sub	w1, w0, #0x1
+   ad68c:      	str	w1, [x19, #0x8]
+   ad690:      	cmp	w0, #0x1
+   ad694:      	b.ne	0xad674 <_ZN5Juxie5State11m_off_robotEv+0x4c>
+   ad698:      	ldr	x1, [x19]
+   ad69c:      	mov	x0, x19
+   ad6a0:      	ldr	x1, [x1, #0x10]
+   ad6a4:      	blr	x1
+   ad6a8:      	ldr	x20, [x20, #0x8c0]
+   ad6ac:      	cbz	x20, 0xad6e0 <_ZN5Juxie5State11m_off_robotEv+0xb8>
+   ad6b0:      	add	x1, x19, #0xc
+   ad6b4:      	ldaxr	w0, [x1]
+   ad6b8:      	sub	w2, w0, #0x1
+   ad6bc:      	stlxr	w3, w2, [x1]
+   ad6c0:      	cbnz	w3, 0xad6b4 <_ZN5Juxie5State11m_off_robotEv+0x8c>
+   ad6c4:      	cmp	w0, #0x1
+   ad6c8:      	b.ne	0xad674 <_ZN5Juxie5State11m_off_robotEv+0x4c>
+   ad6cc:      	ldr	x1, [x19]
+   ad6d0:      	mov	x0, x19
+   ad6d4:      	ldr	x1, [x1, #0x18]
+   ad6d8:      	blr	x1
+   ad6dc:      	b	0xad674 <_ZN5Juxie5State11m_off_robotEv+0x4c>
+   ad6e0:      	ldr	w0, [x19, #0xc]
+   ad6e4:      	sub	w1, w0, #0x1
+   ad6e8:      	str	w1, [x19, #0xc]
+   ad6ec:      	b	0xad6c4 <_ZN5Juxie5State11m_off_robotEv+0x9c>

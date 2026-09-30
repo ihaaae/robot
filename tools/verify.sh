@@ -175,10 +175,10 @@ if $with_native; then
         # Build only. Running them needs an arm64 sysroot and qemu; see docs/sdk-usage.md.
         for prog in 01_offline_kinematics 02_read_telemetry 04_guarded_motion \
                     06_vendor_cyclic_motion 07_replay_trajectory \
-                    sdk_min_example sdk_probe fk_overflow_repro; do
+                    sdk_min_example sdk_probe fk_overflow_repro state_machine_probe; do
             [[ -x ".sdk/bin/$prog" ]] || fail "examples/cpp/$prog did not build"
         done
-        pass "8 programs built (5 demos + min example + probe + overflow repro)"
+        pass "9 programs built (5 demos + min example + two probes + overflow repro)"
 
         # The Python path needs its own aarch64 artifact. Build only, like the demos: running
         # it needs an arm64 interpreter and qemu, which is the manual bench in docs/sdk.md §9.

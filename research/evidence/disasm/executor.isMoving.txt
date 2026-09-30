@@ -1,0 +1,26 @@
+
+libexecutor.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000f0a9c <_ZN12bot_executor13ExecutorJuxie8isMovingEv>:
+   f0a9c:      	stp	x29, x30, [sp, #-0x20]!
+   f0aa0:      	mov	x29, sp
+   f0aa4:      	str	x0, [sp, #0x18]
+   f0aa8:      	ldr	x0, [sp, #0x18]
+   f0aac:      	add	x0, x0, #0x4bb
+   f0ab0:      	bl	0xde5b0 <_ZNKSt6atomicIbEcvbEv@plt>
+   f0ab4:      	and	w0, w0, #0xff
+   f0ab8:      	cmp	w0, #0x0
+   f0abc:      	b.ne	0xf0ad8 <_ZN12bot_executor13ExecutorJuxie8isMovingEv+0x3c>
+   f0ac0:      	ldr	x0, [sp, #0x18]
+   f0ac4:      	add	x0, x0, #0x4ba
+   f0ac8:      	bl	0xde5b0 <_ZNKSt6atomicIbEcvbEv@plt>
+   f0acc:      	and	w0, w0, #0xff
+   f0ad0:      	cmp	w0, #0x0
+   f0ad4:      	b.eq	0xf0ae0 <_ZN12bot_executor13ExecutorJuxie8isMovingEv+0x44>
+   f0ad8:      	mov	w0, #0x1                // =1
+   f0adc:      	b	0xf0ae4 <_ZN12bot_executor13ExecutorJuxie8isMovingEv+0x48>
+   f0ae0:      	mov	w0, #0x0                // =0
+   f0ae4:      	ldp	x29, x30, [sp], #0x20
+   f0ae8:      	ret

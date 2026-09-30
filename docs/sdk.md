@@ -85,11 +85,13 @@ interface_adaptor.cpp (Adaptor: 25 条命令的 lambda 表)
                           └── rk3576_can_canfd::RK3576CanCanfd  (CAN-FD)
 ```
 
-状态机语义（`juxie_state.hpp`）：
+状态机语义（`juxie_state.hpp`）的主干：
 
-- `OnRobot()` ready；`EnableRobot()` ready→idle；`DisableRobot()` idle→ready
-- `Move*` idle→running；`Stop()` running→idle
-- `ClearFault()` fault→idle/ready；`OffRobot()` → power_off
+- `OnRobot()` power_off→ready（有故障则 fault）；`EnableRobot()` ready→idle；`DisableRobot()` idle→ready
+- `Move*` idle→running（实际由每 5 ms 一次的轮询线程切换）；`Stop()` running→idle
+- `ClearFault()` →ready（之后由轮询线程纠正）；`OffRobot()` → power_off
+
+逐状态、逐方法的完整行为、返回码和厂家自己的缺陷见 [robot-state-machine.md](robot-state-machine.md)。
 
 ---
 
@@ -264,9 +266,10 @@ cp -a /usr/lib/aarch64-linux-gnu/. $ROOT/usr/lib/aarch64-linux-gnu/
 ln -sf usr/lib/aarch64-linux-gnu $ROOT/lib/aarch64-linux-gnu
 cp -a extracted/usr/{bin,etc,lib} $ROOT/usr/
 
-# 3) 顶替硬件：日志目录 + /dev/mem（否则 open("/dev/mem") 失败会 exit(1)）
-mkdir -p /home/user/logs $ROOT/dev
+# 3) 顶替硬件：日志目录 + /dev/mem + 两个共享内存节点（任何一个 open 失败都会 exit(1)）
+mkdir -p "$HOME/logs" $ROOT/dev              # 日志写到 $HOME/logs，目录不存在会抛异常终止
 truncate -s 721420288 $ROOT/dev/mem          # 稀疏文件，mmap 出来全 0
+truncate -s 4096 $ROOT/dev/misc_shm_can0 $ROOT/dev/misc_shm_can1   # 驱动各 mmap 4 KB
 
 # 4) 运行（配置根目录必须通过环境变量指定）
 DUAL_ARM_SDK_CONFIG=/usr/etc qemu-aarch64-static -L $ROOT $ROOT/usr/bin/dual_arm_app_interface_node

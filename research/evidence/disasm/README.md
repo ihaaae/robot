@@ -23,7 +23,7 @@ Two traps caused wrong claims before, so they are worth stating:
 
 ## What each file supports
 
-| File | Claim (in `docs/can-protocol-comparison.md` unless noted) |
+| File | Claim (in `docs/can-protocol-comparison.md` unless noted; `§` references in the `controller.*` rows are to `docs/robot-state-machine.md`) |
 |---|---|
 | `executor.ctor.thread-start.txt` | Only `ucas_can0_task_send_thread`, `ucas_can1_task_send_thread` and `watchdog` get a thread; `sendCommandThread0/1` and `listenStateThread` are never called (§1.1) |
 | `executor.ctor.resample.txt` + `rodata.txt` | `this+0x10` (`resample_delta`) defaults to 0.005 and is overwritten from YAML `Resample` (§1.1) |
@@ -37,7 +37,15 @@ Two traps caused wrong claims before, so they are worth stating:
 | `driver.sendJointBreak.txt` | `0x100 \| id` (§1, §4) |
 | `driver.rk3576_canfd_recv_frame_data.txt` | Receive dispatch compares only `0x301`…`0x307`; nothing for `0x580` (§1) |
 | `driver.ucas_can0_task_send_thread.txt` | The `adrp`/`add #0x580` address arithmetic; `clock_nanosleep` with `SLEEP_TIME` = 200000 ns (`l3-executor-interface.md` §2.1) |
-| `rodata.txt` | π / 2π constants, the 0.005 default, the `0x200` sub-frame template, the YAML key strings |
+| `rodata.txt` | π / 2π constants, the 0.005 default, the `0x200` sub-frame template, the YAML key strings, the state-machine poll periods and log messages |
+| `controller.state-symbols.txt` | Which `Juxie::State*` method lives at which address. Many are 4–8 byte stubs folded together by the linker, so one address stands for several symbols (`robot-state-machine.md` §2) |
+| `controller.state-stubs.*.txt` | The folded stubs: `return true`, tail call to `SelfCheck()`, return `-101` / `-19` / `-1` / `-103`, tail calls to `m_MoveEnd` / `m_Break*` / `i_IK` — the constant cells of the state × method table |
+| `controller.State*.SelfCheck.txt` | Logs one message and returns `false`; `idle` returns `true` |
+| `controller.StatePowerOff.OnRobot.txt`, `controller.Impl.OnRobot.txt`, `controller.Impl.InitRobot.txt` | `m_on_robot()` → sleep 1 s → `isInFault()` ? fault : ready; `InitRobot()` starts `UpdateStateThread` and `std::terminate()`s if the thread member is already set (§2.1, §4.1) |
+| `controller.State{Ready,Idle,Running,Fault}.*.txt`, `controller.State.ClearFault.txt` | The non-constant cells: which executor call, then which state (`robot-state-machine.md` §2, §2.2) |
+| `controller.State.m_off_robot.txt` | Clears the executor pointer in `ControllerJuxieImpl` without stopping the thread (§4.2) |
+| `controller.Impl.UpdateStateThread.txt`, `controller.Impl.changeState.txt`, `controller.Impl.EnableRobot.txt`, `controller.GetRobotState.txt` | The 5 ms poll and its priority order; `changeState` is the only locked path, dispatch and `GetRobotState` are not (§1, §3) |
+| `executor.isConnected.txt`, `executor.isEnabled.txt`, `executor.isMoving.txt`, `executor.isInFault.txt` | `isConnected()` always returns 1; `isMoving()` = `+0x4ba \|\| +0x4bb`; the other two read `JuxieState` (§3) |
 
 Member names such as `left_used_` come from matching offsets against the declaration order in
 `usr/include/executor/ExecutorJuxie.hpp`; the offsets themselves are what the code shows.

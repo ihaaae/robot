@@ -132,6 +132,16 @@
 - 运动中再发一条 `movej` 会怎样（覆盖？报 `ArmMoving` -103？）
 - 故意触发一个故障（例如走到限位附近），看 `GetAxisFault` / `GetFaultType` 返回什么
 
+厂家状态机逐状态、逐方法的预期行为见 [robot-state-machine.md](robot-state-machine.md)。对照它的
+§2 表，把没有 ✅ 的格子（`ready / idle / running` 三列）逐格确认，另外专门测：
+
+- 故障位自己消失时，是否不调 `ClearFault()` 也会离开 `fault`（该文 §3 结论 3）
+- `running` 下调 `OffRobot()`：反汇编显示判断条件写反了（该文 §2.2）
+- `ClearFault()` 在 `idle` 下调用时，状态是否先闪到 `ready` 再回到 `idle`
+
+注意：一个进程里只调一次 `OnRobot()`，并且不要调 `OffRobot()`，否则进程会被终止或段错误
+（`sdk-usage.md` §6.5、§6.6）。每个用例起一个新进程。
+
 **决定了什么**：上位机的错误处理策略。
 
 ### P1-5 运动指令语义

@@ -1,0 +1,278 @@
+
+libjuxie_controller.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000d97d8 <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv>:
+   d97d8:      	sub	sp, sp, #0x4b0
+   d97dc:      	stp	x29, x30, [sp]
+   d97e0:      	mov	x29, sp
+   d97e4:      	stp	x19, x20, [sp, #0x10]
+   d97e8:      	mov	x19, x0
+   d97ec:      	adrp	x20, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   d97f0:      	ldr	x0, [x0, #0x68]
+   d97f4:      	ldr	x1, [x20, #0x948]
+   d97f8:      	ldr	w0, [x0, #0x8]
+   d97fc:      	ldr	x2, [x1]
+   d9800:      	str	x2, [sp, #0x4a8]
+   d9804:      	mov	x2, #0x0                // =0
+   d9808:      	str	x25, [sp, #0x40]
+   d980c:      	cbnz	w0, 0xd9840 <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x68>
+   d9810:      	mov	w0, #0x1                // =1
+   d9814:      	ldr	x20, [x20, #0x948]
+   d9818:      	ldr	x1, [sp, #0x4a8]
+   d981c:      	ldr	x2, [x20]
+   d9820:      	subs	x1, x1, x2
+   d9824:      	mov	x2, #0x0                // =0
+   d9828:      	b.ne	0xd9b68 <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x390>
+   d982c:      	ldp	x29, x30, [sp]
+   d9830:      	ldp	x19, x20, [sp, #0x10]
+   d9834:      	ldr	x25, [sp, #0x40]
+   d9838:      	add	sp, sp, #0x4b0
+   d983c:      	ret
+   d9840:      	mov	x0, #0x10               // =16
+   d9844:      	str	xzr, [sp, #0x50]
+   d9848:      	bl	0xa1190 <_Znwm@plt>
+   d984c:      	mov	x3, x0
+   d9850:      	adrp	x4, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   d9854:      	adrp	x2, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   d9858:      	add	x1, sp, #0x58
+   d985c:      	add	x0, sp, #0x50
+   d9860:      	ldr	x4, [x4, #0xe38]
+   d9864:      	str	x3, [sp, #0x58]
+   d9868:      	ldr	x2, [x2, #0xcb0]
+   d986c:      	add	x4, x4, #0x10
+   d9870:      	stp	x4, x19, [x3]
+   d9874:      	bl	0xa08a0 <_ZNSt6thread15_M_start_threadESt10unique_ptrINS_6_StateESt14default_deleteIS1_EEPFvvE@plt>
+   d9878:      	ldr	x0, [sp, #0x58]
+   d987c:      	cbz	x0, 0xd988c <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0xb4>
+   d9880:      	ldr	x1, [x0]
+   d9884:      	ldr	x1, [x1, #0x8]
+   d9888:      	blr	x1
+   d988c:      	ldr	x0, [x19, #0xa8]
+   d9890:      	cbnz	x0, 0xd9b74 <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x39c>
+   d9894:      	ldr	x0, [x19]
+   d9898:      	ldr	x1, [sp, #0x50]
+   d989c:      	str	x1, [x19, #0xa8]
+   d98a0:      	ldr	x1, [x0]
+   d98a4:      	ldr	x1, [x1, #0x70]
+   d98a8:      	blr	x1
+   d98ac:      	tst	w0, #0xff
+   d98b0:      	b.eq	0xd9810 <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x38>
+   d98b4:      	stp	x23, x24, [sp, #0x30]
+   d98b8:      	adrp	x23, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   d98bc:      	ldr	x0, [x23, #0xf00]
+   d98c0:      	ldr	x0, [x0]
+   d98c4:      	cbz	x0, 0xd98d4 <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0xfc>
+   d98c8:      	ldr	w0, [x0, #0x8]
+   d98cc:      	cmp	w0, #0x3
+   d98d0:      	b.gt	0xd99b4 <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x1dc>
+   d98d4:      	ldr	x0, [x19]
+   d98d8:      	ldr	x1, [x0]
+   d98dc:      	ldr	x1, [x1, #0x98]
+   d98e0:      	blr	x1
+   d98e4:      	tst	w0, #0xff
+   d98e8:      	b.ne	0xd9904 <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x12c>
+   d98ec:      	ldr	x0, [x23, #0xf00]
+   d98f0:      	ldr	x0, [x0]
+   d98f4:      	cbz	x0, 0xd9904 <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x12c>
+   d98f8:      	ldr	w0, [x0, #0x8]
+   d98fc:      	cmp	w0, #0x1
+   d9900:      	b.gt	0xd9a40 <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x268>
+   d9904:      	ldr	x0, [x19]
+   d9908:      	ldr	x1, [x0]
+   d990c:      	ldr	x1, [x1, #0x70]
+   d9910:      	blr	x1
+   d9914:      	tst	w0, #0xff
+   d9918:      	b.eq	0xd9a38 <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x260>
+   d991c:      	ldr	x0, [x23, #0xf00]
+   d9920:      	ldr	x0, [x0]
+   d9924:      	cbz	x0, 0xd9a2c <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x254>
+   d9928:      	ldr	w0, [x0, #0x8]
+   d992c:      	cmp	w0, #0x1
+   d9930:      	b.le	0xd9a2c <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x254>
+   d9934:      	adrp	x2, 0x125000 <write@@GLIBC_2.17+0x125000>
+   d9938:      	add	x2, x2, #0x7a0
+   d993c:      	mov	x3, #0x20f              // =527
+   d9940:      	stp	x21, x22, [sp, #0x20]
+   d9944:      	add	x22, sp, #0x290
+   d9948:      	mov	x0, x22
+   d994c:      	mov	w1, #0x2                // =2
+   d9950:      	bl	0xad7d8 <_ZN4plog6RecordC2ENS_8SeverityEPKcmS3_PKvi.constprop.0>
+   d9954:      	adrp	x1, 0x125000 <write@@GLIBC_2.17+0x125000>
+   d9958:      	add	x0, x22, #0x30
+   d995c:      	add	x1, x1, #0x810
+   d9960:      	bl	0xa1140 <_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc@plt>
+   d9964:      	ldr	x23, [x23, #0xf00]
+   d9968:      	ldr	x21, [x23]
+   d996c:      	ldp	x19, x0, [x21, #0x10]
+   d9970:      	cmp	x19, x0
+   d9974:      	b.eq	0xd999c <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x1c4>
+   d9978:      	ldr	x0, [x19]
+   d997c:      	mov	x1, x22
+   d9980:      	ldr	x2, [x0]
+   d9984:      	ldr	x2, [x2, #0x10]
+   d9988:      	blr	x2
+   d998c:      	ldr	x0, [x21, #0x18]
+   d9990:      	add	x19, x19, #0x8
+   d9994:      	cmp	x0, x19
+   d9998:      	b.ne	0xd9978 <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x1a0>
+   d999c:      	mov	x0, x22
+   d99a0:      	bl	0x9b740 <_ZN4plog6RecordD1Ev@plt>
+   d99a4:      	mov	w0, #0x0                // =0
+   d99a8:      	ldp	x21, x22, [sp, #0x20]
+   d99ac:      	ldp	x23, x24, [sp, #0x30]
+   d99b0:      	b	0xd9814 <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x3c>
+   d99b4:      	adrp	x2, 0x125000 <write@@GLIBC_2.17+0x125000>
+   d99b8:      	add	x2, x2, #0x7a0
+   d99bc:      	mov	x3, #0x20a              // =522
+   d99c0:      	stp	x21, x22, [sp, #0x20]
+   d99c4:      	add	x22, sp, #0x290
+   d99c8:      	mov	x0, x22
+   d99cc:      	mov	w1, #0x4                // =4
+   d99d0:      	bl	0xad7d8 <_ZN4plog6RecordC2ENS_8SeverityEPKcmS3_PKvi.constprop.0>
+   d99d4:      	adrp	x1, 0x125000 <write@@GLIBC_2.17+0x125000>
+   d99d8:      	add	x0, x22, #0x30
+   d99dc:      	add	x1, x1, #0x7d0
+   d99e0:      	bl	0xa1140 <_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc@plt>
+   d99e4:      	ldr	x0, [x23, #0xf00]
+   d99e8:      	ldr	x24, [x0]
+   d99ec:      	ldp	x21, x0, [x24, #0x10]
+   d99f0:      	cmp	x21, x0
+   d99f4:      	b.eq	0xd9a1c <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x244>
+   d99f8:      	ldr	x0, [x21]
+   d99fc:      	mov	x1, x22
+   d9a00:      	ldr	x2, [x0]
+   d9a04:      	ldr	x2, [x2, #0x10]
+   d9a08:      	blr	x2
+   d9a0c:      	ldr	x0, [x24, #0x18]
+   d9a10:      	add	x21, x21, #0x8
+   d9a14:      	cmp	x0, x21
+   d9a18:      	b.ne	0xd99f8 <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x220>
+   d9a1c:      	mov	x0, x22
+   d9a20:      	bl	0x9b740 <_ZN4plog6RecordD1Ev@plt>
+   d9a24:      	ldp	x21, x22, [sp, #0x20]
+   d9a28:      	b	0xd98d4 <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0xfc>
+   d9a2c:      	mov	w0, #0x0                // =0
+   d9a30:      	ldp	x23, x24, [sp, #0x30]
+   d9a34:      	b	0xd9814 <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x3c>
+   d9a38:      	ldp	x23, x24, [sp, #0x30]
+   d9a3c:      	b	0xd9810 <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x38>
+   d9a40:      	add	x24, sp, #0x90
+   d9a44:      	stp	x21, x22, [sp, #0x20]
+   d9a48:      	adrp	x21, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   d9a4c:      	mov	x0, x24
+   d9a50:      	mov	x3, #0x20c              // =524
+   d9a54:      	mov	w1, #0x2                // =2
+   d9a58:      	adrp	x2, 0x125000 <write@@GLIBC_2.17+0x125000>
+   d9a5c:      	add	x2, x2, #0x7a0
+   d9a60:      	bl	0xad7d8 <_ZN4plog6RecordC2ENS_8SeverityEPKcmS3_PKvi.constprop.0>
+   d9a64:      	ldr	x6, [x21, #0xe80]
+   d9a68:      	add	x22, sp, #0x290
+   d9a6c:      	add	x9, sp, #0x290
+   d9a70:      	add	x8, x22, #0x20
+   d9a74:      	add	x6, x6, #0x10
+   d9a78:      	mov	x7, #0x1f4              // =500
+   d9a7c:      	adrp	x1, 0x125000 <write@@GLIBC_2.17+0x125000>
+   d9a80:      	mov	x0, x22
+   d9a84:      	add	x1, x1, #0x7f0
+   d9a88:      	add	x4, sp, #0x60
+   d9a8c:      	mov	x5, #0x0                // =0
+   d9a90:      	mov	x3, #0x0                // =0
+   d9a94:      	mov	x2, #0x19               // =25
+   d9a98:      	stp	x6, x8, [x9]
+   d9a9c:      	stp	xzr, x7, [x9, #0x10]
+   d9aa0:      	stp	xzr, xzr, [sp, #0x60]
+   d9aa4:      	bl	0x9f980 <_ZN3fmt2v76detail10vformat_toIcEEvRNS1_6bufferIT_EENS0_17basic_string_viewIS4_EENS0_17basic_format_argsINS0_20basic_format_contextINS1_15buffer_appenderINS0_13type_identityIS4_E4typeEEESE_EEEENS1_10locale_refE@plt>
+   d9aa8:      	add	x25, sp, #0x70
+   d9aac:      	ldr	x1, [sp, #0x298]
+   d9ab0:      	add	x4, x25, #0x10
+   d9ab4:      	ldr	x2, [sp, #0x2a0]
+   d9ab8:      	mov	x0, x25
+   d9abc:      	mov	w3, #0x0                // =0
+   d9ac0:      	str	x4, [sp, #0x70]
+   d9ac4:      	add	x2, x1, x2
+   d9ac8:      	bl	0x9d060 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE12_M_constructIPKcEEvT_S8_St20forward_iterator_tag@plt>
+   d9acc:      	ldr	x21, [x21, #0xe80]
+   d9ad0:      	add	x22, x22, #0x20
+   d9ad4:      	ldr	x0, [sp, #0x298]
+   d9ad8:      	add	x21, x21, #0x10
+   d9adc:      	str	x21, [sp, #0x290]
+   d9ae0:      	cmp	x0, x22
+   d9ae4:      	b.eq	0xd9aec <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x314>
+   d9ae8:      	bl	0xa0cf0 <_ZdlPv@plt>
+   d9aec:      	ldr	x2, [sp, #0x70]
+   d9af0:      	adrp	x1, 0x123000 <_ZN4YAML3Exp3StrB5cxx11Ej+0x38>
+   d9af4:      	add	x1, x1, #0xfc0
+   d9af8:      	add	x0, x24, #0x30
+   d9afc:      	cmp	x2, #0x0
+   d9b00:      	csel	x1, x1, x2, eq
+   d9b04:      	bl	0xa1140 <_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc@plt>
+   d9b08:      	ldr	x0, [x23, #0xf00]
+   d9b0c:      	ldr	x22, [x0]
+   d9b10:      	ldp	x21, x0, [x22, #0x10]
+   d9b14:      	cmp	x21, x0
+   d9b18:      	b.eq	0xd9b44 <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x36c>
+   d9b1c:      	nop
+   d9b20:      	ldr	x0, [x21]
+   d9b24:      	mov	x1, x24
+   d9b28:      	ldr	x2, [x0]
+   d9b2c:      	ldr	x2, [x2, #0x10]
+   d9b30:      	blr	x2
+   d9b34:      	ldr	x0, [x22, #0x18]
+   d9b38:      	add	x21, x21, #0x8
+   d9b3c:      	cmp	x0, x21
+   d9b40:      	b.ne	0xd9b20 <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x348>
+   d9b44:      	ldr	x0, [sp, #0x70]
+   d9b48:      	add	x25, x25, #0x10
+   d9b4c:      	cmp	x0, x25
+   d9b50:      	b.eq	0xd9b58 <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x380>
+   d9b54:      	bl	0xa0cf0 <_ZdlPv@plt>
+   d9b58:      	mov	x0, x24
+   d9b5c:      	bl	0x9b740 <_ZN4plog6RecordD1Ev@plt>
+   d9b60:      	ldp	x21, x22, [sp, #0x20]
+   d9b64:      	b	0xd9904 <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x12c>
+   d9b68:      	stp	x21, x22, [sp, #0x20]
+   d9b6c:      	stp	x23, x24, [sp, #0x30]
+   d9b70:      	bl	0x9cb60 <__stack_chk_fail@plt>
+   d9b74:      	stp	x21, x22, [sp, #0x20]
+   d9b78:      	stp	x23, x24, [sp, #0x30]
+   d9b7c:      	bl	0x9c480 <_ZSt9terminatev@plt>
+   d9b80:      	ldr	x1, [sp, #0x58]
+   d9b84:      	stp	x21, x22, [sp, #0x20]
+   d9b88:      	mov	x19, x0
+   d9b8c:      	stp	x23, x24, [sp, #0x30]
+   d9b90:      	cbz	x1, 0xd9be8 <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x410>
+   d9b94:      	ldr	x2, [x1]
+   d9b98:      	mov	x0, x1
+   d9b9c:      	ldr	x1, [x2, #0x8]
+   d9ba0:      	blr	x1
+   d9ba4:      	b	0xd9be8 <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x410>
+   d9ba8:      	ldr	x21, [x21, #0xe80]
+   d9bac:      	mov	x19, x0
+   d9bb0:      	ldr	x0, [sp, #0x298]
+   d9bb4:      	add	x21, x21, #0x10
+   d9bb8:      	str	x21, [sp, #0x290]
+   d9bbc:      	add	x22, x22, #0x20
+   d9bc0:      	cmp	x0, x22
+   d9bc4:      	b.eq	0xd9bcc <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x3f4>
+   d9bc8:      	bl	0xa0cf0 <_ZdlPv@plt>
+   d9bcc:      	mov	x0, x24
+   d9bd0:      	bl	0x9b740 <_ZN4plog6RecordD1Ev@plt>
+   d9bd4:      	mov	x0, x19
+   d9bd8:      	bl	0xa6570 <_Unwind_Resume@plt>
+   d9bdc:      	mov	x19, x0
+   d9be0:      	mov	x0, x22
+   d9be4:      	bl	0x9b740 <_ZN4plog6RecordD1Ev@plt>
+   d9be8:      	mov	x0, x19
+   d9bec:      	bl	0xa6570 <_Unwind_Resume@plt>
+   d9bf0:      	ldr	x1, [sp, #0x70]
+   d9bf4:      	add	x25, x25, #0x10
+   d9bf8:      	mov	x19, x0
+   d9bfc:      	cmp	x1, x25
+   d9c00:      	b.eq	0xd9bcc <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x3f4>
+   d9c04:      	mov	x0, x1
+   d9c08:      	bl	0xa0cf0 <_ZdlPv@plt>
+   d9c0c:      	b	0xd9bcc <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x3f4>
+   d9c10:      	b	0xd9bdc <_ZN5Juxie19ControllerJuxieImpl9InitRobotEv+0x404>
+   d9c14:      	nop

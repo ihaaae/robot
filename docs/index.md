@@ -18,7 +18,7 @@ links to the home rather than repeating the argument.
 
 | Document | What it covers | Status |
 |---|---|---|
-| [`development-plan.md`](development-plan.md) | The layering (L0–L5), the tasks per layer, and what "done" means for each. **Start here** | Draft v1.1 |
+| [`development-plan.md`](development-plan.md) | The layering (L0–L5), the tasks per layer, and what "done" means for each. **Start here** | Draft v1.2 |
 | [`l0-interface.md`](l0-interface.md) | L0 — wire codec, transport, trace and diff | Implemented in `cpp/` |
 | [`l3-executor-interface.md`](l3-executor-interface.md) | L3 — the executor that owns the control clock, the watchdog and the last safety gate | Draft |
 | [`hardware-acceptance.md`](hardware-acceptance.md) | What to verify when the robot arrives. The last section is the gate list for our own CAN master | Open work |
@@ -28,6 +28,7 @@ links to the home rather than repeating the argument.
 | Document | Home for | How the claims were established |
 |---|---|---|
 | [`sdk.md`](sdk.md) | What is inside the vendor package, the original project layout, packaging defects, the vendor's WebSocket node (§4), and the qemu test bench (§9) | Static inspection + emulation |
+| [`robot-state-machine.md`](robot-state-machine.md) | The vendor's `power_off / ready / idle / running / fault` state machine: every method in every state, the 5 ms polling thread that actually decides the state, and what our L5 should and should not copy | Disassembly; the `power_off` and `fault` columns and two lifecycle crashes executed under qemu |
 | [`sdk-usage.md`](sdk-usage.md) | The API contracts: the mandatory `OnRobot()` ordering, per-method results, joint layouts, link flags (§2), **SDK defects** (§6), and the Python bridge (§7) | Compiled and executed |
 | [`error-codes.md`](error-codes.md) | The four failure encodings, and which codes we have actually observed | Compiled and executed |
 | [`kinematics.md`](kinematics.md) | The kinematic model, the ZYX convention, the 84.721 mm offset and what it does *not* prove, the three-way model inconsistency | Executed against the vendor binary |

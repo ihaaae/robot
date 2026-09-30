@@ -1,0 +1,23 @@
+
+libjuxie_controller.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000b4f30 <_ZN5Juxie13StatePowerOff2IKERKSt5arrayIdLm14EERN5Eigen6MatrixIdLin1ELi1ELi0ELin1ELi1EEE>:
+   b4f30:      	b	0xa7750 <_ZN5Juxie5State4i_IKERKSt5arrayIdLm14EERN5Eigen6MatrixIdLin1ELi1ELi0ELin1ELi1EEE@plt>
+   b4f34:      	nop
+
+00000000000b4f38 <_ZN5Juxie10StateReady2IKERKSt5arrayIdLm14EERN5Eigen6MatrixIdLin1ELi1ELi0ELin1ELi1EEE>:
+   b4f38:      	b	0xa7750 <_ZN5Juxie5State4i_IKERKSt5arrayIdLm14EERN5Eigen6MatrixIdLin1ELi1ELi0ELin1ELi1EEE@plt>
+   b4f3c:      	nop
+
+00000000000b4f40 <_ZN5Juxie9StateIdle2IKERKSt5arrayIdLm14EERN5Eigen6MatrixIdLin1ELi1ELi0ELin1ELi1EEE>:
+   b4f40:      	b	0xa7750 <_ZN5Juxie5State4i_IKERKSt5arrayIdLm14EERN5Eigen6MatrixIdLin1ELi1ELi0ELin1ELi1EEE@plt>
+   b4f44:      	nop
+
+00000000000b4f48 <_ZN5Juxie12StateRunning2IKERKSt5arrayIdLm14EERN5Eigen6MatrixIdLin1ELi1ELi0ELin1ELi1EEE>:
+   b4f48:      	b	0xa7750 <_ZN5Juxie5State4i_IKERKSt5arrayIdLm14EERN5Eigen6MatrixIdLin1ELi1ELi0ELin1ELi1EEE@plt>
+   b4f4c:      	nop
+
+00000000000b4f50 <_ZN5Juxie10StateFault2IKERKSt5arrayIdLm14EERN5Eigen6MatrixIdLin1ELi1ELi0ELin1ELi1EEE>:
+   b4f50:      	b	0xa7750 <_ZN5Juxie5State4i_IKERKSt5arrayIdLm14EERN5Eigen6MatrixIdLin1ELi1ELi0ELin1ELi1EEE@plt>

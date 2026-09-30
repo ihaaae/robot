@@ -1,0 +1,10 @@
+
+libjuxie_controller.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000ad1a8 <_ZN5Juxie15ControllerJuxie13GetRobotStateEv>:
+   ad1a8:      	ldr	x0, [x0]
+   ad1ac:      	ldr	x0, [x0, #0x68]
+   ad1b0:      	ldr	w0, [x0, #0x8]
+   ad1b4:      	ret

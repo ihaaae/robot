@@ -1,0 +1,15 @@
+
+libexecutor.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000f0a78 <_ZN12bot_executor13ExecutorJuxie9isEnabledEv>:
+   f0a78:      	stp	x29, x30, [sp, #-0x20]!
+   f0a7c:      	mov	x29, sp
+   f0a80:      	str	x0, [sp, #0x18]
+   f0a84:      	ldr	x0, [sp, #0x18]
+   f0a88:      	add	x0, x0, #0x18
+   f0a8c:      	bl	0xe0110 <_ZNK18MultiThreadVersionIN12bot_executor10JuxieStateEE3getEv@plt>
+   f0a90:      	ldrb	w0, [x0, #0x3]
+   f0a94:      	ldp	x29, x30, [sp], #0x20
+   f0a98:      	ret

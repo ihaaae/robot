@@ -44,6 +44,46 @@ fn "$drv" driver.sendJointBreak          _ZN16rk3576_can_canfd18RK3576CanCanfdIm
 fn "$drv" driver.rk3576_canfd_recv_frame_data _ZN16rk3576_can_canfd18RK3576CanCanfdImpl28rk3576_canfd_recv_frame_dataE6Can_If
 fn "$drv" driver.ucas_can0_task_send_thread   _ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv
 
+# libjuxie_controller: Juxie::State* and the ControllerJuxieImpl code that drives them
+# (docs/robot-state-machine.md).
+ctl=libjuxie_controller.so.0.6.4
+# Which State method is which address. Many are 4-8 byte stubs that the linker folded together
+# (identical code folding), so one address can stand for several symbols; this table is the key.
+(cd "$lib" && "$objdump" -T "$ctl" | grep -E '_ZN5Juxie[0-9]+State' \
+    | awk '{print $1, $5, $NF}' | c++filt | sort) >"$out/controller.state-symbols.txt"
+range "$ctl" controller.state-stubs.a8408  0xa8408 0xa8410   # return true
+range "$ctl" controller.state-stubs.a8538  0xa8538 0xa85b8   # -> SelfCheck(), -101, -19, -1, -103
+range "$ctl" controller.state-stubs.ad768  0xad768 0xad7d8   # tail calls to m_MoveEnd / m_Break*
+range "$ctl" controller.state-stubs.b4f30  0xb4f30 0xb4f54   # IK: every state -> i_IK
+for st in PowerOff Ready Idle Running Fault; do
+    m="_ZN5Juxie$((${#st} + 5))State${st}"
+    fn "$ctl" "controller.State${st}.SelfCheck" "${m}9SelfCheckEv"
+done
+fn "$ctl" controller.StatePowerOff.OnRobot    _ZN5Juxie13StatePowerOff7OnRobotEv
+fn "$ctl" controller.StateReady.EnableRobot   _ZN5Juxie10StateReady11EnableRobotEv
+fn "$ctl" controller.StateReady.OffRobot      _ZN5Juxie10StateReady8OffRobotEv
+fn "$ctl" controller.StateIdle.DisableRobot   _ZN5Juxie9StateIdle12DisableRobotEv
+fn "$ctl" controller.StateIdle.Stop           _ZN5Juxie9StateIdle4StopEv
+fn "$ctl" controller.StateIdle.OffRobot       _ZN5Juxie9StateIdle8OffRobotEv
+fn "$ctl" controller.StateRunning.DisableRobot _ZN5Juxie12StateRunning12DisableRobotEv
+fn "$ctl" controller.StateRunning.Stop        _ZN5Juxie12StateRunning4StopEv
+fn "$ctl" controller.StateRunning.OffRobot    _ZN5Juxie12StateRunning8OffRobotEv
+fn "$ctl" controller.StateFault.OffRobot      _ZN5Juxie10StateFault8OffRobotEv
+fn "$ctl" controller.State.ClearFault         _ZN5Juxie5State10ClearFaultEv
+fn "$ctl" controller.State.m_off_robot        _ZN5Juxie5State11m_off_robotEv
+fn "$ctl" controller.Impl.changeState         _ZN5Juxie19ControllerJuxieImpl11changeStateESt10shared_ptrINS_5StateEE
+fn "$ctl" controller.Impl.OnRobot             _ZN5Juxie19ControllerJuxieImpl7OnRobotEv
+fn "$ctl" controller.Impl.InitRobot           _ZN5Juxie19ControllerJuxieImpl9InitRobotEv
+fn "$ctl" controller.Impl.EnableRobot         _ZN5Juxie19ControllerJuxieImpl11EnableRobotEv
+fn "$ctl" controller.Impl.UpdateStateThread   _ZN5Juxie19ControllerJuxieImpl17UpdateStateThreadEv
+fn "$ctl" controller.GetRobotState            _ZN5Juxie15ControllerJuxie13GetRobotStateEv
+
+# libexecutor: the four predicates UpdateStateThread polls.
+fn "$exe" executor.isConnected _ZN12bot_executor13ExecutorJuxie11isConnectedEv
+fn "$exe" executor.isEnabled   _ZN12bot_executor13ExecutorJuxie9isEnabledEv
+fn "$exe" executor.isMoving    _ZN12bot_executor13ExecutorJuxie8isMovingEv
+fn "$exe" executor.isInFault   _ZN12bot_executor13ExecutorJuxie9isInFaultEv
+
 # .rodata constants and strings referenced by the excerpts above.
 python3 - "$lib" >"$out/rodata.txt" <<'EOF'
 import struct, sys
@@ -65,6 +105,25 @@ dump(exe, 0x164818, 8, "resample_delta default, stored at this+0x10 before the Y
 dump(exe, 0x163ac0, 7, "0x200 sub-frame template copied by ExecutorJuxie::ucas_can0_task_send_thread")
 dump(exe, 0x163470, 16, "YAML key read into this+0x10")
 dump(exe, 0x1634c0, 0x80, "YAML keys read in the constructor limits block")
+ctl = "libjuxie_controller.so.0.6.4"
+def timespec(name, off, what):
+    b = open(f"{lib}/{name}", "rb").read()[off:off + 16]
+    sec, nsec = struct.unpack("<qq", b)
+    print(f"{name} @ {off:#x} ({what})")
+    print(f"  timespec: {{tv_sec = {sec}, tv_nsec = {nsec}}}")
+    print()
+timespec(ctl, 0x126ab0, "UpdateStateThread poll period, loaded via adrp 0x126000 + #0xab0")
+timespec(ctl, 0x126a90, "StateRunning::DisableRobot / OffRobot wait-for-idle poll, adrp 0x126000 + #0xa90")
+dump(ctl, 0x123d28, 0x49, "StateRunning::SelfCheck message")
+dump(ctl, 0x123da8, 0x3f, "StatePowerOff::SelfCheck message")
+dump(ctl, 0x123e18, 0x2c, "StateIdle::SelfCheck message")
+dump(ctl, 0x123e78, 0x3d, "StateFault::SelfCheck message")
+dump(ctl, 0x123ee8, 0x41, "StateReady::SelfCheck message")
+dump(ctl, 0x1259d8, 0x10, "UpdateStateThread: not connected -> power_off")
+dump(ctl, 0x1259e8, 0x14, "UpdateStateThread: -> fault")
+dump(ctl, 0x125a00, 0x14, "UpdateStateThread: -> running")
+dump(ctl, 0x125a18, 0x12, "UpdateStateThread: -> ready")
+dump(ctl, 0x125a30, 0x11, "UpdateStateThread: -> idle")
 EOF
 
 echo "wrote $(ls "$out" | wc -l) files to ${out#$root/}"

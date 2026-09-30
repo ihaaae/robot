@@ -1,0 +1,108 @@
+
+libjuxie_controller.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000b7c40 <_ZN5Juxie13StatePowerOff7OnRobotEv>:
+   b7c40:      	stp	x29, x30, [sp, #-0x60]!
+   b7c44:      	mov	x29, sp
+   b7c48:      	stp	x21, x22, [sp, #0x20]
+   b7c4c:      	adrp	x21, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   b7c50:      	ldr	x1, [x21, #0x948]
+   b7c54:      	stp	x19, x20, [sp, #0x10]
+   b7c58:      	mov	x19, x0
+   b7c5c:      	ldr	x2, [x1]
+   b7c60:      	str	x2, [sp, #0x58]
+   b7c64:      	mov	x2, #0x0                // =0
+   b7c68:      	bl	0xa0dd0 <_ZN5Juxie5State10m_on_robotEv@plt>
+   b7c6c:      	ands	w20, w0, #0xff
+   b7c70:      	b.ne	0xb7ca0 <_ZN5Juxie13StatePowerOff7OnRobotEv+0x60>
+   b7c74:      	ldr	x1, [x21, #0x948]
+   b7c78:      	ldr	x0, [sp, #0x58]
+   b7c7c:      	ldr	x2, [x1]
+   b7c80:      	subs	x0, x0, x2
+   b7c84:      	mov	x2, #0x0                // =0
+   b7c88:      	b.ne	0xb7dac <_ZN5Juxie13StatePowerOff7OnRobotEv+0x16c>
+   b7c8c:      	mov	w0, w20
+   b7c90:      	ldp	x19, x20, [sp, #0x10]
+   b7c94:      	ldp	x21, x22, [sp, #0x20]
+   b7c98:      	ldp	x29, x30, [sp], #0x60
+   b7c9c:      	ret
+   b7ca0:      	mov	w0, #0x4240             // =16960
+   b7ca4:      	add	x22, sp, #0x48
+   b7ca8:      	movk	w0, #0xf, lsl #16
+   b7cac:      	str	x23, [sp, #0x30]
+   b7cb0:      	bl	0xa29e0 <usleep@plt>
+   b7cb4:      	mov	x0, x19
+   b7cb8:      	mov	x8, x22
+   b7cbc:      	bl	0xa3a90 <_ZN5Juxie5State14getExecutorPtrEv@plt>
+   b7cc0:      	ldr	x0, [sp, #0x48]
+   b7cc4:      	ldr	x1, [x0]
+   b7cc8:      	ldr	x1, [x1, #0x70]
+   b7ccc:      	blr	x1
+   b7cd0:      	ldr	x1, [sp, #0x50]
+   b7cd4:      	and	w19, w0, #0xff
+   b7cd8:      	cbz	x1, 0xb7ce4 <_ZN5Juxie13StatePowerOff7OnRobotEv+0xa4>
+   b7cdc:      	mov	x0, x1
+   b7ce0:      	bl	0x9fee0 <_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@plt>
+   b7ce4:      	adrp	x0, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   b7ce8:      	ldr	x0, [x0, #0x988]
+   b7cec:      	ldr	x23, [x0]
+   b7cf0:      	mov	x0, #0x28               // =40
+   b7cf4:      	cbz	w19, 0xb7d50 <_ZN5Juxie13StatePowerOff7OnRobotEv+0x110>
+   b7cf8:      	bl	0xa1190 <_Znwm@plt>
+   b7cfc:      	mov	x1, x0
+   b7d00:      	adrp	x2, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   b7d04:      	mov	w3, #0x4                // =4
+   b7d08:      	add	x0, x22, #0x8
+   b7d0c:      	str	x1, [sp, #0x48]
+   b7d10:      	ldr	x2, [x2, #0x8e8]
+   b7d14:      	str	w3, [x1, #0x8]
+   b7d18:      	stp	xzr, xzr, [x1, #0x10]
+   b7d1c:      	add	x2, x2, #0x10
+   b7d20:      	str	x2, [x1]
+   b7d24:      	str	xzr, [x1, #0x20]
+   b7d28:      	bl	0xa4980 <_ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EEC1IPN5Juxie10StateFaultEEET_@plt>
+   b7d2c:      	mov	x1, x22
+   b7d30:      	mov	x0, x23
+   b7d34:      	bl	0xa6a40 <_ZN5Juxie19ControllerJuxieImpl11changeStateESt10shared_ptrINS_5StateEE@plt>
+   b7d38:      	ldr	x0, [sp, #0x50]
+   b7d3c:      	cbz	x0, 0xb7d44 <_ZN5Juxie13StatePowerOff7OnRobotEv+0x104>
+   b7d40:      	bl	0x9fee0 <_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@plt>
+   b7d44:      	mov	w20, #0x0               // =0
+   b7d48:      	ldr	x23, [sp, #0x30]
+   b7d4c:      	b	0xb7c74 <_ZN5Juxie13StatePowerOff7OnRobotEv+0x34>
+   b7d50:      	bl	0xa1190 <_Znwm@plt>
+   b7d54:      	mov	x1, x0
+   b7d58:      	adrp	x2, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   b7d5c:      	mov	w3, #0x1                // =1
+   b7d60:      	add	x0, x22, #0x8
+   b7d64:      	str	x1, [sp, #0x48]
+   b7d68:      	ldr	x2, [x2, #0xef0]
+   b7d6c:      	str	w3, [x1, #0x8]
+   b7d70:      	stp	xzr, xzr, [x1, #0x10]
+   b7d74:      	add	x2, x2, #0x10
+   b7d78:      	str	x2, [x1]
+   b7d7c:      	str	xzr, [x1, #0x20]
+   b7d80:      	bl	0x9d110 <_ZNSt14__shared_countILN9__gnu_cxx12_Lock_policyE2EEC1IPN5Juxie10StateReadyEEET_@plt>
+   b7d84:      	mov	x1, x22
+   b7d88:      	mov	x0, x23
+   b7d8c:      	bl	0xa6a40 <_ZN5Juxie19ControllerJuxieImpl11changeStateESt10shared_ptrINS_5StateEE@plt>
+   b7d90:      	ldr	x0, [sp, #0x50]
+   b7d94:      	cbz	x0, 0xb7da4 <_ZN5Juxie13StatePowerOff7OnRobotEv+0x164>
+   b7d98:      	bl	0x9fee0 <_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@plt>
+   b7d9c:      	ldr	x23, [sp, #0x30]
+   b7da0:      	b	0xb7c74 <_ZN5Juxie13StatePowerOff7OnRobotEv+0x34>
+   b7da4:      	ldr	x23, [sp, #0x30]
+   b7da8:      	b	0xb7c74 <_ZN5Juxie13StatePowerOff7OnRobotEv+0x34>
+   b7dac:      	str	x23, [sp, #0x30]
+   b7db0:      	bl	0x9cb60 <__stack_chk_fail@plt>
+   b7db4:      	ldr	x1, [sp, #0x50]
+   b7db8:      	mov	x19, x0
+   b7dbc:      	cbz	x1, 0xb7dc8 <_ZN5Juxie13StatePowerOff7OnRobotEv+0x188>
+   b7dc0:      	mov	x0, x1
+   b7dc4:      	bl	0x9fee0 <_ZNSt16_Sp_counted_baseILN9__gnu_cxx12_Lock_policyE2EE10_M_releaseEv@plt>
+   b7dc8:      	mov	x0, x19
+   b7dcc:      	bl	0xa6570 <_Unwind_Resume@plt>
+   b7dd0:      	b	0xb7db4 <_ZN5Juxie13StatePowerOff7OnRobotEv+0x174>
+   b7dd4:      	b	0xb7db4 <_ZN5Juxie13StatePowerOff7OnRobotEv+0x174>

@@ -47,6 +47,6 @@ echo "run under emulation with:"
 echo "  DUAL_ARM_SDK_CONFIG=$SDK/usr/etc LD_LIBRARY_PATH=$SDK/usr/lib \\"
 echo "  qemu-aarch64-static -L <sysroot> $OUT/01_offline_kinematics"
 echo
-echo "01_offline_kinematics, sdk_probe and fk_overflow_repro run with no robot attached."
+echo "01_offline_kinematics, sdk_probe, state_machine_probe and fk_overflow_repro run with no robot attached."
 echo "02, 04, 06 and 07 need a robot on the CAN bus."
 echo "04, 06 and 07 are dry runs unless you pass --yes."

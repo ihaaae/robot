@@ -1,0 +1,72 @@
+
+libjuxie_controller.so.0.6.4:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000ba078 <_ZN5Juxie19ControllerJuxieImpl11changeStateESt10shared_ptrINS_5StateEE>:
+   ba078:      	stp	x29, x30, [sp, #-0x30]!
+   ba07c:      	mov	x29, sp
+   ba080:      	stp	x19, x20, [sp, #0x10]
+   ba084:      	adrp	x20, 0x16e000 <_ZTVN4YAML16EmitterExceptionE>
+   ba088:      	mov	x19, x0
+   ba08c:      	ldr	x0, [x20, #0x8c0]
+   ba090:      	stp	x21, x22, [sp, #0x20]
+   ba094:      	mov	x21, x1
+   ba098:      	add	x22, x19, #0x78
+   ba09c:      	cbz	x0, 0xba0ac <_ZN5Juxie19ControllerJuxieImpl11changeStateESt10shared_ptrINS_5StateEE+0x34>
+   ba0a0:      	mov	x0, x22
+   ba0a4:      	bl	0x9c6a0 <pthread_mutex_lock@plt>
+   ba0a8:      	cbnz	w0, 0xba17c <_ZN5Juxie19ControllerJuxieImpl11changeStateESt10shared_ptrINS_5StateEE+0x104>
+   ba0ac:      	ldr	q0, [x21]
+   ba0b0:      	stp	xzr, xzr, [x21]
+   ba0b4:      	ldr	x21, [x19, #0x70]
+   ba0b8:      	stur	q0, [x19, #0x68]
+   ba0bc:      	cbz	x21, 0xba0e4 <_ZN5Juxie19ControllerJuxieImpl11changeStateESt10shared_ptrINS_5StateEE+0x6c>
+   ba0c0:      	ldr	x0, [x20, #0x8c0]
+   ba0c4:      	cbz	x0, 0xba110 <_ZN5Juxie19ControllerJuxieImpl11changeStateESt10shared_ptrINS_5StateEE+0x98>
+   ba0c8:      	add	x1, x21, #0x8
+   ba0cc:      	ldaxr	w0, [x1]
+   ba0d0:      	sub	w2, w0, #0x1
+   ba0d4:      	stlxr	w3, w2, [x1]
+   ba0d8:      	cbnz	w3, 0xba0cc <_ZN5Juxie19ControllerJuxieImpl11changeStateESt10shared_ptrINS_5StateEE+0x54>
+   ba0dc:      	cmp	w0, #0x1
+   ba0e0:      	b.eq	0xba124 <_ZN5Juxie19ControllerJuxieImpl11changeStateESt10shared_ptrINS_5StateEE+0xac>
+   ba0e4:      	ldr	x20, [x20, #0x8c0]
+   ba0e8:      	cbz	x20, 0xba100 <_ZN5Juxie19ControllerJuxieImpl11changeStateESt10shared_ptrINS_5StateEE+0x88>
+   ba0ec:      	mov	x0, x22
+   ba0f0:      	ldp	x19, x20, [sp, #0x10]
+   ba0f4:      	ldp	x21, x22, [sp, #0x20]
+   ba0f8:      	ldp	x29, x30, [sp], #0x30
+   ba0fc:      	b	0x9e380 <pthread_mutex_unlock@plt>
+   ba100:      	ldp	x19, x20, [sp, #0x10]
+   ba104:      	ldp	x21, x22, [sp, #0x20]
+   ba108:      	ldp	x29, x30, [sp], #0x30
+   ba10c:      	ret
+   ba110:      	ldr	w0, [x21, #0x8]
+   ba114:      	sub	w1, w0, #0x1
+   ba118:      	str	w1, [x21, #0x8]
+   ba11c:      	cmp	w0, #0x1
+   ba120:      	b.ne	0xba0e4 <_ZN5Juxie19ControllerJuxieImpl11changeStateESt10shared_ptrINS_5StateEE+0x6c>
+   ba124:      	ldr	x1, [x21]
+   ba128:      	mov	x0, x21
+   ba12c:      	ldr	x1, [x1, #0x10]
+   ba130:      	blr	x1
+   ba134:      	ldr	x0, [x20, #0x8c0]
+   ba138:      	cbz	x0, 0xba16c <_ZN5Juxie19ControllerJuxieImpl11changeStateESt10shared_ptrINS_5StateEE+0xf4>
+   ba13c:      	add	x1, x21, #0xc
+   ba140:      	ldaxr	w0, [x1]
+   ba144:      	sub	w2, w0, #0x1
+   ba148:      	stlxr	w3, w2, [x1]
+   ba14c:      	cbnz	w3, 0xba140 <_ZN5Juxie19ControllerJuxieImpl11changeStateESt10shared_ptrINS_5StateEE+0xc8>
+   ba150:      	cmp	w0, #0x1
+   ba154:      	b.ne	0xba0e4 <_ZN5Juxie19ControllerJuxieImpl11changeStateESt10shared_ptrINS_5StateEE+0x6c>
+   ba158:      	ldr	x1, [x21]
+   ba15c:      	mov	x0, x21
+   ba160:      	ldr	x1, [x1, #0x18]
+   ba164:      	blr	x1
+   ba168:      	b	0xba0e4 <_ZN5Juxie19ControllerJuxieImpl11changeStateESt10shared_ptrINS_5StateEE+0x6c>
+   ba16c:      	ldr	w0, [x21, #0xc]
+   ba170:      	sub	w1, w0, #0x1
+   ba174:      	str	w1, [x21, #0xc]
+   ba178:      	b	0xba150 <_ZN5Juxie19ControllerJuxieImpl11changeStateESt10shared_ptrINS_5StateEE+0xd8>
+   ba17c:      	bl	0x9ee90 <_ZSt20__throw_system_errori@plt>
