@@ -1,6 +1,6 @@
-"""Command line entry point: ``shensi-kin``.
+"""Command line entry point: ``python -m vendor_model.cli``.
 
-Kept out of the library modules so that importing ``shensi_robot.kinematics`` never pulls in
+Kept out of the library modules so that importing ``vendor_model.kinematics`` never pulls in
 an argument parser.
 """
 from __future__ import annotations
@@ -22,7 +22,7 @@ def _floats(text: str) -> list[float]:
 
 def kin_main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        prog="shensi-kin",
+        prog="python -m vendor_model.cli",
         description="Offline forward/inverse kinematics for the Juxie dual-arm robot.",
         epilog=f"The configuration root comes from --config-root or ${ENV_VAR}. "
                "The SDK tree is committed under vendor/sdk/dual-arm-app/0.6.4/.",
@@ -76,3 +76,7 @@ def _guard(func, argv):
 
 def kin_entry() -> None:
     sys.exit(_guard(kin_main, None))
+
+
+if __name__ == "__main__":
+    kin_entry()

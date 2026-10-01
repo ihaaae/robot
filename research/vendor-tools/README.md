@@ -6,15 +6,16 @@ repository aimed to be detail-compatible with that SDK. That goal is gone: we no
 vendor SDK only at the level of abstraction, and the binary is reference material. These tools
 stay because they are how the findings in [`../vendor-analysis/`](../vendor-analysis/) were
 obtained and can be reproduced. They are **frozen**: kept runnable, not extended. New code goes
-in `cpp/` and `src/` and does not depend on anything here.
+in `cpp/` and does not depend on anything here.
 
 | Path | What it is |
 |---|---|
 | `cpp/` | C++ demos and probes against `Juxie::ControllerJuxie`; `cpp/build.sh` cross-compiles them into `.sdk/bin/` |
 | `cmake/juxie-sdk.cmake` | the `Juxie::SDK` imported target, for a CMake project linking the vendor SDK |
 | `python/` | C ABI bridge (`juxie_sdk_bridge.cpp`, `build_bridge.sh`), its ctypes module `juxie_sdk.py`, an example, and offline tests |
+| `python/vendor_model/` | pure-Python model of the vendor's kinematics, rebuilt from its YAML (FK, numerical IK, a CLI, an example, tests). Never validated; see [`../vendor-analysis/kinematics.md`](../vendor-analysis/kinematics.md) |
 | `probes/` | disassembly excerpts and an FK cross-check used by the vendor analysis |
-| `verify-native.sh` | build-checks for all of the above |
+| `verify-native.sh` | offline Python tests, plus build-checks for all of the above |
 
 ```bash
 ./research/vendor-tools/verify-native.sh            # needs aarch64-linux-gnu-g++
@@ -22,9 +23,18 @@ in `cpp/` and `src/` and does not depend on anything here.
 python3 research/vendor-tools/python/sdk_min_example.py   # on the board or under qemu
 ```
 
-`juxie_sdk.py` is not part of the `shensi_robot` package. Put `research/vendor-tools/python`
-on `PYTHONPATH` to import it from elsewhere; it still uses `shensi_robot.config`, so install
-the package first (`pip install -e .`). How to run any of this under emulation:
+Nothing here is an installable package. Put `research/vendor-tools/python` on `PYTHONPATH`
+to import `juxie_sdk` or `vendor_model` (`juxie_sdk` uses `vendor_model.config`); they need
+numpy and PyYAML:
+
+```bash
+export PYTHONPATH="$PWD/research/vendor-tools/python"
+export DUAL_ARM_SDK_CONFIG="$PWD/vendor/sdk/dual-arm-app/0.6.4/usr/etc"
+python3 -m vendor_model.cli --arm left fk --joints "0 0 0 0 0 0 0"
+python3 -m vendor_model.example_offline_kinematics
+```
+
+ How to run any of this under emulation:
 [`../vendor-analysis/sdk.md`](../vendor-analysis/sdk.md) §9 and
 [`../vendor-analysis/sdk-usage.md`](../vendor-analysis/sdk-usage.md).
 
@@ -69,7 +79,7 @@ low-level board.
 
 | Program | On hardware |
 |---|---|
-| `examples/python/01_offline_kinematics.py`, `shensi-kin` | **Nothing at all** — no SDK, no socket, no device. Pure computation over the YAML. |
+| `python/vendor_model/` (`example_offline_kinematics.py`, `python -m vendor_model.cli`) | **Nothing at all** — no SDK, no socket, no device. Pure computation over the YAML. |
 | `research/vendor-tools/cpp/01_offline_kinematics.cpp` | **No power-on.** FK, `getConfig`, `GetRobotState` all work without `OnRobot()`, so this runs without energising anything. `--power-on` adds `getDof` and `IK` and does power the board. |
 | Dry runs of `04`, `06`, `07` | Read-only commands, but `OnRobot()` has already powered the board. |
 | Any invocation with `--yes` | **Commands motion.** Read `docs/hardware-acceptance.md` first. |

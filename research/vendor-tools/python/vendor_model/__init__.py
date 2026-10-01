@@ -1,7 +1,7 @@
 """Python toolkit for the Juxie (巨蟹智能) dual-arm robot.
 
-:mod:`shensi_robot.kinematics` is offline forward/inverse kinematics reconstructed from the
-vendor's YAML configuration. It needs a configuration root (see :mod:`shensi_robot.config`)
+:mod:`vendor_model.kinematics` is offline forward/inverse kinematics reconstructed from the
+vendor's YAML configuration. It needs a configuration root (see :mod:`vendor_model.config`)
 and no vendor binaries at all.
 
 Read ``research/vendor-analysis/kinematics.md`` before trusting any number this library produces: the vendor

@@ -16,15 +16,15 @@
 | 总线独占 | **一条总线只有一个主站。** 我们的栈拥有总线时，任何别的主站（包括厂家栈）都不能在上面跑。见 §5。 |
 | 分层 | L0 只做"字节 ↔ 线上结构体 + 收发 + trace"，**不含策略、时序、状态**。 |
 | RX 边界 | **原始帧。** 不走厂家 `setReadFunction` 解好的 `JointState`——那个结构没有温度字段，且解码必须能独立验证。见 §4.3。 |
-| 厂家 `.so` | **允许链接**，但 `VendorShmTransport` 只是可选的 TX 后端之一，不是必选路径。见 §4.2。 |
+| 厂家 `.so` | **不链接。** 我们的 SDK 不依赖厂家任何库；所有后端都是我们自己的。见 §4.2。 |
 | 公共 API | **我们自己的 API**，只在能力层次上对标厂家 SDK，不追求同名方法、同号返回码（`development-plan.md` 8.1）。 |
-| 原始帧来源 | **未定，等真机。** 见 §4.4。 |
+| 原始帧来源 | **已定**：SocketCAN 或 USB-CAN，都是我们自己的后端（§4.4、§9）。 |
 
 ## 实现状态
 
 `cpp/` 下已经落地 **wire + transport + trace/差分** 三块，`./cpp/build.sh` 一条命令构建并跑测：
-1078 个断言，0 失败，`-Wall -Wextra -Wpedantic` 零警告，ASan + UBSan 下干净。
-golden vector 全部取自 PR0002 自带的例子，并已并入 `tools/verify.sh` 第 6 步（离线，只需宿主 C++ 编译器）。
+1081 个断言，0 失败，`-Wall -Wextra -Wpedantic` 零警告，ASan + UBSan 下干净。
+golden vector 全部取自 PR0002 自带的例子，并已并入 `tools/verify.sh` 第 3 步（离线，只需宿主 C++ 编译器）。
 
 | 文件 | 内容 |
 |---|---|
@@ -50,8 +50,8 @@ golden vector 全部取自 PR0002 自带的例子，并已并入 `tools/verify.s
 
 **不拥有**
 
-- 什么时候发什么（L1 的时序 / DS402 序列）
-- 关节索引到机器人的映射（L2：14 个关节 ↔ `Dev_ID` ↔ 通道）
+- 什么时候发什么（L1：控制字节里的使能 / 抱闸 / 清错位，SDO 诊断）
+- 关节索引到机器人的映射（L3 的构造配置：14 个关节 ↔ `Dev_ID` ↔ 通道，`l3-executor-interface.md` §3.2）
 - 什么时候必须发帧（L3 的节拍与喂狗，见 [`l3-executor-interface.md`](l3-executor-interface.md)）
 - 单位换算的**语义**（上层决定用 rad 还是 deg）；L0 只提供 `cnt ↔ rad` 的纯函数
 - 运动学（84.721 mm 偏置属于任务 4，不属于 L0）
@@ -163,9 +163,10 @@ JointFeedback decode(const Frame&);
 ```cpp
 constexpr double CNT_PER_REV = 65536.0;
 
-// 向零截断，与厂家驱动一致（cast / fcvtzs），不是四舍五入。
-// 这条差异在 cnt 边界上会差 1，任何性质测试都看不见。
-int16_t rad_to_cnt(double rad);     // trunc(rad / 2pi * 65536)
+// 四舍五入到最近的 cnt（半数远离零）。厂家驱动是向零截断（hardware-facts.md 8.6）；
+// 四舍五入的最大误差减半、正负对称，且 cnt -> rad -> cnt 是恒等。
+// 差 1 cnt 任何性质测试都看不见，所以由单元测试钉住。
+int16_t rad_to_cnt(double rad);     // round(rad / 2pi * 65536)
 double  cnt_to_rad(int16_t cnt);    // cnt * pi / 32768
 ```
 
@@ -196,7 +197,7 @@ public:
 };
 ```
 
-「发送 + 接收回调」，小到 SocketCAN、USB-CAN 适配器、控制器板子的寄存器驱动都能作为其中一个后端接入。
+「发送 + 接收回调」，小到 SocketCAN、USB-CAN 适配器都能作为其中一个后端接入。
 
 ### 4.2 后端
 
@@ -205,30 +206,26 @@ public:
 | `FakeTransport` | 脚本化应答 | 现在 |
 | `ReplayTransport` | 回放录好的 trace | 现在 |
 | `RecordingTransport` | 装饰器，把任意后端录成 trace | 现在 |
-| `VendorShmTransport` | 走 `librk3576_can_canfd.so` 的 `can_send_frame` | 板子；可选（§9 第 2 项）|
-| `SocketCanTransport` | `can0` / `can1` | 未确认内核是否暴露 |
-| `ZlgUsbCanTransport` | PC 侧 USB-CAN | 以后 |
+| `SocketCanTransport` | Linux SocketCAN 接口（`can0` / `can1`） | 下一个要写的真实后端 |
+| `UsbCanTransport` | USB-CAN 适配器（具体型号未定） | 以后 |
 
-### 4.3 RX 边界（**待拍板**）
+### 4.3 RX 边界（**已定：原始帧**）
 
 厂家驱动的 `setReadFunction` 回调签名是 `void(JointState&, JointState&)`——它给的是**已经解码好的** `JointState`，不是原始帧。而且 vendored 头里的 `JointState` 只有
 `MotionState / ControlType / Current / Vel / single_torque / six_axis_torque / FaultData / origPosAct / isUpdated`，**没有温度字段**——走它的解码就永远读不到反馈帧 `[8..9]`。
 
-因此 L0 的 RX 边界定为**原始帧**（推荐）：解码借厂家的，等于把自己的 L1 / L2 交给一个无法独立验证的实现。反馈帧的字节解码已经落在 L0 的 `decode_feedback`，物理量换算是 L1（任务 2.6）。`VendorShmTransport` 只作为 TX / 时序 / capture 的便利后端。
+我们不链接厂家库（§0），这个选项本来也不存在；记在这里是因为它说明了原始帧边界的另一条理由：解码必须能独立验证。反馈帧的字节解码在 L0 的 `decode_feedback`，物理量换算是 L1（任务 2.6）。
 
-若改选"用厂家解码"，则 `decode_feedback` 与任务 2.6 整个消失，且 L0 的 `Frame` 类型对 RX 侧失去意义。
+### 4.4 原始帧从哪来
 
-### 4.4 原始帧从哪来（**现在拍不了，等真机**）
+两条路径，都是标准 CAN FD 接口，都不经过厂家的驱动：
 
-三条候选路径：
+1. **SocketCAN**——Linux 上的 `can0` / `can1`，无论接口是板载的还是外接设备提供的
+2. **USB-CAN 适配器**——厂商自带的用户态库
 
-1. 自己读 `/dev/misc_shm_can0|1`——需要那个未确认的 4 KB 结构（`can-protocol-comparison.md` §6）
-2. SocketCAN——取决于真机上 `ls /sys/class/net` 有没有 `can0`/`can1`（`hardware-acceptance.md` P2 的一项）
-3. PC + USB-CAN 适配器
+厂家板子内部的寄存器驱动和 `/dev/misc_shm_can*` 共享内存（`hardware-facts.md` 1.7）是厂家栈的实现细节，我们不走这条路。
 
-注意 vendored 头 `rk3576_can_canfd/rk3576_can_canfd.h` 里**已经有完整的寄存器映射**（`CAN0_PHYADDR 0x2AC00000`、`CAN1_PHYADDR 0x2AC10000`、`CANFD_NBTP 0x100`、`CANFD_DBTP 0x104`、`CANFD_BRS_CFG 0x10c`、`CANFD_TXID 0x204`、`CANFD_TXDAT0 0x208`…），所以"自己写寄存器级驱动"是可行的，不必依赖那个 `.so`。
-
-L0 的接口对四条路都成立，所以**先落 `FakeTransport` + `ReplayTransport`，离线就能推进**。
+两条路的带宽都够用（`l3-executor-interface.md` §2.1 有估算），选哪条不影响 L0 接口。离线开发用 `FakeTransport` + `ReplayTransport`。
 
 ## 5. 总线独占（已定）
 
@@ -283,12 +280,12 @@ DiffResult diff(const Trace& golden, const Trace& actual, const NormalizeOptions
 三个设计决定各有理由：
 
 1. **`include_rx` 默认 `false`。** 反馈帧的 payload 物理相关，不可能复现；把它当失败会产生无意义的红。
-2. **`collapse_consecutive_duplicates` 默认 `false`。** 控制器手册明说**停止需要多点几下**才会生效，所以重复的停止帧可能是真实协议行为而不是重试。默认折叠会掩盖真实差异。
+2. **`collapse_consecutive_duplicates` 默认 `false`。** 控制器手册说**停止需要多点几下**才会生效（这是厂家栈的表现，只当提示），所以重复的帧可能是真实行为而不是重试。默认折叠会掩盖真实差异。
 3. **`timing_tolerance_ns` 默认关闭。** 真实周期从没测过（`can-protocol-comparison.md` §8.4），给个阈值等于编。
 
 `BusMismatch` 是独立一类，不是"缺帧 + 多帧"：同 id 同长度但换了总线，是左右臂互换，必须一眼看出来。
 
-**必须从定义好的初始状态抓。** DS402 序列依赖关节当前状态字（`0x06` 是否先于 `0x0F`）。
+**必须从定义好的初始状态抓。** 使能过程依赖关节的当前状态，起点不同，帧序列就不同。
 
 配套两个后端：
 
@@ -324,7 +321,7 @@ DiffResult result = diff(golden, bus.sent_trace());
 1. `0x200` 组包——编码已定（CSP、`0xC6`，HF 2.3、2.4），剩真机确认模块的响应
 2. `0x110` MIT 单轴 9 字节顺序（12 位字段跨字节，容易错位）；没有任何样本（HF 2.8）
 3. 反馈 `byte[10]` / `byte[11]` 的语义（HF 2.5）
-4. 控制周期的抖动——标称 2 ms（HF 4.1），真机要测
+4. 控制周期——按实测定（`l3-executor-interface.md` §2.1；厂家用 2 ms，HF 8.8），抖动真机要测
 
 写 wire 层时又钉出四条**文档自身**的问题，都已经写成可执行断言（`cpp/tests/test_wire.cpp`
 的 `pr0002_documented_anomalies` 与 `frame_classification_and_device_ids`），不会随时间被遗忘：
@@ -345,17 +342,17 @@ DiffResult result = diff(golden, bus.sent_trace());
 | # | 事项 | 状态 |
 |---|---|---|
 | 1 | RX 边界：原始帧 | **已定**：原始帧 |
-| 2 | 允许链接厂家 `.so` | **已定**：允许，但只作可选的 TX 后端 |
+| 2 | 是否链接厂家 `.so` | **已定**：不链接 |
 | 3 | 公共 API | **已定**：我们自己的 API，只在能力层次上对标厂家 |
-| 4 | 原始帧从哪来（shm / SocketCAN / USB-CAN） | **未定**，等真机 `ls /sys/class/net` |
+| 4 | 原始帧从哪来 | **已定**：SocketCAN 或 USB-CAN，都是我们自己的后端；不走厂家板子的寄存器 / 共享内存（§4.4） |
 
 ## 10. 控制器手册带来的信息
 
 `vendor/originals/documents/controller-user-manual.pdf`（整理稿：
 `research/vendor-derived/document-text/controller-user-manual.md`）是**控制器**那一层的文档，
-本仓库此前只有关节模组那一层。其中三条直接影响 L0 / L1 / L2：
+本仓库此前只有关节模组那一层。其中三条直接影响 L0 / L1 / L3：
 
-1. **左臂 CAN1、右臂 CAN2。** 这是任务 3.1 缺的那一半。⚠️ 但手册用 **1 基**的 `CAN1`/`CAN2`，
+1. **左臂 CAN1、右臂 CAN2。** 这是整机映射（`development-plan.md` 7.8）缺的那一半。⚠️ 但手册用 **1 基**的 `CAN1`/`CAN2`，
    而 `rk3576_can_canfd.h` 和 `/dev/misc_shm_can*` 用 **0 基**的 `CAN0`/`CAN1`；若两者对应，
    则**左臂 = `Bus::Can0`**。这个推断必须真机确认——它是左右臂互换最可能的来源，所以
    trace 表头把它写进文件，`diff()` 也把 `BusMismatch` 单列一类。

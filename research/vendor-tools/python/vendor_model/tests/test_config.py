@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import pytest
 
-from shensi_robot import config
+from vendor_model import config
 
 
 def test_explicit_root_wins(tmp_path, monkeypatch):

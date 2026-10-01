@@ -1,6 +1,6 @@
 # 离线运动学（部分校验：只对齐了厂家 IK 的目标位姿）
 
-[`src/shensi_robot/kinematics.py`](../../src/shensi_robot/kinematics.py) 是从 `/usr/etc/juxie_73/kinematics_*.yml` 还原出的独立运动学库，**不需要机器人**就能算 FK / IK。
+[`vendor_model/kinematics.py`](../vendor-tools/python/vendor_model/kinematics.py) 是从 `/usr/etc/juxie_73/kinematics_*.yml` 还原出的独立运动学库，**不需要机器人**就能算 FK / IK。
 
 **校验范围，一句话**：本库的 **FK** 加一个**拟合**出来的 84.721 mm 工具偏置，能复现厂家 IK 被要求到达的目标位姿（0.089 mm）。本库的**数值 IK 从没和厂家比过**；本库 FK 与厂家 `getFKpose` 在一般位姿下差 200–700 mm。详见下文「三方不一致」。本文件是这个话题的**唯一正本**，其他文档只引用这里。
 
@@ -85,7 +85,7 @@ tcp_offset=0.084721 (matches get_IK_joint_position):
 | 我的模型（yml） vs 厂家 `get_FK_pose`，一般位姿 | ❌ **200–700 mm / 100°+** |
 | 我的模型（yml） vs 厂家 `get_FK_pose`，单关节激励 | 见下 |
 
-> 上表第 3 行只说「单关节激励」：**未经修正的 yml 模型**在单关节激励下平移差 9–24 mm（`screws[1/3/5]` 那三个轴），旋转 0.0000°。**0.05 mm / 0.3 mm 那组数字属于下面那个"反解修正过的实验模型"**，不是 `src/shensi_robot/kinematics.py` 里实际实现的那套。
+> 上表第 3 行只说「单关节激励」：**未经修正的 yml 模型**在单关节激励下平移差 9–24 mm（`screws[1/3/5]` 那三个轴），旋转 0.0000°。**0.05 mm / 0.3 mm 那组数字属于下面那个"反解修正过的实验模型"**，不是 `vendor_model/kinematics.py` 里实际实现的那套。
 
 逐关节单独给 0.5 rad 时：
 
@@ -119,7 +119,8 @@ tcp_offset=0.084721 (matches get_IK_joint_position):
 ## 用法
 
 ```python
-import numpy as np, shensi_robot as K
+# PYTHONPATH=research/vendor-tools/python
+import numpy as np, vendor_model as K
 
 arm = K.load_arm("left", "/usr/etc")          # 或 --config-root 指向你的 etc 目录
 q   = [0.0]*7
@@ -132,8 +133,8 @@ q_sol, ok = arm.ik([0.2, 0.0, 0.5, 0, 0, 0], tcp_offset=K.IK_TCP_OFFSET)
 命令行：
 
 ```bash
-shensi-kin --arm left fk --joints "0 0 0 0 0 0 0"
-shensi-kin --arm right fk --joints "0.1 -0.2 0.3 -0.4 0.5 -0.6 0.7"
+PYTHONPATH=research/vendor-tools/python python3 -m vendor_model.cli --arm left fk --joints "0 0 0 0 0 0 0"
+PYTHONPATH=research/vendor-tools/python python3 -m vendor_model.cli --arm right fk --joints "0.1 -0.2 0.3 -0.4 0.5 -0.6 0.7"
 ```
 
 ## 还没做的

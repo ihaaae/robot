@@ -25,8 +25,8 @@ import subprocess
 
 import numpy as np
 
-import shensi_robot as S
-from shensi_robot.kinematics import rpy_to_rotation
+import vendor_model as S
+from vendor_model.kinematics import rpy_to_rotation
 
 QEMU = "qemu-aarch64-static"
 

@@ -12,7 +12,7 @@ import numpy as np
 import pytest
 import yaml
 
-from shensi_robot.kinematics import (
+from vendor_model.kinematics import (
     JOINT_COUNT,
     LEFT_ARM_SLICE,
     RIGHT_ARM_SLICE,
@@ -131,7 +131,7 @@ def test_ik_rejects_a_solution_that_is_180_degrees_out(tmp_path):
 
 def test_rotation_error_is_pi_at_180_degrees():
     """Directly: the residual at 180 degrees must be pi, not zero."""
-    from shensi_robot.kinematics import rotation_error
+    from vendor_model.kinematics import rotation_error
 
     R = rpy_to_rotation([0.3, -0.2, 0.7], "zyx")
     R_flipped = R @ rpy_to_rotation([math.pi, 0.0, 0.0], "zyx")
