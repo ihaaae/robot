@@ -34,7 +34,7 @@ mutually inconsistent models. Use `fk()` to predict where a joint vector lands o
 that is resolved on real hardware -- see KINEMATICS.md.
 
 Command line:
-    shensi-kin --arm left --joints "1.5589 -0.1409 0.158 1.8266 0.1430 1.8020 -1.7514"
+    python -m vendor_model.cli --arm left fk --joints "1.5589 -0.1409 0.158 1.8266 0.1430 1.8020 -1.7514"
 """
 from __future__ import annotations
 
@@ -295,7 +295,7 @@ def load_arm(arm: str, config_root=None, model: str = DEFAULT_MODEL) -> ArmKinem
 
     ``config_root`` defaults to the ``DUAL_ARM_SDK_CONFIG`` environment variable. There is
     no built-in fallback path, so the caller gets either a real configuration or a clear
-    error explaining how to point at one -- see :mod:`shensi_robot.config`.
+    error explaining how to point at one -- see :mod:`vendor_model.config`.
     """
     if arm not in ("left", "right"):
         raise ValueError(f"arm must be 'left' or 'right', got {arm!r}")

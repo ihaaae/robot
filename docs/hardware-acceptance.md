@@ -59,7 +59,7 @@ P0-1、P0-4（模型与限位安全）在这条路线上同样适用，而且必
 1. 手动或低速 `movej` 到 8–10 个**彼此差异明显**的关节角组合（每个关节都要动过，包括 joint 1/3/5）
 2. 每个位姿读 `get_tcp_pose`
 3. 同时用 C++ 探针调 `getFKpose`（`sdk_probe fkvec`，**元素个数 ≤ 14**）拿厂家 FK
-4. 三方对比：`get_tcp_pose` vs 厂家 `getFKpose` vs 我们的 `shensi_robot.kinematics.fk()`
+4. 三方对比：`get_tcp_pose` vs 厂家 `getFKpose` vs 冻结的 `vendor_model.kinematics.fk()`（`research/vendor-tools/python/`）
 5. **用外部手段独立测一次末端位置**（卷尺 / 激光跟踪 / 工装夹具都行），至少 3 个位姿
 
 **看什么**：

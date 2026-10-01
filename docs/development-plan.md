@@ -159,9 +159,9 @@ PR0002 写，同一个人对文档的误读会同时进实现和测试替身，�
 
 ### 任务 4 — 运动学（FK + IK），从零重写
 
-仓库里现有的 Python 运动学（`src/shensi_robot/`）**作废，不当参考实现**：它读厂家的 YAML、厂家的环境变量
+原来的 Python 运动学（已移到 `research/vendor-tools/python/vendor_model/`）**作废，不当参考实现**：它读厂家的 YAML、厂家的环境变量
 和机型目录，模型本身也从没被验证过——随包的三份模型（YAML、厂家 FK、厂家 IK）互相不一致
-（[`kinematics.md`](../research/vendor-analysis/kinematics.md)）。它之后会删掉；在那之前不再维护，新代码也不依赖它。
+（[`kinematics.md`](../research/vendor-analysis/kinematics.md)）。它现在是冻结的厂家工具，只用来复现 `kinematics.md` 里的分析；不再维护，新代码也不依赖它。
 
 FK 与 IK **共用一个模型定义**，由本任务持有并冻结。**真值是真机**，不是厂家的任何一个函数。
 

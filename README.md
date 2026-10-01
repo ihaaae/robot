@@ -31,18 +31,16 @@ Nothing has run on the robot yet — the gates before the first motion are in
 ```
 cpp/             our controller SDK (C++); L0 is implemented and tested
 docs/            plan, layer interfaces, hardware facts, acceptance gates
-src/             Python package shensi_robot (offline kinematics; discarded, to be replaced — see below)
-examples/        Python examples for the package
-tests/           offline unit tests (no network, no robot)
 tools/           verify.sh
 research/        reference only, frozen: vendor SDK analysis, tools that link it, evidence
 vendor/          the vendor's originals and the SDK tree extracted from them, with manifests
 ```
 
-`cpp/`, `docs/`, `src/`, `examples/`, `tests/` and `tools/` are ours and are where new work goes.
-`research/` and `vendor/` are records; nothing outside them depends on them, except that
-`tools/verify.sh` checks the vendor originals' hashes and the offline kinematics reads the
-vendor's YAML configuration.
+`cpp/`, `docs/` and `tools/` are ours and are where new work goes. The SDK is C++ only;
+Python access will go through the L5 C ABI. `research/` and `vendor/` are records; nothing
+outside them depends on them, except that `tools/verify.sh` checks the vendor originals' hashes.
+The old Python model of the vendor's kinematics now lives, frozen, in
+`research/vendor-tools/python/vendor_model/`.
 
 ## Layers
 
@@ -63,20 +61,12 @@ Details and the "done" criterion of each task: [`docs/development-plan.md`](docs
 Everything below runs offline, without the robot and without root.
 
 ```bash
-# Check the repository: vendor originals unmodified, SDK tree complete, Python tests,
-# offline kinematics, and the L0 tests (needs a host C++ compiler; skipped if none)
+# Check the repository: vendor originals unmodified, SDK tree complete, and the L0 tests
+# (needs a host C++ compiler; skipped if none)
 ./tools/verify.sh
 
 # Build and run only the L0 tests
 ./cpp/build.sh
-
-# Offline kinematics (pure Python). DISCARDED: it reads the vendor's YAML and was never validated;
-# it is not a basis or a reference and will be replaced by a from-scratch C++ implementation with
-# our own model file (docs/development-plan.md task 4). Kept only until then.
-python3 -m venv .venv && . .venv/bin/activate && pip install -e ".[dev]"
-export DUAL_ARM_SDK_CONFIG="$PWD/vendor/sdk/dual-arm-app/0.6.4/usr/etc"
-shensi-kin --arm left fk --joints "0 0 0 0 0 0 0"
-python3 examples/python/01_offline_kinematics.py
 ```
 
 `tools/verify.sh` proves nothing about motion or safety, and never opens a socket or touches a

@@ -178,7 +178,7 @@ CSV 列到 17 槽的映射（从 `MoveJCanfdTest` 的指令里读出来的，不
 
 实测：`get_FK_pose` 在零位返回 `[0,0,0.6755, 0,-0,0]`；`get_tcp_pose` 零位返回 `z = 0.6752`，与 `M` 完全一致。两者相差 0.3 mm —— 这不是笔误，是三方模型不一致的一部分，别把它当成相符。
 
-> **已经实现了**：见 [`src/shensi_robot/kinematics.py`](../../src/shensi_robot/kinematics.py)（FK + 数值 IK，不依赖机器人）和 [`kinematics.md`](kinematics.md)（模型、RPY 约定、TCP 偏置、校验结果）。**只部分校验**：本库 FK 加拟合的 84.721 mm 偏置能复现厂家 IK 的目标位姿；本库 IK 未与厂家比过；与厂家 FK 对不上。范围见 kinematics.md 开头。
+> **已经实现了**：见 [`vendor_model/kinematics.py`](../vendor-tools/python/vendor_model/kinematics.py)（FK + 数值 IK，不依赖机器人）和 [`kinematics.md`](kinematics.md)（模型、RPY 约定、TCP 偏置、校验结果）。**只部分校验**：本库 FK 加拟合的 84.721 mm 偏置能复现厂家 IK 的目标位姿；本库 IK 未与厂家比过；与厂家 FK 对不上。范围见 kinematics.md 开头。
 
 `/usr/etc/params.yml` 里注意 `MaxVelocityFactor: 0.04`（默认速度系数被压到 4%）、`UseLimit: false`（关掉的是每拍的速度 / 加速度限制，`LeftLimits` / `RightLimits` 的 `[1.5, 6.5]` 就是这两个上限；不是位置限位，见 `hardware-acceptance.md` P0-4）。
 

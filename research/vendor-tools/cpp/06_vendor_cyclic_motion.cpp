@@ -35,7 +35,7 @@ namespace {
 constexpr int kJointCount = 17;
 
 // The dof == 7 constant, byte for byte out of the vendor binary at .rodata + 0x42a10.
-// Same numbers as `shensi_robot.VENDOR_CYCLIC_POSE`.
+// Same numbers as `vendor_model.VENDOR_CYCLIC_POSE`.
 const Juxie::JointSpaceData kVendorCyclicPose = {
     0.0,
     1.57079, 2.443459, 1.80526, 1.58166, 1.530725, 1.258, 1.5,

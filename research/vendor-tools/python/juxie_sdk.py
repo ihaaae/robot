@@ -38,7 +38,7 @@ from pathlib import Path
 
 import numpy as np
 
-from shensi_robot.config import ConfigNotFoundError
+from vendor_model.config import ConfigNotFoundError
 
 __all__ = [
     "ARM_JOINT_COUNT",
@@ -129,7 +129,7 @@ def bridge_path() -> Path:
         here / "build" / "juxie_sdk_bridge.so",       # a checkout
         # where build_bridge.sh puts it when the checkout itself is not writable
         Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache"))
-        / "shensi_robot" / "juxie_sdk_bridge.so",
+        / "vendor_model" / "juxie_sdk_bridge.so",
     ]
     for candidate in candidates:
         if candidate.is_file():

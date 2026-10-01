@@ -24,7 +24,7 @@
 
 `cpp/` 下已经落地 **wire + transport + trace/差分** 三块，`./cpp/build.sh` 一条命令构建并跑测：
 1081 个断言，0 失败，`-Wall -Wextra -Wpedantic` 零警告，ASan + UBSan 下干净。
-golden vector 全部取自 PR0002 自带的例子，并已并入 `tools/verify.sh` 第 6 步（离线，只需宿主 C++ 编译器）。
+golden vector 全部取自 PR0002 自带的例子，并已并入 `tools/verify.sh` 第 3 步（离线，只需宿主 C++ 编译器）。
 
 | 文件 | 内容 |
 |---|---|

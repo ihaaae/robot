@@ -3,15 +3,16 @@
 #
 # This is the executable form of the repository's acceptance criterion: a fresh clone can
 # verify that the vendor originals are unmodified, that the committed SDK tree is complete
-# and linkable, that the Python package carries no vendor data and its tests pass, and that
-# the L0 wire/transport/trace layer reproduces the protocol document's own frames.
+# and linkable, and that the L0 wire/transport/trace layer reproduces the protocol document's
+# own frames.
 #
 #   ./tools/verify.sh
 #
-# Build-checks for the frozen vendor tooling (C++ programs and Python bridge linking the
-# vendor SDK) live in research/vendor-tools/verify-native.sh.
+# Checks for the frozen vendor tooling (the Python model of the vendor's kinematics, and the
+# C++ programs and Python bridge linking the vendor SDK) live in
+# research/vendor-tools/verify-native.sh.
 #
-# Never opens a socket, never touches a robot. Step 6 needs a host C++ compiler and nothing
+# Never opens a socket, never touches a robot. Step 3 needs a host C++ compiler and nothing
 # else; it is skipped, not failed, when there is none.
 set -euo pipefail
 
@@ -21,8 +22,6 @@ cd "$repo"
 pass() { printf '  \033[32mok\033[0m   %s\n' "$1"; }
 fail() { printf '  \033[31mFAIL\033[0m %s\n' "$1"; exit 1; }
 
-work="$(mktemp -d "${TMPDIR:-/tmp}/shensi-verify-XXXXXX")"
-trap 'rm -rf "$work"' EXIT
 
 echo "1. vendor sources of truth"
 deb="$(ls vendor/originals/dual-arm-app/*/*.deb 2>/dev/null | head -1 || true)"
@@ -100,64 +99,7 @@ if problems:
 print(f"  \033[32mok\033[0m   libraries, symlinks, headers and config are all in place")
 PYTREE
 
-echo "3. Python package: no vendor data bundled, tests pass offline"
-# Use the checkout's own package, not whatever happens to be installed: otherwise the tests
-# could pass against an unrelated copy.
-if python3 -c "
-import pathlib, sys
-try:
-    import shensi_robot
-except ImportError:
-    sys.exit(1)
-here = pathlib.Path('src/shensi_robot').resolve()
-sys.exit(0 if pathlib.Path(shensi_robot.__file__).resolve().parent == here else 1)
-" 2>/dev/null; then
-    runner=python3
-else
-    # Build the throwaway venv outside the repository so it can never be committed.
-    python3 -m venv "$work/venv" >/dev/null 2>&1
-    "$work/venv/bin/pip" install -q -e ".[dev]" 2>/dev/null
-    runner="$work/venv/bin/python"
-fi
-"$runner" -m pytest -q >/dev/null 2>&1 || fail "unit tests"
-pass "$("$runner" -m pytest -q 2>&1 | tail -1)"
-"$runner" - <<'PYCHECK' || fail "vendor configuration is bundled in the package"
-import pathlib, sys
-import shensi_robot
-pkg = pathlib.Path(shensi_robot.__file__).parent
-# Any vendor payload would show up as data or binary files under the package, not just YAML.
-allowed = {".py", ".pyi", ".typed"}
-bundled = [
-    p for p in pkg.rglob("*")
-    if p.is_file()
-    and p.suffix not in allowed
-    and "__pycache__" not in p.parts  # build output, not package data
-]
-if bundled:
-    print(f"  \033[31mFAIL\033[0m non-source files bundled in the package: {bundled}")
-    sys.exit(1)
-print("  \033[32mok\033[0m   package contains source only, no vendor data")
-PYCHECK
-
-echo "4. offline kinematics produces the recorded zero pose"
-DUAL_ARM_SDK_CONFIG="$SDK/usr/etc" "$runner" - <<'PYCHECK' || fail "zero pose check"
-import sys
-import shensi_robot as S
-arm = S.load_arm("left")
-z = arm.fk_pose([0.0] * 7, "zyx", tcp_offset=0.0)[2]
-# get_tcp_pose reports exactly the yml's M at the zero configuration.
-if abs(z - 0.6752) > 1e-6:
-    print(f"  \033[31mFAIL\033[0m zero pose z={z}, expected 0.6752")
-    sys.exit(1)
-print(f"  \033[32mok\033[0m   zero pose z={z:.6f} (matches get_tcp_pose)")
-PYCHECK
-
-echo "5. the offline demo runs against the vendored SDK"
-DUAL_ARM_SDK_CONFIG="$SDK/usr/etc" "$runner" examples/python/01_offline_kinematics.py \
-    >/dev/null || fail "examples/python/01_offline_kinematics.py"
-pass "01_offline_kinematics.py"
-
-echo "6. L0 wire, transport and trace tests (offline, host C++ compiler)"
+echo "3. L0 wire, transport and trace tests (offline, host C++ compiler)"
 if command -v c++ >/dev/null 2>&1 || command -v g++ >/dev/null 2>&1; then
     if ! l0_output="$(./cpp/build.sh 2>&1)"; then
         printf '%s\n' "$l0_output" >&2

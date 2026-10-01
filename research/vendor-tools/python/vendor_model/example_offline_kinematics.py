@@ -7,7 +7,7 @@ the right starting point while the robot is still in transit.
 It also demonstrates the single most important gotcha in this codebase: the vendor has two
 different tool-frame conventions, and mixing them costs you 84.7 mm.
 
-    DUAL_ARM_SDK_CONFIG=<sdk>/usr/etc python3 examples/python/01_offline_kinematics.py
+    DUAL_ARM_SDK_CONFIG=<sdk>/usr/etc PYTHONPATH=research/vendor-tools/python python3 -m vendor_model.example_offline_kinematics
 """
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ import argparse
 
 import numpy as np
 
-import shensi_robot as S
+import vendor_model as S
 
 
 def main() -> int:

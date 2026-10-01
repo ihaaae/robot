@@ -7,7 +7,7 @@
 #
 #   ./research/vendor-tools/verify-native.sh
 #
-# Runs the frozen module's offline tests, cross-compiles the C++ programs and the Python
+# Runs the frozen Python modules' offline tests, cross-compiles the C++ programs and the Python
 # bridge, and builds a consumer project against Juxie::SDK. Needs aarch64-linux-gnu-g++;
 # CMake and readelf are optional. Runs nothing against the vendor binaries.
 set -euo pipefail
@@ -21,18 +21,36 @@ fail() { printf '  \033[31mFAIL\033[0m %s\n' "$1"; exit 1; }
 work="$(mktemp -d "${TMPDIR:-/tmp}/shensi-verify-native-XXXXXX")"
 trap 'rm -rf "$work"' EXIT
 
-echo "1. the frozen Python module's offline tests"
+echo "1. the frozen Python modules: offline tests, zero pose, demo"
 runner=python3
 if ! python3 -c "import pytest, numpy, yaml" 2>/dev/null; then
-    # Same fallback as tools/verify.sh: a throwaway venv outside the repository.
+    # A throwaway venv outside the repository, so it can never be committed.
     python3 -m venv "$work/venv" >/dev/null 2>&1
-    "$work/venv/bin/pip" install -q -e ".[dev]" 2>/dev/null
+    "$work/venv/bin/pip" install -q pytest numpy PyYAML 2>/dev/null
     runner="$work/venv/bin/python"
 fi
-PYTHONPATH="$repo/research/vendor-tools/python:$repo/src${PYTHONPATH:+:$PYTHONPATH}" \
-    "$runner" -m pytest -q -p no:cacheprovider research/vendor-tools/python/test_juxie_sdk.py >/dev/null 2>&1 \
-    || fail "research/vendor-tools/python/test_juxie_sdk.py"
-pass "test_juxie_sdk.py"
+export PYTHONPATH="$repo/research/vendor-tools/python${PYTHONPATH:+:$PYTHONPATH}"
+SDK="vendor/sdk/dual-arm-app/0.6.4"
+for t in research/vendor-tools/python/vendor_model/tests research/vendor-tools/python/test_juxie_sdk.py; do
+    "$runner" -m pytest -q -p no:cacheprovider "$t" >/dev/null 2>&1 || fail "$t"
+done
+pass "vendor_model and test_juxie_sdk.py tests"
+
+DUAL_ARM_SDK_CONFIG="$SDK/usr/etc" "$runner" - <<'PYCHECK' || fail "zero pose check"
+import sys
+import vendor_model as S
+arm = S.load_arm("left")
+z = arm.fk_pose([0.0] * 7, "zyx", tcp_offset=0.0)[2]
+# get_tcp_pose reports exactly the yml's M at the zero configuration.
+if abs(z - 0.6752) > 1e-6:
+    print(f"  \033[31mFAIL\033[0m zero pose z={z}, expected 0.6752")
+    sys.exit(1)
+print(f"  \033[32mok\033[0m   zero pose z={z:.6f} (matches get_tcp_pose)")
+PYCHECK
+
+DUAL_ARM_SDK_CONFIG="$SDK/usr/etc" "$runner" -m vendor_model.example_offline_kinematics \
+    >/dev/null || fail "vendor_model.example_offline_kinematics"
+pass "example_offline_kinematics.py"
 
 echo "2. C++ demos and the Python bridge cross-compile against the SDK"
 if command -v aarch64-linux-gnu-g++ >/dev/null; then

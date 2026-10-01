@@ -100,7 +100,7 @@ if [[ -n "${OUT:-}" ]]; then
 elif [[ -w "$here" ]]; then
     out="$here/build"            # inside the checkout: scratch, and git-ignored
 else
-    out="${XDG_CACHE_HOME:-$HOME/.cache}/shensi_robot"
+    out="${XDG_CACHE_HOME:-$HOME/.cache}/vendor_model"
 fi
 mkdir -p "$out"
 
