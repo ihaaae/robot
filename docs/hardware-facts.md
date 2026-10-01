@@ -124,8 +124,3 @@
 | 8.3 | 不发心跳、不发 NMT | 喂狗靠周期控制帧 |
 | 8.4 | 从没发过 MIT 帧 | MIT 只能照文档写，真机验证 |
 | 8.5 | `UseLimit` 打开时每拍过速度 / 加速度限制器；随包配置里是关着的 | 我们的安全门不可关（`l3-executor-interface.md` §5） |
-
-## 本文件的历史
-
-- v1：初版。从 `research/vendor-analysis/` 里抽出硬件事实，作为设计文档引用硬件的唯一入口；
-  厂家 SDK 降为参考（`development-plan.md` v2）。

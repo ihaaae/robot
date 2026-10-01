@@ -1,6 +1,6 @@
 # L0 接口草案
 
-> **草稿 v3.2**（历史见文末）。目的是让 6 个人在真机到货前就能并行推进，所以先把 L0 的边界和签名冻结下来。
+> **草稿。**目的是让 6 个人在真机到货前就能并行推进，所以先把 L0 的边界和签名冻结下来。
 > 内容会变；变的时候改这一份，不要各自在代码里另立一套。
 >
 > 依据：PR0002（协议正本）、[`hardware-facts.md`](hardware-facts.md)（硬件事实）、
@@ -346,7 +346,7 @@ DiffResult result = diff(golden, bus.sent_trace());
 |---|---|---|
 | 1 | RX 边界：原始帧 | **已定**：原始帧 |
 | 2 | 允许链接厂家 `.so` | **已定**：允许，但只作可选的 TX 后端 |
-| 3 | 公共 API | **已定**：我们自己的 API，只在能力层次上对标厂家（v3.2 起；此前是「兼容 `ControllerJuxie`」） |
+| 3 | 公共 API | **已定**：我们自己的 API，只在能力层次上对标厂家 |
 | 4 | 原始帧从哪来（shm / SocketCAN / USB-CAN） | **未定**，等真机 `ls /sys/class/net` |
 
 ## 10. 控制器手册带来的信息
@@ -355,7 +355,7 @@ DiffResult result = diff(golden, bus.sent_trace());
 `research/vendor-derived/document-text/controller-user-manual.md`）是**控制器**那一层的文档，
 本仓库此前只有关节模组那一层。其中三条直接影响 L0 / L1 / L2：
 
-1. **左臂 CAN1、右臂 CAN2。** 这是任务 3.3 缺的那一半。⚠️ 但手册用 **1 基**的 `CAN1`/`CAN2`，
+1. **左臂 CAN1、右臂 CAN2。** 这是任务 3.1 缺的那一半。⚠️ 但手册用 **1 基**的 `CAN1`/`CAN2`，
    而 `rk3576_can_canfd.h` 和 `/dev/misc_shm_can*` 用 **0 基**的 `CAN0`/`CAN1`；若两者对应，
    则**左臂 = `Bus::Can0`**。这个推断必须真机确认——它是左右臂互换最可能的来源，所以
    trace 表头把它写进文件，`diff()` 也把 `BusMismatch` 单列一类。
@@ -371,18 +371,3 @@ DiffResult result = diff(golden, bus.sent_trace());
 - **循环运动**按钮点多次会导致点位异常，停止需要多点几下才生效——这是
   `collapse_consecutive_duplicates` 默认为 `false` 的直接依据。
 - 板子上部署根是 `/home/root/DualArm`，配置在 `usr/etc`，且**应该自启动**（用 `top` 验证）。
-
-## 本文件的历史
-
-- v0：初稿。记录语言（C++ 一等公民 + C ABI + Python ctypes）与总线独占两个决定。
-- v1：补上 RX 边界（原始帧）、厂家 `.so` 允许链接、公共 API 兼容三个决定；wire + transport
-  落地并跑通（`cpp/`）。新增 §8 的文档矛盾清单。
-- v2：trace / 录制回放 / 归一化差分落地（§6）；新增 §10，记录控制器手册带来的
-  总线↔臂映射、14 个应用层错误码、`MotorDirect` 三条信息。
-- v3：开发计划改为 L0–L5 六层（`development-plan.md` v1）。同步更新本文里对 L1 / L2 的引用；
-  新增 L3 的接口草案 [`l3-executor-interface.md`](l3-executor-interface.md)。
-- v3.1：按反汇编复核（`research/evidence/disasm/`）更正：`0x108` 是给 Dev_ID 8 的普通单轴帧，不是未文档化帧；
-  厂家发 `0x80` 同步帧（8 字节）；§8 的组包与周期两项在厂家二进制一侧已读出；§10 补上 Dev_ID 8。
-- v3.2：随 `development-plan.md` v2 改为只在抽象层次上对标厂家。公共 API 改为我们自己的（§0、§9）；
-  总线独占改写为「一条总线一个主站」（§5）；trace 差分降为调试与回归工具（§6）；硬件事实改引
-  [`hardware-facts.md`](hardware-facts.md)；删去 `MoveEnd` 与 17 维 API 的说明；断言数更新为 1078。

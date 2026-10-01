@@ -192,9 +192,9 @@ python3 research/vendor-tools/python/sdk_min_example.py
 
 不需要 export 任何东西。要覆盖的话：`JUXIE_SDK_BRIDGE` 指定加载哪个桥，`DUAL_ARM_SDK_CONFIG` 指定配置根（后者优先级最高，模块不会覆盖你显式设的值）。
 
-（以前 `setup.py` 会在 `pip install -e .` 时 best-effort 编译这个桥；工具冻结进 `research/` 之后去掉了，需要时手动跑上面那条命令。模块不再是 `shensi_robot` 的一部分，用的时候把 `research/vendor-tools/python` 加进 `PYTHONPATH`。）
+`pip install` 不会编译这个桥，需要时手动跑上面那条命令。模块不是 `shensi_robot` 的一部分，用的时候把 `research/vendor-tools/python` 加进 `PYTHONPATH`。
 
-> **关于 `pyproject` extra**：加 extra 解决不了这件事。extra 只能声明 **Python** 依赖，而这个桥需要的是 **C++ 编译器 + Eigen 头 + SDK 树**，pip 装不了。所以这里没有加 extra，而是把「编译」变成一条命令、把「找到它」变成自动 —— 这两件事才是原来那三步里真正烦人的部分。
+> **关于 `pyproject` extra**：加 extra 解决不了这件事。extra 只能声明 **Python** 依赖，而这个桥需要的是 **C++ 编译器 + Eigen 头 + SDK 树**，pip 装不了。所以这里没有加 extra，而是把「编译」变成一条命令、把「找到它」变成自动 —— 这两件事才是手动构建里真正烦人的部分。
 
 ```python
 from juxie_sdk import Controller
