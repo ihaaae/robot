@@ -1,10 +1,10 @@
 // L0 transport seam.
 //
-// The shape mirrors the vendor's RK3576CanCanfd (can_send_frame + setReadFunction) so the
-// vendor register driver can be one backend behind this interface.
+// Send plus a receive callback: small enough that SocketCAN, a USB-CAN adapter, or the
+// controller board's register driver can each be one backend behind it.
 //
-// OWNERSHIP RULE (docs/l0-interface.md §5). A process that owns the bus must not also
-// instantiate Juxie::ControllerJuxie:
+// OWNERSHIP RULE (docs/l0-interface.md §5). A bus has exactly one master. While our stack owns
+// it, no other master may run on it -- the vendor stack included:
 //
 //   * Two transports in one process remap the same /dev/mem window and the same
 //     /dev/misc_shm_can* queue, and become two consumers of one frame queue, so frames split
@@ -12,10 +12,9 @@
 //   * SDO (0x600 | Dev_ID) is request/response with no source address, so two masters'
 //     conversations collide.
 //   * The watchdog is fed by periodic control frames (< 500 ms, PR0002 §1). With two partial
-//     owners, "the other layer is feeding it" is a mid-motion self-lock.
-//   * Once OnRobot() has run, the vendor stack is never quiescent until process exit.
+//     owners, "the other master is feeding it" is a mid-motion self-lock.
 //
-// The migration is therefore incremental inside the SDK and atomic at the bus.
+// Switching between stacks is therefore whole: one stops, then the other starts.
 #ifndef SHENSI_CAN_TRANSPORT_HPP
 #define SHENSI_CAN_TRANSPORT_HPP
 
@@ -44,8 +43,7 @@ public:
     virtual bool healthy() const = 0;
 
     // Escape hatch for frames with no published layout, so they need not be forced into the
-    // typed encoders. (The vendor's MoveEnd frame on 0x108 is not one of them: it is an ordinary
-    // single-axis command to Dev_ID 8 -- docs/l0-interface.md §3.7.)
+    // typed encoders.
     void send_raw(Bus bus, std::uint32_t id, const std::uint8_t* data, std::uint8_t len,
                   bool brs = true, bool fdf = true);
 };
