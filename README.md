@@ -159,12 +159,11 @@ fault handling. The setup is described in [`research/vendor-analysis/sdk.md`](re
 
 ## Contributing
 
-* Default test run must stay offline: `pytest` never opens a socket and never touches a
-  robot. Anything that needs hardware is marked `hardware`, anything that needs the vendor
-  binary and qemu is marked `vendor_binary`, and both are deselected by default. A few
-  tests do read the committed vendor trajectories under `vendor/sdk/.../usr/etc/data/`;
-  that is data, not a robot or a socket, but it does mean the default run is not
-  vendor-data-free.
+* The default checks must stay offline: `./tools/verify.sh` never opens a socket and never
+  touches a robot. The frozen vendor tooling has its own check,
+  `research/vendor-tools/verify-native.sh`; some of its Python tests read the committed
+  vendor trajectories under `vendor/sdk/.../usr/etc/data/` — that is data, not a robot or a
+  socket, but it does mean that run is not vendor-data-free.
 * When adding a vendor artifact, record its origin and hash in `vendor/manifests/` — a hash
   alone proves the bytes did not change, not where they came from.
 * When adding a conclusion, say how it was established: static inspection, emulation, or

@@ -128,7 +128,7 @@ ControllerJuxie ──► ControllerJuxieImpl ──► m_state_（shared_ptr<St
 - `isConnected()`：**恒返回 `true`**，所以第 1 行永远不会触发，「掉线 → `power_off`」不存在；
 - `isInFault()` / `isEnabled()`：读 `JuxieState` 里的 `isInFault` / `isEnabled`，由反馈更新；
 - `isMoving()`：`isLeftSending_ || isRightSending_`，即「有一条臂正在执行轨迹」
-  （[`l2-executor-interface.md`](../../docs/l2-executor-interface.md) §3.1 的 `SetSending` 一行）。
+  （[`l2-executor-interface.md`](../../docs/l2-executor-interface.md) 附录 A.2 的 `SetSending` 一行）。
 
 由此得到三条结论：
 
@@ -205,7 +205,7 @@ qemu: uncaught target signal 11 (Segmentation fault)
 | `isInFault()` | `snapshot()` 里各关节的 `error` / `fault`，加上 `ArmHealth`（新鲜度失效也算故障） |
 | `isConnected()` | `ArmHealth::bus_ok`。厂家这一项恒为真；我们要真的实现「掉线」 |
 
-这张表也写进了 [`l2-executor-interface.md`](../../docs/l2-executor-interface.md) §3.2。
+这张表也写进了 [`l2-executor-interface.md`](../../docs/l2-executor-interface.md) 附录 A.3。
 
 ## 6. 还需要真机确认的
 

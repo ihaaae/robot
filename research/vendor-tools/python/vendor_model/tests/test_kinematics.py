@@ -1,8 +1,9 @@
 """Kinematics tests that use a synthetic arm and hardcoded constants, so they need no vendor
 files at all.
 
-The vendor YAML never enters the default test run: those comparisons live in
-``tests/integration`` and are marked ``vendor_binary``.
+Nothing here reads the vendor's YAML: the three-way disagreement between the vendor's YAML, its
+FK and its IK was established separately and is recorded in
+``research/vendor-analysis/kinematics.md``.
 """
 from __future__ import annotations
 
