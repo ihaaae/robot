@@ -10,8 +10,7 @@ extended and no code outside this directory depends on it.
 The goal of this repository is our own controller SDK on the public CAN / CAN-FD protocol,
 matching the vendor SDK **at the level of abstraction only**: the same capabilities and layer
 boundaries, not the same method names, return codes, state-machine cells or bus traffic
-([`docs/development-plan.md`](../docs/development-plan.md) v2). An earlier aim of detail-level
-compatibility was dropped. The vendor SDK has real defects, its internals are opaque, and where
+([`docs/development-plan.md`](../docs/development-plan.md)). The vendor SDK has real defects, its internals are opaque, and where
 its details were vague or self-contradictory, chasing them distorted our design.
 
 We still study it, because we lack experience with this hardware and the vendor stack is the

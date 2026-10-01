@@ -24,10 +24,10 @@ links to the home rather than repeating the argument.
 
 | Document | What it covers | Status |
 |---|---|---|
-| [`development-plan.md`](development-plan.md) | The goal, the layering (L0–L5), the tasks per layer, and what "done" means for each. **Start here** | Draft v2 |
-| [`hardware-facts.md`](hardware-facts.md) | Every hardware fact the design relies on, one row each: source, confidence, evidence. Conflicts and unknowns are marked | v1 |
+| [`development-plan.md`](development-plan.md) | The goal, the layering (L0–L5), the tasks per layer, and what "done" means for each. **Start here** | Draft |
+| [`hardware-facts.md`](hardware-facts.md) | Every hardware fact the design relies on, one row each: source, confidence, evidence. Conflicts and unknowns are marked | Living |
 | [`l0-interface.md`](l0-interface.md) | L0 — wire codec, transport, trace and diff | Implemented in `cpp/` |
-| [`l3-executor-interface.md`](l3-executor-interface.md) | L3 — the executor that owns the control clock, the watchdog and the last safety gate | Draft v1 |
+| [`l3-executor-interface.md`](l3-executor-interface.md) | L3 — the executor that owns the control clock, the watchdog and the last safety gate | Draft |
 | [`hardware-acceptance.md`](hardware-acceptance.md) | What to verify when the robot arrives. The first section is the gate list for our own CAN master | Open work |
 
 ## Vendor SDK analysis (reference, frozen)

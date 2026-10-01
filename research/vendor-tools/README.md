@@ -14,7 +14,7 @@ in `cpp/` and `src/` and does not depend on anything here.
 | `cmake/juxie-sdk.cmake` | the `Juxie::SDK` imported target, for a CMake project linking the vendor SDK |
 | `python/` | C ABI bridge (`juxie_sdk_bridge.cpp`, `build_bridge.sh`), its ctypes module `juxie_sdk.py`, an example, and offline tests |
 | `probes/` | disassembly excerpts and an FK cross-check used by the vendor analysis |
-| `verify-native.sh` | build-checks for all of the above (formerly `tools/verify.sh --with-native`) |
+| `verify-native.sh` | build-checks for all of the above |
 
 ```bash
 ./research/vendor-tools/verify-native.sh            # needs aarch64-linux-gnu-g++
