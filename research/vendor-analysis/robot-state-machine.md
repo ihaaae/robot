@@ -128,7 +128,7 @@ ControllerJuxie ──► ControllerJuxieImpl ──► m_state_（shared_ptr<St
 - `isConnected()`：**恒返回 `true`**，所以第 1 行永远不会触发，「掉线 → `power_off`」不存在；
 - `isInFault()` / `isEnabled()`：读 `JuxieState` 里的 `isInFault` / `isEnabled`，由反馈更新；
 - `isMoving()`：`isLeftSending_ || isRightSending_`，即「有一条臂正在执行轨迹」
-  （[`l3-executor-interface.md`](../../docs/l3-executor-interface.md) §3.1 的 `SetSending` 一行）。
+  （[`l2-executor-interface.md`](../../docs/l2-executor-interface.md) §3.1 的 `SetSending` 一行）。
 
 由此得到三条结论：
 
@@ -178,7 +178,7 @@ qemu: uncaught target signal 11 (Segmentation fault)
 `join` 轮询线程，所以销毁后新建一个实例可以重来（模拟环境实测）。Python 垫片按这条规则拒绝第二轮
 （`sdk-usage.md` §7）。
 
-## 5. 对我们 L5（任务 8.2）的含义
+## 5. 对我们 L4（任务 8.2）的含义
 
 **要兼容的**（这是 8.1「同名方法、同号返回码」的具体内容）：
 
@@ -194,18 +194,18 @@ qemu: uncaught target signal 11 (Segmentation fault)
 - `running` 下 `DisableRobot()` / `OffRobot()` 无超时的忙等（注 2）；
 - 分派不加锁：我们的状态读写要么全在一把锁下，要么用原子量加单一写者。
 
-**结构上的取舍**：厂家的状态由两个来源写入，状态类和轮询线程，而且轮询线程说了算。我们的 L5 建议
-只保留一个写者：**状态由 L3 的快照推导**，L5 的方法只负责发出请求，再等状态变到位（或超时）。这样
-§3 的三条结论自然成立，不会出现「先切到 `ready`、5 ms 后又切回来」这种闪变。L5 需要 L3 提供的输入：
+**结构上的取舍**：厂家的状态由两个来源写入，状态类和轮询线程，而且轮询线程说了算。我们的 L4 建议
+只保留一个写者：**状态由 L2 的快照推导**，L4 的方法只负责发出请求，再等状态变到位（或超时）。这样
+§3 的三条结论自然成立，不会出现「先切到 `ready`、5 ms 后又切回来」这种闪变。L4 需要 L2 提供的输入：
 
-| 厂家谓词 | 我们从 L3 拿什么 |
+| 厂家谓词 | 我们从 L2 拿什么 |
 |---|---|
 | `isMoving()` | `motion_active(Part::Both)` |
 | `isEnabled()` | `snapshot()` 里各关节的 `enabled` |
 | `isInFault()` | `snapshot()` 里各关节的 `error` / `fault`，加上 `ArmHealth`（新鲜度失效也算故障） |
 | `isConnected()` | `ArmHealth::bus_ok`。厂家这一项恒为真；我们要真的实现「掉线」 |
 
-这张表也写进了 [`l3-executor-interface.md`](../../docs/l3-executor-interface.md) §3.2。
+这张表也写进了 [`l2-executor-interface.md`](../../docs/l2-executor-interface.md) §3.2。
 
 ## 6. 还需要真机确认的
 

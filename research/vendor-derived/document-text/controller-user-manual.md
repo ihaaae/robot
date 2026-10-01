@@ -79,7 +79,7 @@ limits:
 文档明确说：**若 `movel` 走出的轨迹不直，就对照 URDF 检查各轴正转方向是否正确**，
 错了直接改对应符号。
 
-> 这条对 L3/L4 是硬信息：`MotorDirect` 是**逐轴、且 load-bearing** 的配置，
+> 这条对 L2/L3 是硬信息：`MotorDirect` 是**逐轴、且 load-bearing** 的配置，
 > 不是装饰。厂家自己的说明承认它配错会让 `MoveL` 不直。
 
 ## 二、Web 界面

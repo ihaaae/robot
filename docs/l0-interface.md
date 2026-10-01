@@ -51,8 +51,8 @@ golden vector 全部取自 PR0002 自带的例子，并已并入 `tools/verify.s
 **不拥有**
 
 - 什么时候发什么（L1：控制字节里的使能 / 抱闸 / 清错位，SDO 诊断）
-- 关节索引到机器人的映射（L3 的构造配置：14 个关节 ↔ `Dev_ID` ↔ 通道，`l3-executor-interface.md` §3.2）
-- 什么时候必须发帧（L3 的节拍与喂狗，见 [`l3-executor-interface.md`](l3-executor-interface.md)）
+- 关节索引到机器人的映射（L2 的构造配置：14 个关节 ↔ `Dev_ID` ↔ 通道，`l2-executor-interface.md` §3.2）
+- 什么时候必须发帧（L2 的节拍与喂狗，见 [`l2-executor-interface.md`](l2-executor-interface.md)）
 - 单位换算的**语义**（上层决定用 rad 还是 deg）；L0 只提供 `cnt ↔ rad` 的纯函数
 - 运动学（84.721 mm 偏置属于任务 4，不属于 L0）
 
@@ -225,7 +225,7 @@ public:
 
 厂家板子内部的寄存器驱动和 `/dev/misc_shm_can*` 共享内存（`hardware-facts.md` 1.7）是厂家栈的实现细节，我们不走这条路。
 
-两条路的带宽都够用（`l3-executor-interface.md` §2.1 有估算），选哪条不影响 L0 接口。离线开发用 `FakeTransport` + `ReplayTransport`。
+两条路的带宽都够用（`l2-executor-interface.md` §2.1 有估算），选哪条不影响 L0 接口。离线开发用 `FakeTransport` + `ReplayTransport`。
 
 ## 5. 总线独占（已定）
 
@@ -321,7 +321,7 @@ DiffResult result = diff(golden, bus.sent_trace());
 1. `0x200` 组包——编码已定（CSP、`0xC6`，HF 2.3、2.4），剩真机确认模块的响应
 2. `0x110` MIT 单轴 9 字节顺序（12 位字段跨字节，容易错位）；没有任何样本（HF 2.8）
 3. 反馈 `byte[10]` / `byte[11]` 的语义（HF 2.5）
-4. 控制周期——按实测定（`l3-executor-interface.md` §2.1；厂家用 2 ms，HF 8.8），抖动真机要测
+4. 控制周期——按实测定（`l2-executor-interface.md` §2.1；厂家用 2 ms，HF 8.8），抖动真机要测
 
 写 wire 层时又钉出四条**文档自身**的问题，都已经写成可执行断言（`cpp/tests/test_wire.cpp`
 的 `pr0002_documented_anomalies` 与 `frame_classification_and_device_ids`），不会随时间被遗忘：
@@ -350,7 +350,7 @@ DiffResult result = diff(golden, bus.sent_trace());
 
 `vendor/originals/documents/controller-user-manual.pdf`（整理稿：
 `research/vendor-derived/document-text/controller-user-manual.md`）是**控制器**那一层的文档，
-本仓库此前只有关节模组那一层。其中三条直接影响 L0 / L1 / L3：
+本仓库此前只有关节模组那一层。其中三条直接影响 L0 / L1 / L2：
 
 1. **左臂 CAN1、右臂 CAN2。** 这是整机映射（`development-plan.md` 7.8）缺的那一半。⚠️ 但手册用 **1 基**的 `CAN1`/`CAN2`，
    而 `rk3576_can_canfd.h` 和 `/dev/misc_shm_can*` 用 **0 基**的 `CAN0`/`CAN1`；若两者对应，

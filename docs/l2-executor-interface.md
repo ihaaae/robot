@@ -1,6 +1,6 @@
-# L3 Executor 接口草案
+# L2 Executor 接口草案
 
-> **草稿。** 和 [`l0-interface.md`](l0-interface.md) 一样：先把边界和签名冻结，让 L4 / L5
+> **草稿。** 和 [`l0-interface.md`](l0-interface.md) 一样：先把边界和签名冻结，让 L3 / L4
 > 能对着一个假 executor 开工，不必等 L1 做完。内容会变；变的时候改这一份。
 >
 > 依据：PR0002、[`hardware-facts.md`](hardware-facts.md)（下文 `HF x.y` 指它的第 x.y 行）、
@@ -12,7 +12,7 @@
 
 ## 0. 为什么要单独一层
 
-L3 回答的是：**谁拥有时钟。**
+L2 回答的是：**谁拥有时钟。**
 
 看门狗、反馈新鲜度、`0x200` 组包、实际控制周期，这四件事不能分开做，理由有三条：
 
@@ -36,21 +36,21 @@ L3 回答的是：**谁拥有时钟。**
 - 反馈新鲜度与总线健康判定
 - **最后一道安全门**：位置限位、单拍步长（速度）限制
 - 运动源仲裁：同一时刻只允许一个运动源写设定点
-- 有界停止（`halt`）：不依赖 L4 仍然活着
+- 有界停止（`halt`）：不依赖 L3 仍然活着
 - 轴请求（使能、失能、清错、抱闸）：由 L1 落成每拍子帧控制字节里的位，随 `0x200` 发出（§2.3）
-- 构造时注入的整机配置：关节 ↔ (bus, `Dev_ID`) 映射、限位、周期（§3.2）。原来的 L2 并入了这里
+- 构造时注入的整机配置：关节 ↔ (bus, `Dev_ID`) 映射、限位、周期（§3.2）
 
 **不拥有**
 
 | 事情 | 归谁 |
 |---|---|
-| 轨迹怎么生成：平滑、速度 / 加速度 / 加加速度约束、把 10–50 Hz 的稀疏输入加密成带时间戳的点 | L4。L3 只在相邻两点间线性插值（§3.3） |
-| 机器人状态机（`power_off / ready / idle / running / fault`） | L5 |
-| 每轴的使能 / 抱闸 / 清错逻辑（本拍置哪些位、等哪个状态位、SDO 诊断） | L1。L3 只负责按拍调用它 |
+| 轨迹怎么生成：平滑、速度 / 加速度 / 加加速度约束、把 10–50 Hz 的稀疏输入加密成带时间戳的点 | L3。L2 只在相邻两点间线性插值（§3.3） |
+| 机器人状态机（`power_off / ready / idle / running / fault`） | L4 |
+| 每轴的使能 / 抱闸 / 清错逻辑（本拍置哪些位、等哪个状态位、SDO 诊断） | L1。L2 只负责按拍调用它 |
 | 单轴的方向、零偏、单位换算 | L1 |
 | 运动学 | 任务 4 |
 
-**L3 是 L0 之上唯一带线程、带时钟的层。** L1 做成无线程、无时钟的库，由 L3 在节拍里
+**L2 是 L0 之上唯一带线程、带时钟的层。** L1 做成无线程、无时钟的库，由 L2 在节拍里
 调用。这样 L1 能完全离线地做单测，时序问题也只需要在一处审查。
 
 ## 2. 节拍
@@ -75,7 +75,7 @@ L3 回答的是：**谁拥有时钟。**
 所以周期要测的不是吞吐，而是**端到端时延与抖动**：发出 `0x200` 到收齐 7 帧 `0x300` 要多久、分布多宽。
 主机调度和后端的批量收发都会影响这一项，具体取决于后端。周期选在这段时延的上尾之外，留出余量。
 
-**周期是构造参数**，起始值 2 ms，实测后改。L4 不需要知道周期：它交的是带时间戳的点，按拍取样是 L3 的事（§3.3）。
+**周期是构造参数**，起始值 2 ms，实测后改。L3 不需要知道周期：它交的是带时间戳的点，按拍取样是 L2 的事（§3.3）。
 
 ### 2.2 线程模型
 
@@ -111,7 +111,7 @@ tick(now):
 SDO 只用于配置和诊断：读故障码、零位标定、通信参数。应答同样在这个循环里处理，要读，不能只发（HF 8.2）。
 
 **位置模式用 CSP**（HF 2.4）。上层每拍给一个目标位置，这正是 CSP 的语义；PP 模式自带轨迹规划，
-会和 L4 的插值叠在一起，两层规划器的行为很难推理。
+会和 L3 的插值叠在一起，两层规划器的行为很难推理。
 
 **空闲拍发什么。** 有两种都能让总线上每拍有帧、让模块回 `0x300` 的做法：发目标为当前位置的
 `0x200` 保持帧，或者只发 `0x80` 同步帧（HF 2.7、8.1）。我们选保持帧，理由是它同时把「保持在哪」
@@ -131,7 +131,7 @@ using JointMask   = std::bitset<kJoints>;
 
 enum class Part : std::uint8_t { Left, Right, Both };
 
-// L3 自己的结果码。L5 映射到对外错误码；这里不承诺任何数值。
+// L2 自己的结果码。L4 映射到对外错误码；这里不承诺任何数值。
 enum class Status : std::uint8_t {
     Ok,
     NotRunning,          // start() 之前或 shutdown() 之后
@@ -174,13 +174,13 @@ struct Snapshot {
     JointVector commanded{};            // 本拍实际发出的目标（安全门之后）
 };
 
-// 带时间戳的点。L3 每拍按本拍时刻在相邻两点间线性插值（§3.3）。
+// 带时间戳的点。L2 每拍按本拍时刻在相邻两点间线性插值（§3.3）。
 struct TimedPoint {
     std::chrono::nanoseconds t{};       // 含义见 Trajectory 和 stream()
     JointVector q{};
 };
 
-// 相邻两点的最大间隔。线性插值误差因此可以忽略（§3.3）；平滑和加速度约束都归 L4。
+// 相邻两点的最大间隔。线性插值误差因此可以忽略（§3.3）；平滑和加速度约束都归 L3。
 inline constexpr std::chrono::nanoseconds kMaxPointSpacing = std::chrono::milliseconds(10);
 
 // 离线轨迹。t 相对轨迹起点：points[0].t == 0，严格递增，相邻间隔 ≤ kMaxPointSpacing。
@@ -205,12 +205,12 @@ public:
 
     // ---- 运动源 ---------------------------------------------------------
     // 流式：追加一个点。point.t 是单调时钟（steady_clock）上的绝对时刻，
-    // L3 在 point.t + stream_delay 那一拍播放它，和 execute 用同一个插值器（§3.3）。
+    // L2 在 point.t + stream_delay 那一拍播放它，和 execute 用同一个插值器（§3.3）。
     // 同一段流内 t 严格递增、相邻间隔 ≤ kMaxPointSpacing，mask 不变。
     virtual Status stream(const TimedPoint& point, JointMask mask) = 0;
     // 离线：整条轨迹入队。已有轨迹在跑时返回 Busy。
     virtual Status execute(Trajectory trajectory) = 0;
-    // 有界停止：按配置的最大减速度把速度降到 0，然后保持。不依赖 L4。
+    // 有界停止：按配置的最大减速度把速度降到 0，然后保持。不依赖 L3。
     virtual Status halt(Part) = 0;
     virtual bool   motion_active(Part) const = 0;
 
@@ -237,72 +237,72 @@ struct ExecutorConfig {
 }  // namespace shensi::exec
 ```
 
-### 3.2 整机配置（原 L2）
+### 3.2 整机配置
 
-关节 ↔ (bus, `Dev_ID`) 的映射原本单列为 L2。它只是一张表加一个查表函数，没有自己的状态和时序，
-所以并进来，作为 `ExecutorConfig` 在构造时注入。构造时校验：14 项齐全、(bus, `Dev_ID`) 不重复、
+关节 ↔ (bus, `Dev_ID`) 的映射不单列一层。它只是一张表加一个查表函数，没有自己的状态和时序，
+所以并入 `ExecutorConfig`，在构造时注入。构造时校验：14 项齐全、(bus, `Dev_ID`) 不重复、
 每条总线恰好 7 个关节，否则构造失败。
 
 映射**不提供默认值**，和限位一样。左臂接哪条总线还是推断（HF 1.5，可信度低），一旦配错就是左右臂互换。
 真机逐轴点动确认之前，配置文件必须显式写出来。
 
-「是否全部使能、是否有轴报错、是否有轴掉线」这类聚合不再是单独的函数：L3 的 `Snapshot` 和 `ArmHealth`
-已经给出了原始数据，聚合由 L5 的状态机在读快照时做（`development-plan.md` 8.2）。
+「是否全部使能、是否有轴报错、是否有轴掉线」这类聚合不再是单独的函数：L2 的 `Snapshot` 和 `ArmHealth`
+已经给出了原始数据，聚合由 L4 的状态机在读快照时做（`development-plan.md` 8.2）。
 
-### 3.1 L5 状态机从这里读什么
+### 3.1 L4 状态机从这里读什么
 
-L5 的机器人状态从 L3 推导（`development-plan.md` 8.2），不另起轮询线程。所以上面的接口必须能回答
+L4 的机器人状态从 L2 推导（`development-plan.md` 8.2），不另起轮询线程。所以上面的接口必须能回答
 这几个问题：
 
-| L5 要知道 | 这里 | 备注 |
+| L4 要知道 | 这里 | 备注 |
 |---|---|---|
 | 有没有运动在执行 | `motion_active(part)` | |
 | 是否全部使能 | `snapshot().joints[i].enabled` | 全部关节都使能才算 |
 | 是否有故障 | `snapshot().joints[i].error` / `fault`，以及 `ArmHealth` | 新鲜度失效（§4）也算故障 |
 | 是否连着 | `ArmHealth::bus_ok` | 要真的实现，不能恒为真 |
 
-现有字段已经够用，不需要新增接口。要保证的是 `snapshot()` 里这几项取自**同一拍**，否则 L5 可能看到
+现有字段已经够用，不需要新增接口。要保证的是 `snapshot()` 里这几项取自**同一拍**，否则 L4 可能看到
 「已失能但仍在运动」这种不存在的组合。
 
-### 3.3 运动源：带时间戳的点，L3 线性插值
+### 3.3 运动源：带时间戳的点，L2 线性插值
 
-L4 交给 L3 的是**带时间戳的点**，不是「每拍一个点」。L3 每拍拿本拍时刻在相邻两点间线性插值，
-这是 L3 唯一的运动原语，`execute` 和 `stream` 共用。
+L3 交给 L2 的是**带时间戳的点**，不是「每拍一个点」。L2 每拍拿本拍时刻在相邻两点间线性插值，
+这是 L2 唯一的运动原语，`execute` 和 `stream` 共用。
 
-**为什么这样分。** 周期要实测后才定（§2.1），而且会因为后端不同而不同。如果 L4 按 `tick_period()`
-采样，L4 就和节拍绑死了：周期一改，L4 的输出要跟着改；流式输入还得有一个和节拍同步的实时线程。
-带时间戳以后，L4 只管「什么时刻在哪」，不管节拍，也不需要实时线程。
+**为什么这样分。** 周期要实测后才定（§2.1），而且会因为后端不同而不同。如果 L3 按 `tick_period()`
+采样，L3 就和节拍绑死了：周期一改，L3 的输出要跟着改；流式输入还得有一个和节拍同步的实时线程。
+带时间戳以后，L3 只管「什么时刻在哪」，不管节拍，也不需要实时线程。
 
-**分工。** 所有平滑和速度 / 加速度 / 加加速度约束归 L4。L3 只做线性插值，不做任何整形；
+**分工。** 所有平滑和速度 / 加速度 / 加加速度约束归 L3。L2 只做线性插值，不做任何整形；
 安全门（§5）照常对插值结果截断步长。
 
 **点间隔上限 `kMaxPointSpacing` = 10 ms**，提交时校验，超了返回 `InvalidArgument`。
 线性插值的误差上界是 a·h²/8：a = 10 rad/s²、h = 10 ms 时约 1.3×10⁻⁴ rad，和一个编码器计数
-（2π/65536 ≈ 9.6×10⁻⁵ rad）同一量级，可以忽略。这个上限可以随真机数据调，但它是 L3 和 L4 之间的契约，
+（2π/65536 ≈ 9.6×10⁻⁵ rad）同一量级，可以忽略。这个上限可以随真机数据调，但它是 L2 和 L3 之间的契约，
 不随周期变。
 
 **`execute`。** `t` 相对轨迹起点，`points[0].t == 0`，起点是被接受后的下一拍。
 越过最后一个点之后保持在最后一个点，运动源释放。
 
-**`stream`。** `t` 是单调时钟上的绝对时刻，L3 在 `t + stream_delay` 播放它，
-也就是每拍拿 `now − stream_delay` 去插值。固定延迟吸收 L4 一侧的抖动，所以 L4 可以成批、
+**`stream`。** `t` 是单调时钟上的绝对时刻，L2 在 `t + stream_delay` 播放它，
+也就是每拍拿 `now − stream_delay` 去插值。固定延迟吸收 L3 一侧的抖动，所以 L3 可以成批、
 不定时地追加点，只要追加得比播放快。
 
 - 第一个点开始一段新的流，起点应当是当前位置；离得远时由安全门截断，持续截断会 halt（§5）
 - 同一段流内 `t` 严格递增、间隔 ≤ `kMaxPointSpacing`、`mask` 不变，否则返回 `InvalidArgument`
 - `t` 早于已经播放过的时刻：返回 `InvalidArgument`
 - **断档**：取样时刻越过了最后一个点，就保持在最后一个点，`stream_underruns` 加一，这段流结束、
-  运动源释放。之后的 `stream` 调用开始新的一段。保持是突然停下，所以 `stream_delay` 要选得让 L4
+  运动源释放。之后的 `stream` 调用开始新的一段。保持是突然停下，所以 `stream_delay` 要选得让 L3
   正常工作时不断档
 
-`stream_delay` 是构造参数，和 L4 的输出节奏一起定（§8 第 8 项）。
+`stream_delay` 是构造参数，和 L3 的输出节奏一起定（§8 第 8 项）。
 
 **否决过的方案。**
 
 | 方案 | 为什么不要 |
 |---|---|
-| 保持「L4 按拍采样」 | L4 和实测周期绑死；流式需要 L4 有一个和节拍同步的实时线程 |
-| L4 交一个 `q(t)` 回调，L3 每拍调用 | L4 的代码跑进热路径，耗时没有上界，还可能加锁 |
+| 保持「L3 按拍采样」 | L3 和实测周期绑死；流式需要 L3 有一个和节拍同步的实时线程 |
+| L3 交一个 `q(t)` 回调，L2 每拍调用 | L3 的代码跑进热路径，耗时没有上界，还可能加锁 |
 
 ## 4. 新鲜度与失效
 
@@ -310,7 +310,7 @@ L4 交给 L3 的是**带时间戳的点**，不是「每拍一个点」。L3 每
 
 1. 该臂的运动源立即中止（`execute` 的轨迹丢弃，`stream` 的目标作废）
 2. 该臂继续发**保持帧**，目标是最后一次新鲜反馈里的位置，以免因为断流而自锁
-3. 连续 N 拍仍不新鲜，就认定该臂失效，上报给 L5，由 L5 转入 `fault`
+3. 连续 N 拍仍不新鲜，就认定该臂失效，上报给 L4，由 L4 转入 `fault`
 
 另一条臂不受影响。**N 和新鲜度窗口都未定**，唯一的硬约束是：从最后一次新鲜反馈到判定失效的时间
 必须明显小于 500 ms 看门狗，否则关节会先于我们的判定自锁。
@@ -340,10 +340,10 @@ L4 交给 L3 的是**带时间戳的点**，不是「每拍一个点」。L3 每
 
 | 假实现 | 在哪一层假 | 给谁用 |
 |---|---|---|
-| `SimExecutor` | 实现 `Executor` 接口本身。关节理想跟随目标（可选一阶滞后），可注入故障、掉帧 | L4 / L5 开发。不需要 L1，不需要写 CAN 应答脚本 |
+| `SimExecutor` | 实现 `Executor` 接口本身。关节理想跟随目标（可选一阶滞后），可注入故障、掉帧 | L3 / L4 开发。不需要 L1，不需要写 CAN 应答脚本 |
 | 虚拟关节模组 | 挂在 `FakeTransport` 的 responder 上，按 PR0002 模拟关节模组：收控制帧回 `0x300`，按控制字节的使能 / 抱闸 / 清错位改变自身状态，收 SDO 回 `0x580`，超过 500 ms 没收到控制帧就自锁。规格与任务见 `development-plan.md` 任务 9 | 测真实的 `Executor` + L1 整条链 |
 
-`SimExecutor` 和真实 `Executor` 必须跑**同一套**接口契约测试，否则 L4 在假实现上验证过的东西，
+`SimExecutor` 和真实 `Executor` 必须跑**同一套**接口契约测试，否则 L3 在假实现上验证过的东西，
 换到真实实现上可能不成立。
 
 ## 7. 离线就能写的测试
@@ -370,7 +370,7 @@ L4 交给 L3 的是**带时间戳的点**，不是「每拍一个点」。L3 每
 | 5 | 单线程双总线是否够用 | 真机测每拍的发送耗时 |
 | 6 | 空闲拍发保持帧还是 `0x80`（§2.3） | 真机：两种都试，看保持精度与反馈节奏 |
 | 7 | 只靠控制字节能否使能、清错位的触发方式（HF 4.6、4.7） | 真机：失能状态下直接置 `enable = 1`，看反馈状态位；清错位分别发一拍和持续多拍 |
-| 8 | ~~L4 按 `tick_period()` 采样~~ 已定：带时间戳的点，L3 线性插值（§3.3）。剩下的是 `stream_delay` 的取值和 `kMaxPointSpacing` 是否要收紧 | 用 L4 的真实输入（遥操作 10–50 Hz）测加密后的到达抖动，延迟取在上尾之外 |
+| 8 | ~~L3 按 `tick_period()` 采样~~ 已定：带时间戳的点，L2 线性插值（§3.3）。剩下的是 `stream_delay` 的取值和 `kMaxPointSpacing` 是否要收紧 | 用 L3 的真实输入（遥操作 10–50 Hz）测加密后的到达抖动，延迟取在上尾之外 |
 
 ## 附录 A：厂家 `ExecutorJuxie` 参考
 
@@ -398,17 +398,17 @@ L4 交给 L3 的是**带时间戳的点**，不是「每拍一个点」。L3 每
 | 厂家 | 这里 | 差异 |
 |---|---|---|
 | `sendServo(arm_joint, part)` | `stream(point, mask)` | 用 mask 代替 `-100` 哨兵；点带时间戳，按固定延迟播放，而不是「最新值下一拍生效」 |
-| `move(traj)` + `executeCurrentTrajectory(..., renew_time, consecutive)` | `execute(trajectory)` | 不接收连续轨迹对象，只接收间隔 ≤ 10 ms 的带时间戳点（§3.3）；续接（renew）交给 L4 |
-| `waitForFinish()` / `waitForFinishSignal(t)` | `motion_active(part)` | 不提供阻塞等待。阻塞语义归 L5（`MoveJ` 阻塞是厂家 API 的约定，不是 executor 的） |
+| `move(traj)` + `executeCurrentTrajectory(..., renew_time, consecutive)` | `execute(trajectory)` | 不接收连续轨迹对象，只接收间隔 ≤ 10 ms 的带时间戳点（§3.3）；续接（renew）交给 L3 |
+| `waitForFinish()` / `waitForFinishSignal(t)` | `motion_active(part)` | 不提供阻塞等待。阻塞语义归 L4（`MoveJ` 阻塞是厂家 API 的约定，不是 executor 的） |
 | `getCurrentJointValues()` / `getCurrentJointError()` / `getJointFault()` / `getCurrentSingleTorques()` | `snapshot()` | 一次拿到一致的一整份，而不是四次调用拿到四个不同时刻的值 |
 | `isMoving()` / `isInFault()` / `isEnabled()` / `isConnected()` | `snapshot()` 里的字段 | 同上 |
 | `setEnableForJoint(bool)` / `clearErrorsForJoint()` / `disableServo()` | `request_enable` / `request_clear_faults` | 按臂，不是全体 |
 | `BreakEngage` / `BreakRelease` | `request_brake(mask, engage)` | |
 | `getControlFrequency()` | `tick_period()` | |
 | `SetSending(bool, part)` | 无 | 它写的两个原子标志（按头文件成员顺序是 `isLeftSending_` / `isRightSending_`）由 `move()` 和 `isMoving()` 读，看起来是「这条臂正在执行轨迹」的状态位，不是开关总线发送。对应物是 `motion_active(part)`，不需要单独的写接口 |
-| `MoveEnd(v, part)` | 无 | 发给 Dev_ID 8 的普通单轴速度帧（`can-protocol-comparison.md` §2）。L3 目前不管 Dev_ID 8；要支持时加一个面向它的轴请求，不走 `send_raw` |
-| `getDof()` / `getJointNames()` / `getHomeJointValues()` | 无 | 配置，不是运行时状态；归 `ExecutorConfig`（§3.2）和 L5 |
-| `setJointZeroPosition()` | 无 | 标定操作，须先失能（任务 2.3）；由 L5 在停拍状态下调 L1 |
+| `MoveEnd(v, part)` | 无 | 发给 Dev_ID 8 的普通单轴速度帧（`can-protocol-comparison.md` §2）。L2 目前不管 Dev_ID 8；要支持时加一个面向它的轴请求，不走 `send_raw` |
+| `getDof()` / `getJointNames()` / `getHomeJointValues()` | 无 | 配置，不是运行时状态；归 `ExecutorConfig`（§3.2）和 L4 |
+| `setJointZeroPosition()` | 无 | 标定操作，须先失能（任务 2.3）；由 L4 在停拍状态下调 L1 |
 
 ### A.3 厂家状态机读的四个谓词
 

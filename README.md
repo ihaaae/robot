@@ -21,8 +21,8 @@ Every hardware fact the design relies on is one row in
 [`docs/hardware-facts.md`](docs/hardware-facts.md), with its source and confidence. Design
 documents cite that file, not the vendor analysis.
 
-**Status.** L0 (wire codec, transport, trace) is implemented and tested in `cpp/`. L1–L5 are
-designed in [`docs/development-plan.md`](docs/development-plan.md); L3 has an interface draft.
+**Status.** L0 (wire codec, transport, trace) is implemented and tested in `cpp/`. L1–L4 are
+designed in [`docs/development-plan.md`](docs/development-plan.md); L2 has an interface draft.
 Nothing has run on the robot yet — the gates before the first motion are in
 [`docs/hardware-acceptance.md`](docs/hardware-acceptance.md).
 
@@ -37,7 +37,7 @@ vendor/          the vendor's originals and the SDK tree extracted from them, wi
 ```
 
 `cpp/`, `docs/` and `tools/` are ours and are where new work goes. The SDK is C++ only;
-Python access will go through the L5 C ABI. `research/` and `vendor/` are records; nothing
+Python access will go through the L4 C ABI. `research/` and `vendor/` are records; nothing
 outside them depends on them, except that `tools/verify.sh` checks the vendor originals' hashes.
 The old Python model of the vendor's kinematics now lives, frozen, in
 `research/vendor-tools/python/vendor_model/`.
@@ -47,12 +47,11 @@ The old Python model of the vendor's kinematics now lives, frozen, in
 | Layer | What it is | State |
 |---|---|---|
 | L0 | CAN frame codec for PR0002, transport interface, trace recording and diff | done |
-| — | virtual joint module: PR0002 as an executable spec, the offline test bench for L1 and L3; built before L1 | planned |
+| — | virtual joint module: PR0002 as an executable spec, the offline test bench for L1 and L2; built before L1 | planned |
 | L1 | one joint module: enable / brake / clear / mode via the control byte, SDO diagnostics, units; no threads | planned |
-| L2 | merged into L3 as its construction-time config (joint ↔ bus, Dev_ID); the number is kept unused | — |
-| L3 | executor: the one clocked layer — tick, `0x200` heartbeat, watchdog, freshness, a safety gate that cannot be disabled, the 14-joint map | interface draft |
-| L4 | streaming and offline trajectory planning | planned |
-| L5 | facade: our own API, error codes and state machine, and a C ABI | planned |
+| L2 | executor: the one clocked layer — tick, `0x200` heartbeat, watchdog, freshness, a safety gate that cannot be disabled; the 14-joint map is its construction-time config | interface draft |
+| L3 | streaming and offline trajectory planning | planned |
+| L4 | facade: our own API, error codes and state machine, and a C ABI | planned |
 
 Details and the "done" criterion of each task: [`docs/development-plan.md`](docs/development-plan.md).
 
@@ -77,7 +76,7 @@ robot. The frozen vendor tooling has its own check, `research/vendor-tools/verif
 The index is [`docs/index.md`](docs/index.md). Start with
 [`development-plan.md`](docs/development-plan.md), then
 [`hardware-facts.md`](docs/hardware-facts.md); the layer interfaces are
-[`l0-interface.md`](docs/l0-interface.md) and [`l3-executor-interface.md`](docs/l3-executor-interface.md).
+[`l0-interface.md`](docs/l0-interface.md) and [`l2-executor-interface.md`](docs/l2-executor-interface.md).
 
 ## The vendor SDK (reference)
 
