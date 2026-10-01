@@ -202,7 +202,7 @@ hook `RK3576CanCanfd::can_send_frame` 打印厂家栈发的每帧——**这条�
 | **性能标定** | 各关节速度/加速度实际上限、典型位姿的循环时间、重复定位精度（用百分表或激光跟踪仪） |
 | **双手协调** | 先确认这台机器**有没有**腰 / 头电机（`hardware-facts.md` 6.2：预计只有 14 个臂关节）；双臂同时运动的干涉 |
 | **末端/夹爪** | 每路上可能有一个 Dev_ID 8 的设备（`hardware-facts.md` 1.6）——抓帧看有没有 `0x308` 回来。末端 IO、夹爪控制 |
-| **力矩与碰撞** | 反馈里 Iq 到力矩的常数（`development-plan.md` 3.5）；关节模组有没有碰撞检测相关的故障码 |
+| **力矩与碰撞** | 反馈里 Iq 到力矩的常数（`development-plan.md` 3.2）；关节模组有没有碰撞检测相关的故障码 |
 | **长时间稳定性** | 连续跑几小时（我们只在模拟环境里跑过，且那个环境本身会崩） |
 | **驱动路径确认** | 在板子上 `ls /sys/class/net` 看有没有 `can0`/`can1`（内核有没有 SocketCAN）；`ls /dev/misc_shm_can*`；确认板子上 `params.yml` 的 `UseLimit` 与 `LeftLimits` / `RightLimits` 实际值 |
 | **PC 端直连路线** | 能不能从 PC 用 USB-CAN 直接接关节总线（我们的 `Transport` 后端之一）。**别拿 deb 里的周立功 USB-CAN 库当线索**：它没被任何二进制引用，是混进打包的第三方文件（`running-on-the-robot.md`）。这条路能走的依据是关节模组协议公开，不是那个库 |

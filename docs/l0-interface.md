@@ -355,7 +355,7 @@ DiffResult result = diff(golden, bus.sent_trace());
 `research/vendor-derived/document-text/controller-user-manual.md`）是**控制器**那一层的文档，
 本仓库此前只有关节模组那一层。其中三条直接影响 L0 / L1 / L2：
 
-1. **左臂 CAN1、右臂 CAN2。** 这是任务 3.3 缺的那一半。⚠️ 但手册用 **1 基**的 `CAN1`/`CAN2`，
+1. **左臂 CAN1、右臂 CAN2。** 这是任务 3.1 缺的那一半。⚠️ 但手册用 **1 基**的 `CAN1`/`CAN2`，
    而 `rk3576_can_canfd.h` 和 `/dev/misc_shm_can*` 用 **0 基**的 `CAN0`/`CAN1`；若两者对应，
    则**左臂 = `Bus::Can0`**。这个推断必须真机确认——它是左右臂互换最可能的来源，所以
    trace 表头把它写进文件，`diff()` 也把 `BusMismatch` 单列一类。
