@@ -1,6 +1,6 @@
 // Exercise the vendor's robot state machine (Juxie::State*) under emulation.
 //
-// docs/robot-state-machine.md reads the per-state behaviour out of the disassembly. This probe
+// research/vendor-analysis/robot-state-machine.md reads the per-state behaviour out of the disassembly. This probe
 // checks the parts of that reading that can be reached without a robot: the power_off and
 // fault columns of the table, and two lifecycle defects.
 //
@@ -15,7 +15,7 @@
 // motion commands, so every scenario after OnRobot() refuses to continue unless the state is
 // fault.
 //
-// Build: ./examples/cpp/build.sh (builds every example here).
+// Build: ./research/vendor-tools/cpp/build.sh (builds every example here).
 #include <juxie_controller/juxie_controller.h>
 
 #include <chrono>

@@ -1,15 +1,15 @@
 # 厂家的机器人状态机（`Juxie::State*`）
 
 厂家 `libjuxie_controller` 里 `power_off / ready / idle / running / fault` 这 5 个状态，逐状态、
-逐方法的行为。这是开发计划任务 8.2 的规格来源（[`development-plan.md`](development-plan.md)）。
+逐方法的行为。这是开发计划任务 8.2 的规格来源（[`development-plan.md`](../../docs/development-plan.md)）。
 
 **怎么得出来的**：
 
 - 静态阅读 `libjuxie_controller.so.0.6.4` 与 `libexecutor.so.0.6.4` 的反汇编，片段在
   `research/evidence/disasm/controller.*.txt` 和 `executor.is*.txt`，由
-  `tools/probes/disasm_excerpts.sh` 重新生成。很多状态方法只有 4–8 字节，被链接器合并成同一个地址
+  `research/vendor-tools/probes/disasm_excerpts.sh` 重新生成。很多状态方法只有 4–8 字节，被链接器合并成同一个地址
   （identical code folding），哪个符号对应哪个地址见 `controller.state-symbols.txt`。
-- 在 qemu 下实测（`examples/cpp/state_machine_probe.cpp`）。实测覆盖了 `power_off` 和 `fault`
+- 在 qemu 下实测（`research/vendor-tools/cpp/state_machine_probe.cpp`）。实测覆盖了 `power_off` 和 `fault`
   两列，以及 §4 里的三个崩溃。`ready / idle / running` 三列要让 `OnRobot()` 成功，也就是要有真实的
   CAN 反馈，**只有静态阅读，没有实测**。
 
@@ -108,7 +108,7 @@ ControllerJuxie ──► ControllerJuxieImpl ──► m_state_（shared_ptr<St
 
 `Stop()` 调 executor 的 `disableServo()`：把 `+0x4b8` / `+0x4b9` 两个原子量置 1（按头文件成员顺序是
 `isLeftStop_` / `isRightStop_`），然后最多等 1 s，等某个状态位变化。从这里看不出是减速停还是立即停，
-这要在真机上测（[`hardware-acceptance.md`](hardware-acceptance.md) P1-4）。`fault` 下 `Stop()` 被拒绝。
+这要在真机上测（[`hardware-acceptance.md`](../../docs/hardware-acceptance.md) P1-4）。`fault` 下 `Stop()` 被拒绝。
 
 ## 3. 自动转换：`UpdateStateThread`
 
@@ -128,7 +128,7 @@ ControllerJuxie ──► ControllerJuxieImpl ──► m_state_（shared_ptr<St
 - `isConnected()`：**恒返回 `true`**，所以第 1 行永远不会触发，「掉线 → `power_off`」不存在；
 - `isInFault()` / `isEnabled()`：读 `JuxieState` 里的 `isInFault` / `isEnabled`，由反馈更新；
 - `isMoving()`：`isLeftSending_ || isRightSending_`，即「有一条臂正在执行轨迹」
-  （[`l3-executor-interface.md`](l3-executor-interface.md) §3.1 的 `SetSending` 一行）。
+  （[`l3-executor-interface.md`](../../docs/l3-executor-interface.md) §3.1 的 `SetSending` 一行）。
 
 由此得到三条结论：
 
@@ -205,7 +205,7 @@ qemu: uncaught target signal 11 (Segmentation fault)
 | `isInFault()` | `snapshot()` 里各关节的 `error` / `fault`，加上 `ArmHealth`（新鲜度失效也算故障） |
 | `isConnected()` | `ArmHealth::bus_ok`。厂家这一项恒为真；我们要真的实现「掉线」 |
 
-这张表也写进了 [`l3-executor-interface.md`](l3-executor-interface.md) §3.2。
+这张表也写进了 [`l3-executor-interface.md`](../../docs/l3-executor-interface.md) §3.2。
 
 ## 6. 还需要真机确认的
 
@@ -214,4 +214,4 @@ qemu: uncaught target signal 11 (Segmentation fault)
 - `Stop()` 是减速停还是立即停（§2.3）；
 - 故障位自己消失时是否真的会自动离开 `fault`（§3 结论 3）。
 
-这些都并入 [`hardware-acceptance.md`](hardware-acceptance.md) P1-4。
+这些都并入 [`hardware-acceptance.md`](../../docs/hardware-acceptance.md) P1-4。

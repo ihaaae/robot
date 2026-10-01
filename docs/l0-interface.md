@@ -1,28 +1,29 @@
 # L0 接口草案
 
-> **草稿 v3.1**（历史见文末）。目的是让 6 个人在真机到货前就能并行推进，所以先把 L0 的边界和签名冻结下来。
+> **草稿 v3.2**（历史见文末）。目的是让 6 个人在真机到货前就能并行推进，所以先把 L0 的边界和签名冻结下来。
 > 内容会变；变的时候改这一份，不要各自在代码里另立一套。
 >
-> 依据：[`can-protocol-comparison.md`](can-protocol-comparison.md)（协议对照与字节序）、
-> PR0002（协议正本）、[`hardware-acceptance.md`](hardware-acceptance.md)（真机验收门）。
+> 依据：PR0002（协议正本）、[`hardware-facts.md`](hardware-facts.md)（硬件事实）、
+> [`hardware-acceptance.md`](hardware-acceptance.md)（真机验收门）。协议与厂家实现的逐项对照在
+> [`can-protocol-comparison.md`](../research/vendor-analysis/can-protocol-comparison.md)，只作参考。
 > 相关：[`development-plan.md`](development-plan.md)（任务划分）。
 
 ## 0. 已定的决定
 
 | 决定 | 结论 |
 |---|---|
-| 语言 | **C++ 为第一公民**；对外导出 C ABI，Python 通过 ctypes 使用（沿用仓库现有 `python/juxie_sdk_bridge.cpp` + `src/shensi_robot/sdk.py` 的套路）。C ABI 还顺带让 Python 侧拿到 GIL 释放。 |
-| 总线独占 | **L0 在任何情况下都不与 `Juxie::ControllerJuxie` 同进程共存。** 见 §5。 |
+| 语言 | **C++ 为第一公民**；对外导出 C ABI，Python 通过 ctypes 使用（套路可参考 `research/vendor-tools/python/` 里给厂家 SDK 做的桥）。C ABI 还顺带让 Python 侧拿到 GIL 释放。 |
+| 总线独占 | **一条总线只有一个主站。** 我们的栈拥有总线时，任何别的主站（包括厂家栈）都不能在上面跑。见 §5。 |
 | 分层 | L0 只做"字节 ↔ 线上结构体 + 收发 + trace"，**不含策略、时序、状态**。 |
 | RX 边界 | **原始帧。** 不走厂家 `setReadFunction` 解好的 `JointState`——那个结构没有温度字段，且解码必须能独立验证。见 §4.3。 |
-| 厂家 `.so` | **允许链接**，但 `VendorShmTransport` 只作为 TX / 时序 / capture 后端，不是必选路径。见 §4.2。 |
-| 公共 API | 新 SDK 按**与 `Juxie::ControllerJuxie` 兼容**设计：同名方法、同名返回码。 |
+| 厂家 `.so` | **允许链接**，但 `VendorShmTransport` 只是可选的 TX 后端之一，不是必选路径。见 §4.2。 |
+| 公共 API | **我们自己的 API**，只在能力层次上对标厂家 SDK，不追求同名方法、同号返回码（`development-plan.md` 8.1）。 |
 | 原始帧来源 | **未定，等真机。** 见 §4.4。 |
 
 ## 实现状态
 
 `cpp/` 下已经落地 **wire + transport + trace/差分** 三块，`./cpp/build.sh` 一条命令构建并跑测：
-1069 个断言，0 失败，`-Wall -Wextra -Wpedantic` 零警告，ASan + UBSan 下干净。
+1078 个断言，0 失败，`-Wall -Wextra -Wpedantic` 零警告，ASan + UBSan 下干净。
 golden vector 全部取自 PR0002 自带的例子，并已并入 `tools/verify.sh` 第 6 步（离线，只需宿主 C++ 编译器）。
 
 | 文件 | 内容 |
@@ -50,7 +51,7 @@ golden vector 全部取自 PR0002 自带的例子，并已并入 `tools/verify.s
 **不拥有**
 
 - 什么时候发什么（L1 的时序 / DS402 序列）
-- 关节索引到机器人的映射（L2：14 个设备 ↔ `Dev_ID` ↔ 通道；17 维 API ↔ 14 个设备归 L5，见 §10）
+- 关节索引到机器人的映射（L2：14 个关节 ↔ `Dev_ID` ↔ 通道）
 - 什么时候必须发帧（L3 的节拍与喂狗，见 [`l3-executor-interface.md`](l3-executor-interface.md)）
 - 单位换算的**语义**（上层决定用 rad 还是 deg）；L0 只提供 `cnt ↔ rad` 的纯函数
 - 运动学（84.721 mm 偏置属于任务 4，不属于 L0）
@@ -61,7 +62,7 @@ golden vector 全部取自 PR0002 自带的例子，并已并入 `tools/verify.s
 |---|---|---|
 | **wire** | 编解码纯函数 | ✅ 完全离线，golden vector 在这里 |
 | **transport** | 原始帧收发，多后端 | ✅ fake / replay 后端离线可跑 |
-| **trace** | 记录 / 回放 / 归一化 / 差分 | ✅ 对冻结语料离线可跑 |
+| **trace** | 记录 / 回放 / 归一化 / 差分 | ✅ 对录好的 trace 离线可跑 |
 
 ## 3. wire
 
@@ -97,7 +98,7 @@ struct Frame {
 | 执行器反馈 | `0x300 + Dev_ID` | 12 | **大端** |
 | 同步帧 | `0x80` | 文档未写；厂家发 8 字节全 0 | — |
 | 心跳 / 上线 | `0x700 + Dev_ID` | 1 | — |
-| `MoveEnd` 用帧 | `0x108` | 7 | 就是发给 Dev_ID 8 的单轴帧（大端），见 §3.7 |
+| Dev_ID 8 单轴帧 | `0x108` | 7 | 就是 `0x100 + 8`，格式同单轴控制（大端），见 §3.7 |
 
 **同一个协议两套字节序。** 已实测确认：SDO 的索引 `0x6040` 编成 `40 60`，而控制帧里的目标位置 16384 编成 `40 00`。
 
@@ -178,11 +179,8 @@ void send_raw(Bus, uint32_t id, uint8_t len, const uint8_t* data, bool brs);
 
 任何未文档化的帧都走这里，不污染上面那套类型。
 
-**`MoveEnd` 的 `0x108` 不需要走这里。** 反汇编显示它就是 §3.4 格式的单轴帧，发给 Dev_ID 8：
-`C4 HI LO 03 E8 00 00` = 使能 + 抱闸释放 + 模式 2（轮廓速度）、目标速度、加减速 1000
-（`can-protocol-comparison.md` §2）。所以 `classify()` 判成 `SingleAxisCommand`、`dev_id_of()` 返回 8
-**是对的**，用 `ControlSubframe` 编码即可。还不知道的是 8 号设备是什么（很可能是末端，包里没有文档），
-以及 `v` 的单位。
+`0x108` 不需要走这里：它就是发给 Dev_ID 8 的普通单轴帧，`classify()` 判成 `SingleAxisCommand`、
+`dev_id_of()` 返回 8，用 `ControlSubframe` 编码即可。8 号设备是什么还不知道（`hardware-facts.md` 1.6）。
 
 ## 4. transport
 
@@ -198,16 +196,16 @@ public:
 };
 ```
 
-形状对齐厂家 `RK3576CanCanfd`（`can_send_frame(Can_If, uint32_t, uint32_t, uint8_t*)` + `setReadFunction`），使厂家寄存器驱动可以作为其中一个后端接入。
+「发送 + 接收回调」，小到 SocketCAN、USB-CAN 适配器、控制器板子的寄存器驱动都能作为其中一个后端接入。
 
 ### 4.2 后端
 
 | 后端 | 说明 | 何时可用 |
 |---|---|---|
 | `FakeTransport` | 脚本化应答 | 现在 |
-| `ReplayTransport` | 读 trace 语料 | 现在 |
+| `ReplayTransport` | 回放录好的 trace | 现在 |
 | `RecordingTransport` | 装饰器，把任意后端录成 trace | 现在 |
-| `VendorShmTransport` | 走 `librk3576_can_canfd.so` 的 `can_send_frame` | 板子；需确认是否允许依赖厂家 .so（见 §7）|
+| `VendorShmTransport` | 走 `librk3576_can_canfd.so` 的 `can_send_frame` | 板子；可选（§9 第 2 项）|
 | `SocketCanTransport` | `can0` / `can1` | 未确认内核是否暴露 |
 | `ZlgUsbCanTransport` | PC 侧 USB-CAN | 以后 |
 
@@ -234,19 +232,24 @@ L0 的接口对四条路都成立，所以**先落 `FakeTransport` + `ReplayTran
 
 ## 5. 总线独占（已定）
 
-L0 在任何情况下都不与 `Juxie::ControllerJuxie` 同进程共存。这条要写进接口的文档注释，否则一定有人踩。
+一条总线只有一个主站。我们的栈拥有总线时，任何别的主站——包括厂家栈（`Juxie::ControllerJuxie`）——
+都不能在上面跑，无论同进程还是另一个进程。这条写在 `transport.hpp` 的文档注释里。
 
-三个理由：
+理由：
 
-1. **进程内两个 transport 明确是坏的。** shm 映射指针是全局的、每通道一个 RX 线程；第二个实例会重映射同一块 `/dev/mem` 区域、mmap 同一块 shm、并成为同一帧队列的第二个消费者——帧会在两个读者之间非确定性地分裂。
-2. **协议不允许两个主站。** SDO `0x600|id` 是请求/应答且无源地址，两个主站的会话会撞。更糟的是看门狗靠周期控制帧喂（< 500 ms，否则自锁）：两个部分 owner 时"对方在喂狗"是运动中途锁死的失败模式。
-3. **`OnRobot()` 之后厂家栈直到进程退出都不静止。** 它没有可以插入外来调用的空闲窗口。
+1. **协议不允许两个主站。** SDO `0x600|id` 是请求/应答且无源地址，两个主站的会话会撞。更糟的是看门狗靠周期控制帧喂（约 500 ms，否则自锁）：两个部分 owner 时"对方在喂狗"是运动中途锁死的失败模式。
+2. **同一块硬件不能有两个驱动。** 在控制器板子上，第二个驱动实例会重映射同一块 `/dev/mem` 区域、mmap 同一块 shm、并成为同一帧队列的第二个消费者——帧会在两个读者之间非确定性地分裂。
 
-推论：**增量只存在于 SDK 内部的覆盖度里，总线级是原子的。** 应用要么整体用厂家 SDK，要么整体用新的。"再实现几个 API → 测 → 再来几个"作为开发节奏成立，但"测"要么是离线 diff，要么是独占的实机差分跑（跑厂家 → 退出 → 跑新的 → 比）。
+推论：**切换是整体的。** 应用要么整体用厂家 SDK，要么整体用我们的；要在真机上对照两者，就分开跑
+（跑一个 → 退出 → 跑另一个），各自抓总线。
 
 ## 6. trace 与差分
 
-**已实现。** 文本格式是行式的（本仓库没有 JSON 依赖，也不为一个只有这个台子读的格式引入）：
+**已实现。用途是调试与回归，不是验收标准。** 正确与否以 PR0002 和真机实测为准
+（`hardware-facts.md`）；trace 回答的是「这次和上次有什么不同」「真机总线上实际跑的是什么」：
+比对我们自己两次运行的差异，或者比对我们发的帧和 CAN 分析仪在真机上抓到的帧。
+
+文本格式是行式的（本仓库没有 JSON 依赖，也不为一个只有这个台子读的格式引入）：
 
 ```
 # shensi can trace v1
@@ -272,7 +275,7 @@ struct NormalizeOptions {
 enum class DiffKind { MissingCommand, ExtraCommand, PayloadMismatch, BusMismatch,
                       TimingOutOfTolerance, RxMismatch };
 
-DiffResult diff(const Trace& golden, const Trace& actual, const NormalizeOptions& = {});
+DiffResult diff(const Trace& golden, const Trace& actual, const NormalizeOptions& = {});   // golden = 作参照的那一份
 ```
 
 比较算子**不是逐字节相等**：过滤到关注的通道 → 保留相对顺序而非绝对时间 → 按 `(bus, id, len)` 对齐（窗口内先找**完全一致**的帧，找不到才判 payload 不同）→ 比 payload 序列。
@@ -292,7 +295,7 @@ DiffResult diff(const Trace& golden, const Trace& actual, const NormalizeOptions
 | 类 | 用途 |
 |---|---|
 | `RecordingTransport` | 装饰器，套在任意 `Transport` 外面，记录双向。**记录用的 receiver 在构造时装好**，不依赖使用者是否注册了 receiver |
-| `ReplayTransport` | 回放 golden 语料：`replay_rx()` 注入录到的反馈，`sent_trace()` 交出被测栈发出的帧，直接喂给 `diff()` |
+| `ReplayTransport` | 回放录好的 trace：`replay_rx()` 注入录到的反馈，`sent_trace()` 交出被测栈发出的帧，直接喂给 `diff()` |
 
 差分回路长这样：
 
@@ -316,19 +319,19 @@ DiffResult result = diff(golden, bus.sent_trace());
 
 ## 8. 待解项（需真机帧或二进制定案）
 
-`can-protocol-comparison.md` §8 四项：
+四项（对应 `hardware-facts.md` 的行）：
 
-1. `0x200` 逐字节组包——**厂家二进制这一侧已读出**（CSP、`0xC6`，`can-protocol-comparison.md` §1.1），剩真机确认模块的响应
-2. `0x110` MIT 单轴 9 字节顺序（12 位字段跨字节，容易错位）；厂家栈没发过 MIT 帧，没有样本可比
-3. 反馈 `byte[10]` / `byte[11]` 在驱动里的落地字段
-4. 实际控制周期——**厂家的发送周期就是 `Resample`**（本机型 2 ms，同上 §1.1），`SLEEP_TIME`（200000 ns）只是驱动里另一层轮询；真机仍要测抖动
+1. `0x200` 组包——编码已定（CSP、`0xC6`，HF 2.3、2.4），剩真机确认模块的响应
+2. `0x110` MIT 单轴 9 字节顺序（12 位字段跨字节，容易错位）；没有任何样本（HF 2.8）
+3. 反馈 `byte[10]` / `byte[11]` 的语义（HF 2.5）
+4. 控制周期的抖动——标称 2 ms（HF 4.1），真机要测
 
 写 wire 层时又钉出四条**文档自身**的问题，都已经写成可执行断言（`cpp/tests/test_wire.cpp`
 的 `pr0002_documented_anomalies` 与 `frame_classification_and_device_ids`），不会随时间被遗忘：
 
 1. **§5.3 的 7 轴示例控制字节是 `0xD0`**，按 §5.1 位域解出 mode = **8**，而模式表只有 1–7；
-   该示例的加速度与速度字段还都是 0，不像一条 PP 指令。厂家自己的 `0x200` 子帧用的是 `0xC6`
-   （mode = 3，CSP），可作参照。
+   该示例的加速度与速度字段还都是 0，不像一条 PP 指令。我们的位置模式用 `0xC6`
+   （mode = 3，CSP；HF 2.4）。
 2. **§4.7 的限位子索引是反的**：设正限位用 sub `02`、读正限位用 `01`；设负限位用 `01`、
    读负限位用 `02`。CiA 402 里 `607Dh:01` = min、`:02` = max，所以两行「读」看起来写反了。
 3. **§7 有一条应答的子索引与请求不一致**：请求 `2F 00 16 00`（清空 rxPDO1，sub `00`），
@@ -336,15 +339,14 @@ DiffResult result = diff(golden, bus.sent_trace());
 4. **§5.2 出现一条 `0x081` DLC 8 的「简单反馈」帧**，文档没有任何地方定义这个标识符。
    `classify()` 判为 `Unknown` 而不是去猜。
 
-另外 `0x108` 的标识符歧义见 §3.7。
 
 ## 9. 拍板状态
 
 | # | 事项 | 状态 |
 |---|---|---|
 | 1 | RX 边界：原始帧 | **已定**：原始帧 |
-| 2 | 允许链接厂家 `.so` | **已定**：允许，但只作 TX / 时序 / capture |
-| 3 | 公共 API 兼容 `Juxie::ControllerJuxie` | **已定**：兼容 |
+| 2 | 允许链接厂家 `.so` | **已定**：允许，但只作可选的 TX 后端 |
+| 3 | 公共 API | **已定**：我们自己的 API，只在能力层次上对标厂家（v3.2 起；此前是「兼容 `ControllerJuxie`」） |
 | 4 | 原始帧从哪来（shm / SocketCAN / USB-CAN） | **未定**，等真机 `ls /sys/class/net` |
 
 ## 10. 控制器手册带来的信息
@@ -358,9 +360,8 @@ DiffResult result = diff(golden, bus.sent_trace());
    则**左臂 = `Bus::Can0`**。这个推断必须真机确认——它是左右臂互换最可能的来源，所以
    trace 表头把它写进文件，`diff()` 也把 `BusMismatch` 单列一类。
 2. **应用层错误码 14 个**（`0x01<NN>0001` 掉线 / `0x01<NN>0002` 报错 / `0x02<NN>0001` 超限位，
-   `NN` = `01`..`0e`）。14 = 左 7 + 右 7，与驱动只解析 `0x301`..`0x307` 一致：**17 维里的腰和头不在
-   这 14 个关节电机里**，`JointSpaceData` 的 17 维与总线上的关节不是一一对应。但这只说明安装包只管
-   14 个关节；厂家另外给每路的 Dev_ID 8 发帧（`MoveEnd`，§3.7），总线上可能还有末端设备。
+   `NN` = `01`..`0e`）。14 = 左 7 + 右 7，与驱动只解析 `0x301`..`0x307` 一致：臂上只有 14 个关节电机
+   （HF 6.2）。每路上可能还有一个 Dev_ID 8 的设备（HF 1.6、§3.7）。
 3. **`executor.yml` 的 `MotorDirect` 是逐轴且 load-bearing 的**：手册明说 `movel` 轨迹不直时
    要对照 URDF 检查各轴正转方向。⚠️ 手册截图里的符号序列与启动日志里的那行 14 个 `±1`
    对不上，至少一处读错，真机要实测。
@@ -382,3 +383,6 @@ DiffResult result = diff(golden, bus.sent_trace());
   新增 L3 的接口草案 [`l3-executor-interface.md`](l3-executor-interface.md)。
 - v3.1：按反汇编复核（`research/evidence/disasm/`）更正：`0x108` 是给 Dev_ID 8 的普通单轴帧，不是未文档化帧；
   厂家发 `0x80` 同步帧（8 字节）；§8 的组包与周期两项在厂家二进制一侧已读出；§10 补上 Dev_ID 8。
+- v3.2：随 `development-plan.md` v2 改为只在抽象层次上对标厂家。公共 API 改为我们自己的（§0、§9）；
+  总线独占改写为「一条总线一个主站」（§5）；trace 差分降为调试与回归工具（§6）；硬件事实改引
+  [`hardware-facts.md`](hardware-facts.md)；删去 `MoveEnd` 与 17 维 API 的说明；断言数更新为 1078。

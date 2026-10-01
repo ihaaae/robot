@@ -1,7 +1,7 @@
 // Reproduction for the getFKpose buffer overflow. THIS PROGRAM IS MEANT TO FAIL.
 //
-// It is not a demo and not an example. It exists so the claim in docs/sdk.md and
-// docs/sdk-usage.md §6.1 can be re-verified by anyone holding the SDK, instead of being
+// It is not a demo and not an example. It exists so the claim in research/vendor-analysis/sdk.md and
+// research/vendor-analysis/sdk-usage.md §6.1 can be re-verified by anyone holding the SDK, instead of being
 // taken on trust.
 //
 //   ./fk_overflow_repro 14    -> clean (no IK call, so nothing else can fail)
@@ -35,10 +35,10 @@
 // Under ASan, n<=14 is clean and n>=15 reports the heap-buffer-overflow WRITE every time.
 //
 // Note why the n<=14 case skips the IK call: IK has its own, unrelated ASan finding (a
-// heap-buffer-overflow READ of 8 bytes in ~Eigen::DenseStorage, see docs/sdk.md), so calling
+// heap-buffer-overflow READ of 8 bytes in ~Eigen::DenseStorage, see research/vendor-analysis/sdk.md), so calling
 // it in the control case would report that instead and make the control look dirty.
 //
-// Build (plain): ./examples/cpp/build.sh
+// Build (plain): ./research/vendor-tools/cpp/build.sh
 #include <juxie_controller/juxie_controller.h>
 
 #include <cstdio>

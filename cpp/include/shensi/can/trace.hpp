@@ -1,9 +1,10 @@
 // L0 trace and differential comparison.
 //
-// The oracle problem: nothing in this repository has run on the robot, so "did I implement this
-// correctly?" has no answer yet. The plan is to run the vendor stack, record the bus traffic per
-// operation, freeze it as golden vectors, and compare a reimplementation against it. This is the
-// comparison half of that. See docs/l0-interface.md §6.
+// A debugging and regression tool, not an acceptance oracle. Record the bus traffic of one run,
+// then compare it against another: two runs of our own stack (did a change alter what goes on
+// the wire?), or our stack against an analyser capture from the robot (what did the bus actually
+// carry?). Correctness is judged against PR0002 and measurements on the robot
+// (docs/hardware-facts.md), not against any recorded trace. See docs/l0-interface.md §6.
 //
 // The comparison operator is NOT byte equality on a raw capture. It is: filter to the channel of
 // interest, keep relative order rather than absolute time, align on (bus, identifier, length),
@@ -53,7 +54,7 @@ public:
     std::string to_text() const;
 
     // Throws std::runtime_error naming the offending line number. A trace that does not parse
-    // is a broken oracle, not something to guess at.
+    // is a broken record, not something to guess at.
     static Trace from_text(const std::string& text);
 
     void save(const std::string& path) const;
@@ -82,7 +83,7 @@ struct NormalizeOptions {
     bool collapse_consecutive_duplicates = false;
 
     // Compare the gaps between aligned frames. Negative disables it, which is the default: the
-    // real cycle time has never been measured (docs/can-protocol-comparison.md §8.4), so a
+    // real cycle time has never been measured (research/vendor-analysis/can-protocol-comparison.md §8.4), so a
     // timing bound here would be invented.
     std::int64_t timing_tolerance_ns = -1;
 };

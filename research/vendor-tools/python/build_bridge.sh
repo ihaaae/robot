@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Build the C ABI bridge that lets Python call the SDK through ctypes.
 #
-#   ./python/build_bridge.sh              # figures out the rest; see below
-#   ./python/build_bridge.sh --help
+#   ./research/vendor-tools/python/build_bridge.sh              # figures out the rest; see below
+#   ./research/vendor-tools/python/build_bridge.sh --help
 #
 # It works on both machines, and picks the right one by itself:
 #
@@ -24,7 +24,7 @@ if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
 fi
 
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-repo="$(cd "$here/.." && pwd)"
+repo="$(cd "$here/../../.." && pwd)"
 
 # ---------------------------------------------------------------- which compiler, and why
 host="$(uname -m)"
@@ -133,5 +133,5 @@ printf '%s\n' "$sdk" > "$out/juxie_sdk_bridge.sdk"
 echo "wrote : $out/juxie_sdk_bridge.so"
 echo "        $out/juxie_sdk_bridge.sdk (the tree above, for the module to find its config)"
 echo
-echo "next  : python3 examples/python/sdk_min_example.py"
+echo "next  : python3 research/vendor-tools/python/sdk_min_example.py"
 echo "        (the module finds both files by itself; set JUXIE_SDK_BRIDGE to use another)"

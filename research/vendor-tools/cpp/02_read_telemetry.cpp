@@ -14,7 +14,7 @@
 //
 // The vendor library prints its own debug output to stdout before your own. Normal.
 //
-// Build: ./examples/cpp/build.sh
+// Build: ./research/vendor-tools/cpp/build.sh
 // Run:   DUAL_ARM_SDK_CONFIG=<sdk>/usr/etc LD_LIBRARY_PATH=<sdk>/usr/lib \
 //            qemu-aarch64-static -L <sysroot> <build>/02_read_telemetry   (or natively on arm64)
 #include <juxie_controller/juxie_controller.h>
@@ -60,7 +60,7 @@ void print_group(const char *label, const Juxie::JointSpaceData &j, int offset, 
 int main() {
     Juxie::ControllerJuxie controller;
 
-    // Required before anything else, even for reads. See docs/sdk-usage.md.
+    // Required before anything else, even for reads. See research/vendor-analysis/sdk-usage.md.
     const bool ready = controller.OnRobot();
 
     std::printf("=== state ===\n");

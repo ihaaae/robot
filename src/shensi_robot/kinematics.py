@@ -12,8 +12,8 @@ frame at the zero configuration, given as SE(3) exponential coordinates.
 
 Units: radians in, metres out.
 
-Verified against the vendor binary (see `tools/probes/validate_fk_direct.py` and
-`docs/kinematics.md`):
+Verified against the vendor binary (see `research/vendor-tools/probes/validate_fk_direct.py` and
+`research/vendor-analysis/kinematics.md`):
 
 * RPY convention is **ZYX**, i.e. R = Rz(rz) @ Ry(ry) @ Rx(rx). Using XYZ instead shows up
   as a 0.69 deg orientation error.

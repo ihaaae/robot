@@ -1,6 +1,6 @@
 # CMake integration for the Juxie SDK tree committed in this repository.
 #
-#   include(<repo>/cmake/juxie-sdk.cmake)      # or add the repo's cmake/ to CMAKE_MODULE_PATH
+#   include(<repo>/research/vendor-tools/cmake/juxie-sdk.cmake)
 #   add_executable(my_app main.cpp)
 #   target_link_libraries(my_app PRIVATE Juxie::SDK)
 #
@@ -16,7 +16,7 @@
 # Override JUXIE_SDK_ROOT to build against a different copy of the SDK tree.
 
 set(JUXIE_SDK_ROOT
-    "${CMAKE_CURRENT_LIST_DIR}/../vendor/sdk/dual-arm-app/0.6.4"
+    "${CMAKE_CURRENT_LIST_DIR}/../../../vendor/sdk/dual-arm-app/0.6.4"
     CACHE PATH "Root of a Juxie SDK tree (the directory holding usr/)")
 
 if(NOT EXISTS "${JUXIE_SDK_ROOT}/usr/lib/libjuxie_controller.so")
@@ -55,7 +55,7 @@ if(NOT TARGET Juxie::SDK)
     # libraries the executable itself names, so libjuxie_controller resolves but its own
     # dependency libexecutor does not, and the program dies with "libexecutor.so.3: cannot
     # open shared object file". The older DT_RPATH tag is searched transitively as well.
-    # Measured both ways; see the comment on Juxie::SDK in docs/running-on-the-robot.md.
+    # Measured both ways; see the comment on Juxie::SDK in research/vendor-analysis/running-on-the-robot.md.
     target_link_options(Juxie::SDK INTERFACE
         "-Wl,-rpath-link,${JUXIE_SDK_ROOT}/usr/lib"
         "-Wl,--disable-new-dtags"

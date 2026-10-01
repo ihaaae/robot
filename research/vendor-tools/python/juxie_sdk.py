@@ -1,18 +1,18 @@
 """Call the vendor SDK from Python, through the C ABI bridge.
 
 The SDK is a C++ library whose public signatures use ``std::array``, ``std::vector`` and
-``Eigen``, none of which ctypes can express. ``python/juxie_sdk_bridge.cpp`` wraps it in plain
+``Eigen``, none of which ctypes can express. ``research/vendor-tools/python/juxie_sdk_bridge.cpp`` wraps it in plain
 C, and this module drives that wrapper: it is the Python counterpart of
-``cmake/juxie-sdk.cmake``, and it needs no network and no vendor node.
+``research/vendor-tools/cmake/juxie-sdk.cmake``, and it needs no network and no vendor node.
 
 Both halves are aarch64 Linux, so this runs on the robot's board, not on a workstation. The
 build script decides by itself whether to compile natively or cross, and the module finds what
 it built, so no environment variables are needed in a checkout:
 
-    ./python/build_bridge.sh
-    python3 examples/python/sdk_min_example.py
+    ./research/vendor-tools/python/build_bridge.sh
+    python3 research/vendor-tools/python/sdk_min_example.py
 
-    from shensi_robot.sdk import Controller
+    from juxie_sdk import Controller
     with Controller() as robot:
         print(robot.state_name(), robot.joint_positions())
 
@@ -21,7 +21,7 @@ configuration root to use. Without the second one, :func:`config_root` points it
 the bridge was built against -- recorded next to the bridge at build time, so the library and
 its configuration cannot drift apart.
 
-Read ``docs/sdk-usage.md`` before calling anything that moves the robot: ``on_robot()``
+Read ``research/vendor-analysis/sdk-usage.md`` before calling anything that moves the robot: ``on_robot()``
 powers the low-level board, several methods need it and segfault without it, and ``fk_pose``
 has a hard input limit. The bridge turns those into exceptions instead of crashes, as it does
 for C++ exceptions raised across the ABI, but it cannot make an unverified motion safe.
@@ -38,7 +38,7 @@ from pathlib import Path
 
 import numpy as np
 
-from .config import ConfigNotFoundError
+from shensi_robot.config import ConfigNotFoundError
 
 __all__ = [
     "ARM_JOINT_COUNT",
@@ -89,7 +89,7 @@ _BRIDGE_CODES = {
 #: The environment variable the vendor's own binaries read for their configuration root.
 CONFIG_ENV = "DUAL_ARM_SDK_CONFIG"
 
-#: GetRobotState() values, from docs/error-codes.md.
+#: GetRobotState() values, from research/vendor-analysis/error-codes.md.
 _STATES = {0: "power_off", 1: "ready", 2: "idle", 3: "running", 4: "fault"}
 
 
@@ -126,7 +126,7 @@ def bridge_path() -> Path:
     candidates += [
         Path.cwd() / "juxie_sdk_bridge.so",            # wherever you happen to be
         here / "juxie_sdk_bridge.so",                  # copied in next to the package
-        here.parent.parent / "python" / "build" / "juxie_sdk_bridge.so",   # a checkout
+        here / "build" / "juxie_sdk_bridge.so",       # a checkout
         # where build_bridge.sh puts it when the checkout itself is not writable
         Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache"))
         / "shensi_robot" / "juxie_sdk_bridge.so",
@@ -137,8 +137,8 @@ def bridge_path() -> Path:
             # instead of loading the file we just checked.
             return candidate.resolve()
     raise FileNotFoundError(
-        "juxie_sdk_bridge.so not found. Build it with ./python/build_bridge.sh and set "
-        "JUXIE_SDK_BRIDGE to the result, or leave it at python/build/juxie_sdk_bridge.so. "
+        "juxie_sdk_bridge.so not found. Build it with ./research/vendor-tools/python/build_bridge.sh and set "
+        "JUXIE_SDK_BRIDGE to the result, or leave it at research/vendor-tools/python/build/juxie_sdk_bridge.so. "
         f"Looked at: {', '.join(str(c) for c in candidates)}"
     )
 
@@ -172,7 +172,7 @@ def config_root() -> Path:
 
     raise ConfigNotFoundError(
         f"no vendor configuration root. Set {CONFIG_ENV}=<sdk-root>/usr/etc, or build the "
-        "bridge with ./python/build_bridge.sh, which records the tree it used next to the "
+        "bridge with ./research/vendor-tools/python/build_bridge.sh, which records the tree it used next to the "
         f"bridge. Looked for {sidecar}."
     )
 

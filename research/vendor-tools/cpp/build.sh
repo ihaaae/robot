@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 # Build the C++ examples against the SDK tree committed in this repository.
 #
-#   ./examples/cpp/build.sh                 # uses ./vendor/sdk/dual-arm-app/0.6.4
-#   SDK=/path/to/another/sdk ./examples/cpp/build.sh
+#   ./research/vendor-tools/cpp/build.sh                 # uses ./vendor/sdk/dual-arm-app/0.6.4
+#   SDK=/path/to/another/sdk ./research/vendor-tools/cpp/build.sh
 #
 # Requires an aarch64 cross toolchain and Eigen headers:
 #   sudo apt-get install -y g++-aarch64-linux-gnu libeigen3-dev
 set -euo pipefail
 
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-repo="$(cd "$here/../.." && pwd)"
+repo="$(cd "$here/../../.." && pwd)"
 SDK="${SDK:-$repo/vendor/sdk/dual-arm-app/0.6.4}"
 OUT="${OUT:-$repo/.sdk/bin}"   # build output is scratch, not committed
 

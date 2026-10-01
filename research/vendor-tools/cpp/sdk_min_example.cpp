@@ -5,12 +5,12 @@
 // nothing but Eigen. It does not pull in the headers the vendor forgot to ship, and it does
 // not use anything that only exists in this repository.
 //
-// Build, with CMake -- see cmake/juxie-sdk.cmake, which carries the flags below for you:
+// Build, with CMake -- see research/vendor-tools/cmake/juxie-sdk.cmake, which carries the flags below for you:
 //
 //   cmake_minimum_required(VERSION 3.16)
 //   project(my_app CXX)
 //   set(CMAKE_CXX_STANDARD 17)
-//   include(<repo>/cmake/juxie-sdk.cmake)
+//   include(<repo>/research/vendor-tools/cmake/juxie-sdk.cmake)
 //   add_executable(my_app main.cpp)
 //   target_link_libraries(my_app PRIVATE Juxie::SDK)
 //
@@ -48,7 +48,7 @@ int main() {
     // These calls work before OnRobot() and touch no hardware. getFKpose takes a std::vector
     // plus how many of its values belong to each arm; use the tested shape, 14 values with
     // 7 + 7. Passing more than 14 overflows a fixed 7-double buffer inside the SDK -- see
-    // docs/sdk-usage.md section 6.1.
+    // research/vendor-analysis/sdk-usage.md section 6.1.
     std::vector<double> zeros(14, 0.0);
     auto pose = controller.getFKpose(zeros, 7, 7);
     std::printf("FK(zeros)    =");

@@ -118,7 +118,7 @@ std::array<std::uint8_t, kSingleAxisDlc> encode_subframe(const ControlSubframe& 
 
 // False when fewer than kSingleAxisDlc bytes are available. This takes a length on purpose:
 // the vendor's own getFKpose has a fixed-buffer overflow of exactly this shape (a pointer and
-// an assumed size, docs/sdk-usage.md §6.1), so no decoder here trusts a bare pointer.
+// an assumed size, research/vendor-analysis/sdk-usage.md §6.1), so no decoder here trusts a bare pointer.
 bool decode_subframe(const std::uint8_t* bytes, std::size_t len, ControlSubframe& out);
 
 Frame encode_single_axis(Bus bus, std::uint8_t dev_id, const ControlSubframe& sub);
@@ -143,7 +143,7 @@ struct JointFeedback {
     std::int16_t pos_cnt = 0;     // [0..1], -32768..32767 maps to -180..180 deg
     std::int16_t vel_rpm = 0;     // [2..3], motor side
     std::int16_t current_ma = 0;  // [4..5], Iq
-    std::uint16_t fault = 0;      // [6..7], see docs/error-codes.md
+    std::uint16_t fault = 0;      // [6..7], see research/vendor-analysis/error-codes.md
     std::int16_t temp_dc = 0;     // [8..9], 0.1 degC
     std::uint8_t mode = 0;        // [10], a MotionMode value
     bool enabled = false;         // [11] bit7

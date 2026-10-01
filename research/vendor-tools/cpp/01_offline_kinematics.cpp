@@ -17,16 +17,16 @@
 //       - the request must carry a valid pose for BOTH arms. DEFAULT_INVALID_VALUE is
 //         rejected here, even though it means "leave this joint alone" in MoveJ;
 //       - IK's forward model is NOT getFKpose. The vendor's own two commands disagree,
-//         by about 180 mm for the target below. See docs/kinematics.md.
+//         by about 180 mm for the target below. See research/vendor-analysis/kinematics.md.
 //
 //   * the getFKpose buffer overflow, which is the root cause of the "get_FK_pose crashes
-//     the node" bug recorded in docs/sdk.md. Pass at most 14 values. The overflow is
+//     the node" bug recorded in research/vendor-analysis/sdk.md. Pass at most 14 values. The overflow is
 //     reproduced by fk_overflow_repro.cpp, not here.
 //
 // The vendor library prints its own debug output ("Link_XYZ", matrices) to stdout before
 // your own output. That is its normal behaviour, not a sign that something went wrong.
 //
-// Build: ./examples/cpp/build.sh
+// Build: ./research/vendor-tools/cpp/build.sh
 // Run:   DUAL_ARM_SDK_CONFIG=<sdk>/usr/etc LD_LIBRARY_PATH=<sdk>/usr/lib \
 //            qemu-aarch64-static -L <sysroot> <build>/01_offline_kinematics   (or natively on arm64)
 //            ... 01_offline_kinematics --power-on     # also getDof and IK; powers the board
@@ -130,7 +130,7 @@ int main(int argc, char **argv) {
     } else {
         std::printf("  get_tcp_pose left z  = %.5f   (quaternion form, from the same zeros)\n", tcp[2]);
         std::printf("  ^ FK and get_tcp_pose differ by about 0.3 mm here. That gap is part of the\n");
-        std::printf("    three-model inconsistency, not a typo -- see docs/kinematics.md.\n");
+        std::printf("    three-model inconsistency, not a typo -- see research/vendor-analysis/kinematics.md.\n");
     }
 
     // ---------------------------------------------------------------- joint limits
@@ -181,7 +181,7 @@ int main(int argc, char **argv) {
                     xyz_distance(&solved[0], &target[0]) * 1000.0);
         std::printf("  (rotation matches exactly; the offset is along the tool z axis, and the\n");
         std::printf("   84.721 mm constant is what our offline model compensates for. See\n");
-        std::printf("   docs/kinematics.md before using IK output with MoveJ_P.)\n");
+        std::printf("   research/vendor-analysis/kinematics.md before using IK output with MoveJ_P.)\n");
     } else {
         std::printf("  no solution returned\n");
     }
@@ -213,7 +213,7 @@ void print_overflow_note() {
     std::printf("  a heap-buffer-overflow WRITE (64 bytes for n=15, 80 for n=17).\n");
     std::printf("  Without a sanitizer the call usually returns a plausible pose and the damage\n");
     std::printf("  surfaces at the next allocation, if at all.\n");
-    std::printf("  Reproduce it with examples/cpp/fk_overflow_repro.cpp -- see its header.\n");
+    std::printf("  Reproduce it with research/vendor-tools/cpp/fk_overflow_repro.cpp -- see its header.\n");
 }
 
 }  // namespace

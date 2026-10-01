@@ -32,7 +32,7 @@ your code
 * **The vendor SDK is the top layer.** With `Juxie::ControllerJuxie` you never see a CAN frame
   or `/dev/mem`; both are implementation detail of the vendor's stack. This page is about
   deploying a program that links it. Our own replacement lives in `cpp/` and takes the second
-  path below ([`development-plan.md`](development-plan.md)).
+  path below ([`development-plan.md`](../../docs/development-plan.md)).
 
 Which means there are two independent ways to drive the joints, and `/dev/mem` only matters
 for one of them:
@@ -80,8 +80,8 @@ known from the package. Check `ls -l /dev/mem` and `id` on the robot.
 ## What it costs to compile there
 
 The RK3576 is not the constraint. Measured on a 2.6 GHz x86 core, compiling the Python bridge
-(`python/juxie_sdk_bridge.cpp`, 407 lines, `-O2`) takes **1.5 s** and peaks at **204 MB** RSS;
-the eight `examples/cpp/` programs together take **9.4 s** at `-O1`. Nearly all of it is parsing
+(`research/vendor-tools/python/juxie_sdk_bridge.cpp`, 407 lines, `-O2`) takes **1.5 s** and peaks at **204 MB** RSS;
+the eight `research/vendor-tools/cpp/` programs together take **9.4 s** at `-O1`. Nearly all of it is parsing
 Eigen's templates, not our code.
 
 Method, because the numbers are measured but the scaling is not: PassMark rates the RK3576 at
@@ -121,7 +121,7 @@ export LD_LIBRARY_PATH=/opt/juxie/usr/lib
 /opt/juxie/my_app
 ```
 
-If you built with the CMake target in `cmake/juxie-sdk.cmake`, the binary carries an rpath to
+If you built with the CMake target in `research/vendor-tools/cmake/juxie-sdk.cmake`, the binary carries an rpath to
 wherever the tree was during the build — as `DT_RPATH`, because the target passes
 `-Wl,--disable-new-dtags`, so the loader searches it for transitive dependencies too. That
 makes `LD_LIBRARY_PATH` unnecessary **only if you deploy the tree to exactly that same path**.
@@ -164,11 +164,11 @@ In order, before writing anything that moves:
    your program does not need it — see the table above.)
 2. **Is the node running** — `ss -ltnp | grep -E '5566|30485'`, and if so what started it.
 3. **Device access** — `ls -l /dev/mem /dev/misc_shm_can*`, and whether your user can open them.
-4. **A no-power program first** — `examples/cpp/01_offline_kinematics.cpp` in its default mode
+4. **A no-power program first** — `research/vendor-tools/cpp/01_offline_kinematics.cpp` in its default mode
    reads FK, limits and state without calling `OnRobot()`. If that runs and prints a sensible
    FK, your toolchain, deployment and configuration are all correct, and nothing has moved.
 5. **Only then** something that powers the robot, and only after reading
-   [`hardware-acceptance.md`](hardware-acceptance.md) — that page lists what is unverified and
+   [`hardware-acceptance.md`](../../docs/hardware-acceptance.md) — that page lists what is unverified and
    in what order to check it.
 
 The emergency stop comes before all of this.
@@ -176,6 +176,6 @@ The emergency stop comes before all of this.
 ## Related
 
 - [`sdk-usage.md`](sdk-usage.md) — the API contracts, the `OnRobot()` ordering, the traps.
-- [`hardware-acceptance.md`](hardware-acceptance.md) — what to verify on arrival, in priority order.
+- [`hardware-acceptance.md`](../../docs/hardware-acceptance.md) — what to verify on arrival, in priority order.
 - [`sdk.md`](sdk.md) §9 — the emulation bench, if you want to run the vendor's arm64 binaries
   without the robot.
