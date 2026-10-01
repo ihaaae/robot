@@ -44,7 +44,7 @@ L3 回答的是：**谁拥有时钟。**
 
 | 事情 | 归谁 |
 |---|---|
-| 轨迹怎么生成、稀疏点怎么插值 | L4 |
+| 轨迹怎么生成：平滑、速度 / 加速度 / 加加速度约束、把 10–50 Hz 的稀疏输入加密成带时间戳的点 | L4。L3 只在相邻两点间线性插值（§3.3） |
 | 机器人状态机（`power_off / ready / idle / running / fault`） | L5 |
 | 每轴的使能 / 抱闸 / 清错逻辑（本拍置哪些位、等哪个状态位、SDO 诊断） | L1。L3 只负责按拍调用它 |
 | 单轴的方向、零偏、单位换算 | L1 |
@@ -75,7 +75,7 @@ L3 回答的是：**谁拥有时钟。**
 所以周期要测的不是吞吐，而是**端到端时延与抖动**：发出 `0x200` 到收齐 7 帧 `0x300` 要多久、分布多宽。
 主机调度和后端的批量收发都会影响这一项，具体取决于后端。周期选在这段时延的上尾之外，留出余量。
 
-**周期是构造参数**，起始值 2 ms，实测后改。L4 不得假设周期，一律通过 `tick_period()` 读取。
+**周期是构造参数**，起始值 2 ms，实测后改。L4 不需要知道周期：它交的是带时间戳的点，按拍取样是 L3 的事（§3.3）。
 
 ### 2.2 线程模型
 
@@ -96,7 +96,7 @@ tick(now):
   1. 取 RX 快照（上一拍以来到达的 0x300 / 0x580）
   2. 新鲜度判定 → 每臂健康状态（§4）
   3. 让 L1 前进一步：每个轴按请求的状态和反馈里的状态位，给出本拍控制字节；需要诊断时产出 SDO
-  4. 取设定点：当前运动源的下一个采样；没有就保持上一拍的目标
+  4. 取设定点：按本拍时刻在当前运动源的相邻两点间线性插值（§3.3）；没有运动源就保持上一拍的目标
   5. 安全门：限位 → 步长（§5）
   6. L1 把 rad 换成 cnt（叠加方向与零偏），映射表（§3.2）给出每个关节的 (bus, Dev_ID)
   7. 组 0x200（每个子帧 = 控制字节 + 目标），发出；再发第 3 步产出的 SDO
@@ -170,13 +170,23 @@ struct Snapshot {
     std::uint64_t tick = 0;
     std::uint64_t missed_ticks = 0;     // 累计误拍
     std::uint64_t clamped_ticks = 0;    // 累计步长被截断的拍数
+    std::uint64_t stream_underruns = 0; // 累计流断档次数：取样时刻越过了最后一个点（§3.3）
     JointVector commanded{};            // 本拍实际发出的目标（安全门之后）
 };
 
-// 采样好的轨迹：第 k 个点在 start + k * tick_period() 下发。
-// L4 负责按 tick_period() 采样；L3 不做插值。
-struct SampledTrajectory {
-    std::vector<JointVector> points;
+// 带时间戳的点。L3 每拍按本拍时刻在相邻两点间线性插值（§3.3）。
+struct TimedPoint {
+    std::chrono::nanoseconds t{};       // 含义见 Trajectory 和 stream()
+    JointVector q{};
+};
+
+// 相邻两点的最大间隔。线性插值误差因此可以忽略（§3.3）；平滑和加速度约束都归 L4。
+inline constexpr std::chrono::nanoseconds kMaxPointSpacing = std::chrono::milliseconds(10);
+
+// 离线轨迹。t 相对轨迹起点：points[0].t == 0，严格递增，相邻间隔 ≤ kMaxPointSpacing。
+// 起点是 execute() 被接受后的下一拍。
+struct Trajectory {
+    std::vector<TimedPoint> points;
     JointMask mask;                     // 未选中的关节保持当前位置
 };
 
@@ -194,10 +204,12 @@ public:
     virtual Status request_brake(JointMask, bool engage) = 0;
 
     // ---- 运动源 ---------------------------------------------------------
-    // 流式：最新值覆盖（latest wins），下一拍生效。L4 负责把 10–50 Hz 的输入插值成每拍一个点。
-    virtual Status stream(const JointVector& target, JointMask mask) = 0;
+    // 流式：追加一个点。point.t 是单调时钟（steady_clock）上的绝对时刻，
+    // L3 在 point.t + stream_delay 那一拍播放它，和 execute 用同一个插值器（§3.3）。
+    // 同一段流内 t 严格递增、相邻间隔 ≤ kMaxPointSpacing，mask 不变。
+    virtual Status stream(const TimedPoint& point, JointMask mask) = 0;
     // 离线：整条轨迹入队。已有轨迹在跑时返回 Busy。
-    virtual Status execute(SampledTrajectory trajectory) = 0;
+    virtual Status execute(Trajectory trajectory) = 0;
     // 有界停止：按配置的最大减速度把速度降到 0，然后保持。不依赖 L4。
     virtual Status halt(Part) = 0;
     virtual bool   motion_active(Part) const = 0;
@@ -219,6 +231,7 @@ struct ExecutorConfig {
     JointVector lower, upper;                   // 位置限位（§5）。无默认值
     double v_max = 0;                           // 单拍步长上限对应的速度，rad/s（§5）
     std::chrono::nanoseconds tick_period{};     // §2.1
+    std::chrono::nanoseconds stream_delay{};    // stream() 的固定延迟（§3.3）
 };
 
 }  // namespace shensi::exec
@@ -250,6 +263,46 @@ L5 的机器人状态从 L3 推导（`development-plan.md` 8.2），不另起轮
 
 现有字段已经够用，不需要新增接口。要保证的是 `snapshot()` 里这几项取自**同一拍**，否则 L5 可能看到
 「已失能但仍在运动」这种不存在的组合。
+
+### 3.3 运动源：带时间戳的点，L3 线性插值
+
+L4 交给 L3 的是**带时间戳的点**，不是「每拍一个点」。L3 每拍拿本拍时刻在相邻两点间线性插值，
+这是 L3 唯一的运动原语，`execute` 和 `stream` 共用。
+
+**为什么这样分。** 周期要实测后才定（§2.1），而且会因为后端不同而不同。如果 L4 按 `tick_period()`
+采样，L4 就和节拍绑死了：周期一改，L4 的输出要跟着改；流式输入还得有一个和节拍同步的实时线程。
+带时间戳以后，L4 只管「什么时刻在哪」，不管节拍，也不需要实时线程。
+
+**分工。** 所有平滑和速度 / 加速度 / 加加速度约束归 L4。L3 只做线性插值，不做任何整形；
+安全门（§5）照常对插值结果截断步长。
+
+**点间隔上限 `kMaxPointSpacing` = 10 ms**，提交时校验，超了返回 `InvalidArgument`。
+线性插值的误差上界是 a·h²/8：a = 10 rad/s²、h = 10 ms 时约 1.3×10⁻⁴ rad，和一个编码器计数
+（2π/65536 ≈ 9.6×10⁻⁵ rad）同一量级，可以忽略。这个上限可以随真机数据调，但它是 L3 和 L4 之间的契约，
+不随周期变。
+
+**`execute`。** `t` 相对轨迹起点，`points[0].t == 0`，起点是被接受后的下一拍。
+越过最后一个点之后保持在最后一个点，运动源释放。
+
+**`stream`。** `t` 是单调时钟上的绝对时刻，L3 在 `t + stream_delay` 播放它，
+也就是每拍拿 `now − stream_delay` 去插值。固定延迟吸收 L4 一侧的抖动，所以 L4 可以成批、
+不定时地追加点，只要追加得比播放快。
+
+- 第一个点开始一段新的流，起点应当是当前位置；离得远时由安全门截断，持续截断会 halt（§5）
+- 同一段流内 `t` 严格递增、间隔 ≤ `kMaxPointSpacing`、`mask` 不变，否则返回 `InvalidArgument`
+- `t` 早于已经播放过的时刻：返回 `InvalidArgument`
+- **断档**：取样时刻越过了最后一个点，就保持在最后一个点，`stream_underruns` 加一，这段流结束、
+  运动源释放。之后的 `stream` 调用开始新的一段。保持是突然停下，所以 `stream_delay` 要选得让 L4
+  正常工作时不断档
+
+`stream_delay` 是构造参数，和 L4 的输出节奏一起定（§8 第 8 项）。
+
+**否决过的方案。**
+
+| 方案 | 为什么不要 |
+|---|---|
+| 保持「L4 按拍采样」 | L4 和实测周期绑死；流式需要 L4 有一个和节拍同步的实时线程 |
+| L4 交一个 `q(t)` 回调，L3 每拍调用 | L4 的代码跑进热路径，耗时没有上界，还可能加锁 |
 
 ## 4. 新鲜度与失效
 
@@ -298,6 +351,9 @@ L5 的机器人状态从 L3 推导（`development-plan.md` 8.2），不另起轮
 - 节拍：用可控时钟驱动，断言每一拍都恰好发出一帧 `0x200`，包括没有运动源的时候
 - 保持：`start()` 之后不给任何设定点，发出的目标恒等于最后一次实测位置
 - 仲裁：`execute` 进行中调用 `stream`，返回 `Busy`
+- 插值：给两个点，断言中间各拍的目标正好落在连线上；点的时刻不和拍对齐时也成立；周期换一个值，同一条轨迹的路径不变
+- 时间戳校验：`points[0].t != 0`、不递增、间隔超过 `kMaxPointSpacing` 都返回 `InvalidArgument`
+- 流：按 `stream_delay` 延迟播放；成批提前追加和逐个追加结果相同；停止追加后保持在最后一个点、`stream_underruns` 加一、运动源释放
 - 安全门：越限目标被拒绝；过大步长被截断且计数
 - 新鲜度：虚拟关节模组停止回复一条臂的反馈，该臂中止并保持，另一条臂照常运动
 - `halt`：从最大速度停下所用的拍数有上界
@@ -314,7 +370,7 @@ L5 的机器人状态从 L3 推导（`development-plan.md` 8.2），不另起轮
 | 5 | 单线程双总线是否够用 | 真机测每拍的发送耗时 |
 | 6 | 空闲拍发保持帧还是 `0x80`（§2.3） | 真机：两种都试，看保持精度与反馈节奏 |
 | 7 | 只靠控制字节能否使能、清错位的触发方式（HF 4.6、4.7） | 真机：失能状态下直接置 `enable = 1`，看反馈状态位；清错位分别发一拍和持续多拍 |
-| 8 | `SampledTrajectory` 要求 L4 按 `tick_period()` 采样，L4 因此和节拍绑在一起 | 改成带时间戳的点、由 L3 按拍取样，还是保持现状，L4 开工前定 |
+| 8 | ~~L4 按 `tick_period()` 采样~~ 已定：带时间戳的点，L3 线性插值（§3.3）。剩下的是 `stream_delay` 的取值和 `kMaxPointSpacing` 是否要收紧 | 用 L4 的真实输入（遥操作 10–50 Hz）测加密后的到达抖动，延迟取在上尾之外 |
 
 ## 附录 A：厂家 `ExecutorJuxie` 参考
 
@@ -341,8 +397,8 @@ L5 的机器人状态从 L3 推导（`development-plan.md` 8.2），不另起轮
 
 | 厂家 | 这里 | 差异 |
 |---|---|---|
-| `sendServo(arm_joint, part)` | `stream(target, mask)` | 用 mask 代替 `-100` 哨兵 |
-| `move(traj)` + `executeCurrentTrajectory(..., renew_time, consecutive)` | `execute(trajectory)` | 不接收连续轨迹对象，只接收采样好的点；续接（renew）交给 L4 |
+| `sendServo(arm_joint, part)` | `stream(point, mask)` | 用 mask 代替 `-100` 哨兵；点带时间戳，按固定延迟播放，而不是「最新值下一拍生效」 |
+| `move(traj)` + `executeCurrentTrajectory(..., renew_time, consecutive)` | `execute(trajectory)` | 不接收连续轨迹对象，只接收间隔 ≤ 10 ms 的带时间戳点（§3.3）；续接（renew）交给 L4 |
 | `waitForFinish()` / `waitForFinishSignal(t)` | `motion_active(part)` | 不提供阻塞等待。阻塞语义归 L5（`MoveJ` 阻塞是厂家 API 的约定，不是 executor 的） |
 | `getCurrentJointValues()` / `getCurrentJointError()` / `getJointFault()` / `getCurrentSingleTorques()` | `snapshot()` | 一次拿到一致的一整份，而不是四次调用拿到四个不同时刻的值 |
 | `isMoving()` / `isInFault()` / `isEnabled()` / `isConnected()` | `snapshot()` 里的字段 | 同上 |
