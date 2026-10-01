@@ -82,7 +82,7 @@ struct NormalizeOptions {
     bool collapse_consecutive_duplicates = false;
 
     // Compare the gaps between aligned frames. Negative disables it, which is the default: the
-    // real cycle time has never been measured (docs/can-protocol-comparison.md §8.4), so a
+    // real cycle time has never been measured (research/vendor-analysis/can-protocol-comparison.md §8.4), so a
     // timing bound here would be invented.
     std::int64_t timing_tolerance_ns = -1;
 };

@@ -7,7 +7,7 @@
 > **关于命令名。** P0 / P1 里的 `get_tcp_pose`、`get_FK_pose`、`get_IK_joint_position`、`movej`、
 > `movej_p` 是厂家 WebSocket 应用的命令名（分析阶段就是借它观察的）。本仓库不提供那个应用的客户端
 > （`sdk.md` §4），所以直接用对应的 SDK 调用：`GetTCPPose()`、`getFKpose()`（**元素 ≤ 14**）、
-> `IK()`、`MoveJ()`、`MoveJ_P()`，例如通过 `examples/cpp/sdk_probe.cpp`。只有 P0-3 必须走应用本身，
+> `IK()`、`MoveJ()`、`MoveJ_P()`，例如通过 `research/vendor-tools/cpp/sdk_probe.cpp`。只有 P0-3 必须走应用本身，
 > 因为它验证的就是应用会不会崩。
 
 ---
@@ -39,7 +39,7 @@
 
 ### P0-2 那个 84.721 mm 到底是什么 —— 还没有被证实
 
-**背景**：`0.084721` 是**拟合**出来的，只说明「本库 yml FK 加这个偏置能对上厂家 IK 的目标位姿」；厂家 IK 与 `get_tcp_pose` 之间是否有这个偏置从没测过。适用范围的正本见 [kinematics.md](kinematics.md)「这个结论的适用范围」。
+**背景**：`0.084721` 是**拟合**出来的，只说明「本库 yml FK 加这个偏置能对上厂家 IK 的目标位姿」；厂家 IK 与 `get_tcp_pose` 之间是否有这个偏置从没测过。适用范围的正本见 [kinematics.md](../research/vendor-analysis/kinematics.md)「这个结论的适用范围」。
 
 **做什么**：
 
@@ -62,7 +62,7 @@
 
 **决定了什么**：模拟环境里这是可复现的堆损坏（`malloc assertion failure in sysmalloc`）。如果真机也复现 → **P0 bug，必须报厂家**（会整个进程挂掉，界面和运动控制一起停）。
 
-**注意：「没崩」不等于「没越界」。** 这是堆溢出，是否 abort 取决于越界之后还有没有发生分配（机制见 `sdk-usage.md` §6.1）。要确认越界本身，用 ASan 构建（`examples/cpp/fk_overflow_repro.cpp` 头部有命令）或在真机上开 `MALLOC_CHECK_=3`；只靠「跑一次没崩」不能把它降级。
+**注意：「没崩」不等于「没越界」。** 这是堆溢出，是否 abort 取决于越界之后还有没有发生分配（机制见 `sdk-usage.md` §6.1）。要确认越界本身，用 ASan 构建（`research/vendor-tools/cpp/fk_overflow_repro.cpp` 头部有命令）或在真机上开 `MALLOC_CHECK_=3`；只靠「跑一次没崩」不能把它降级。
 
 ### P0-4 真实关节限位与安全配置
 
@@ -101,7 +101,7 @@
 
 **背景**：`MoveJ_Canfd` / `MoveP_Canfd` 是 10–50 Hz 在线流控接口，**完全没验证过**（模拟环境里返回 -1）。
 
-**现成的工具**：[`examples/cpp/07_replay_trajectory.cpp`](../examples/cpp/07_replay_trajectory.cpp)
+**现成的工具**：[`research/vendor-tools/cpp/07_replay_trajectory.cpp`](../research/vendor-tools/cpp/07_replay_trajectory.cpp)
 会把厂家自己的录制轨迹（`usr/etc/data/array0_all/array04_2.csv`，727 行）按 50 Hz 通过
 `MoveJ_Canfd` 回放，正是厂家 `MoveJCanfdTest` 干的事。默认 dry-run；第一次上真机建议
 `--limit 50 --rate 10`。它同时统计「下发值 vs `GetJointPositions()` 实测值」的最大偏差，
@@ -132,7 +132,7 @@
 - 运动中再发一条 `movej` 会怎样（覆盖？报 `ArmMoving` -103？）
 - 故意触发一个故障（例如走到限位附近），看 `GetAxisFault` / `GetFaultType` 返回什么
 
-厂家状态机逐状态、逐方法的预期行为见 [robot-state-machine.md](robot-state-machine.md)。对照它的
+厂家状态机逐状态、逐方法的预期行为见 [robot-state-machine.md](../research/vendor-analysis/robot-state-machine.md)。对照它的
 §2 表，把没有 ✅ 的格子（`ready / idle / running` 三列）逐格确认，另外专门测：
 
 - 故障位自己消失时，是否不调 `ClearFault()` 也会离开 `fault`（该文 §3 结论 3）
@@ -177,7 +177,7 @@
 
 | 工具 | 现在能做什么 | 到货后 |
 |---|---|---|
-| `tools/probes/validate_fk_direct.py` | 用厂家 FK 校验（现在会失败） | 直接跑（它调 `sdk_probe fkvec`，元素数已限制在 14） |
+| `research/vendor-tools/probes/validate_fk_direct.py` | 用厂家 FK 校验（现在会失败） | 直接跑（它调 `sdk_probe fkvec`，元素数已限制在 14） |
 | `sdk_probe`（aarch64 二进制） | 逐方法探测 SDK | 拷到真机跑，**一次一个方法**，注意 `movej`/`enable`/`break_*` 会动硬件；需要 `DUAL_ARM_SDK_CONFIG` 和 arm64 环境 |
 
 还值得补的（按性价比）：

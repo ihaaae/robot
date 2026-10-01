@@ -6,8 +6,10 @@
 # and linkable, that the Python package carries no vendor data and its tests pass, and that
 # the L0 wire/transport/trace layer reproduces the protocol document's own frames.
 #
-#   ./tools/verify.sh                 # offline checks only
-#   ./tools/verify.sh --with-native   # also cross-compile the C++ examples (needs a toolchain)
+#   ./tools/verify.sh
+#
+# Build-checks for the frozen vendor tooling (C++ programs and Python bridge linking the
+# vendor SDK) live in research/vendor-tools/verify-native.sh.
 #
 # Never opens a socket, never touches a robot. Step 6 needs a host C++ compiler and nothing
 # else; it is skipped, not failed, when there is none.
@@ -15,8 +17,6 @@ set -euo pipefail
 
 repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo"
-with_native=false
-[[ "${1:-}" == "--with-native" ]] && with_native=true
 
 pass() { printf '  \033[32mok\033[0m   %s\n' "$1"; }
 fail() { printf '  \033[31mFAIL\033[0m %s\n' "$1"; exit 1; }
@@ -166,79 +166,6 @@ if command -v c++ >/dev/null 2>&1 || command -v g++ >/dev/null 2>&1; then
     pass "$(printf '%s\n' "$l0_output" | tail -1)"
 else
     printf '  \033[33mskip\033[0m no host C++ compiler, L0 tests not run\n'
-fi
-
-if $with_native; then
-    echo "7. C++ demos and the Python bridge cross-compile against the SDK"
-    if command -v aarch64-linux-gnu-g++ >/dev/null; then
-        ./examples/cpp/build.sh >/dev/null 2>&1 || fail "examples/cpp/build.sh"
-        # Build only. Running them needs an arm64 sysroot and qemu; see docs/sdk-usage.md.
-        for prog in 01_offline_kinematics 02_read_telemetry 04_guarded_motion \
-                    06_vendor_cyclic_motion 07_replay_trajectory \
-                    sdk_min_example sdk_probe fk_overflow_repro state_machine_probe; do
-            [[ -x ".sdk/bin/$prog" ]] || fail "examples/cpp/$prog did not build"
-        done
-        pass "9 programs built (5 demos + min example + two probes + overflow repro)"
-
-        # The Python path needs its own aarch64 artifact. Build only, like the demos: running
-        # it needs an arm64 interpreter and qemu, which is the manual bench in docs/sdk.md §9.
-        ./python/build_bridge.sh >/dev/null 2>&1 || fail "python/build_bridge.sh"
-        [[ -f "python/build/juxie_sdk_bridge.so" ]] \
-            || fail "python/build/juxie_sdk_bridge.so was not produced"
-        pass "the Python bridge built (python/build/juxie_sdk_bridge.so)"
-    else
-        fail "aarch64-linux-gnu-g++ is not installed, but --with-native was requested"
-    fi
-
-    # The consumer path, which is the one that matters to anyone writing their own program:
-    # a project outside this repository, including cmake/juxie-sdk.cmake and linking
-    # Juxie::SDK, with no hand-written flags. Skipped only if CMake is absent.
-    if command -v cmake >/dev/null; then
-        consumer="$work/consumer"
-        mkdir -p "$consumer"
-        cat > "$consumer/main.cpp" <<'CPP'
-#include <juxie_controller/juxie_controller.h>
-#include <cstdio>
-#include <vector>
-int main() {
-    Juxie::ControllerJuxie controller;
-    std::vector<double> zeros(14, 0.0);          // 14 values, 7 + 7: the tested shape
-    auto pose = controller.getFKpose(zeros, 7, 7);
-    std::printf("%.5f\n", pose[2]);
-    return 0;
-}
-CPP
-        cat > "$consumer/CMakeLists.txt" <<CMAKE
-cmake_minimum_required(VERSION 3.16)
-project(consumer CXX)
-set(CMAKE_CXX_STANDARD 17)
-include("$repo/cmake/juxie-sdk.cmake")
-add_executable(my_app main.cpp)
-target_link_libraries(my_app PRIVATE Juxie::SDK)
-CMAKE
-        cmake -S "$consumer" -B "$consumer/build" >/dev/null 2>&1 \
-            -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++ \
-            -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_SYSTEM_PROCESSOR=aarch64 \
-            || fail "a consumer project could not configure against Juxie::SDK"
-        cmake --build "$consumer/build" >/dev/null 2>&1 \
-            || fail "a consumer project could not link against Juxie::SDK"
-        pass "a project outside the repo builds against Juxie::SDK via CMake"
-
-        # Linking and loading are two different things. The five libraries libjuxie_controller
-        # pulls in carry no RPATH of their own, so the executable must carry one -- and it has
-        # to be DT_RPATH, because DT_RUNPATH is not searched for transitive dependencies. A
-        # RUNPATH here links fine and then dies at startup with
-        # "libexecutor.so.3: cannot open shared object file".
-        if command -v aarch64-linux-gnu-readelf >/dev/null; then
-            aarch64-linux-gnu-readelf -d "$consumer/build/my_app" | grep -q '(RPATH)' \
-                || fail "the consumer binary carries no RPATH; it would not find libexecutor at run time"
-            pass "the consumer binary carries DT_RPATH, so transitive dependencies resolve"
-        else
-            printf '  \033[33mskip\033[0m aarch64-linux-gnu-readelf not installed, run-time tag not checked\n'
-        fi
-    else
-        printf '  \033[33mskip\033[0m cmake not installed, consumer integration not checked\n'
-    fi
 fi
 
 echo

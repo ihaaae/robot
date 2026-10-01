@@ -157,7 +157,7 @@ def test_ik_clips_an_out_of_limits_seed(tmp_path):
 
 # ------------------------------------------------------------------ vendor data constants
 # These are constants in kinematics.py, recovered from the vendor's binary. They are asserted
-# here because the C++ demo (examples/cpp/06_vendor_cyclic_motion.cpp) carries the same numbers.
+# here because the C++ demo (research/vendor-tools/cpp/06_vendor_cyclic_motion.cpp) carries the same numbers.
 
 
 def test_vendor_pose_matches_the_joint_layout():

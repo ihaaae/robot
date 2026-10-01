@@ -4,7 +4,7 @@
 > 能对着一个假 executor 开工，不必等 L1 / L2 做完。内容会变；变的时候改这一份。
 >
 > 依据：厂家 `bot_executor::ExecutorBase` / `ExecutorJuxie`（头文件 + 符号表 + 配置）、
-> [`can-protocol-comparison.md`](can-protocol-comparison.md)、[`hardware-acceptance.md`](hardware-acceptance.md)。
+> [`can-protocol-comparison.md`](../research/vendor-analysis/can-protocol-comparison.md)、[`hardware-acceptance.md`](hardware-acceptance.md)。
 > 相关：[`development-plan.md`](development-plan.md)（分层与任务 7）。
 >
 > 下文凡标「厂家」的结论，都出自 `vendor/sdk/dual-arm-app/0.6.4/usr/include/`、
@@ -226,7 +226,7 @@ public:
 ### 3.2 L5 状态机从这里读什么
 
 厂家的机器人状态在轮询线程跑起来之后，实际上是 executor 四个谓词的函数：每 5 ms 按
-`isInFault → isMoving → isEnabled` 的优先级判定一次（[`robot-state-machine.md`](robot-state-machine.md) §3）。
+`isInFault → isMoving → isEnabled` 的优先级判定一次（[`robot-state-machine.md`](../research/vendor-analysis/robot-state-machine.md) §3）。
 我们的 L5 也从 L3 推导状态，所以上面的接口必须能回答这四个问题：
 
 | 厂家谓词 | 这里 | 备注 |

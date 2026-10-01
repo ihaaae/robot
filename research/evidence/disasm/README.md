@@ -4,7 +4,7 @@ AArch64 disassembly of the vendor libraries in `vendor/sdk/dual-arm-app/0.6.4/us
 that every "found in the binary" claim in `docs/` can be checked by reading a file instead of
 re-running a disassembler.
 
-Regenerate with `tools/probes/disasm_excerpts.sh` (needs `llvm-objdump` with the AArch64 target;
+Regenerate with `research/vendor-tools/probes/disasm_excerpts.sh` (needs `llvm-objdump` with the AArch64 target;
 LLVM 18.1.3 was used). The files are the tool's plain output; nothing is edited by hand.
 
 ## Reading them
@@ -23,7 +23,7 @@ Two traps caused wrong claims before, so they are worth stating:
 
 ## What each file supports
 
-| File | Claim (in `docs/can-protocol-comparison.md` unless noted; `§` references in the `controller.*` rows are to `docs/robot-state-machine.md`) |
+| File | Claim (in `research/vendor-analysis/can-protocol-comparison.md` unless noted; `§` references in the `controller.*` rows are to `research/vendor-analysis/robot-state-machine.md`) |
 |---|---|
 | `executor.ctor.thread-start.txt` | Only `ucas_can0_task_send_thread`, `ucas_can1_task_send_thread` and `watchdog` get a thread; `sendCommandThread0/1` and `listenStateThread` are never called (§1.1) |
 | `executor.ctor.resample.txt` + `rodata.txt` | `this+0x10` (`resample_delta`) defaults to 0.005 and is overwritten from YAML `Resample` (§1.1) |

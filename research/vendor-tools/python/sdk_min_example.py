@@ -1,23 +1,23 @@
 #!/usr/bin/env python3
 """Minimal program that drives the SDK from Python, and the best starting point for your own.
 
-The Python counterpart of examples/cpp/sdk_min_example.cpp: only the SDK and the bridge, no
+The Python counterpart of research/vendor-tools/cpp/sdk_min_example.cpp: only the SDK and the bridge, no
 network, no vendor node. Build the bridge first -- it is aarch64, so this runs on the robot's
 board or under emulation, not on a workstation interpreter:
 
-    ./python/build_bridge.sh
-    export JUXIE_SDK_BRIDGE=$PWD/python/build/juxie_sdk_bridge.so
+    ./research/vendor-tools/python/build_bridge.sh
+    export JUXIE_SDK_BRIDGE=$PWD/research/vendor-tools/python/build/juxie_sdk_bridge.so
     export DUAL_ARM_SDK_CONFIG=$PWD/vendor/sdk/dual-arm-app/0.6.4/usr/etc
-    python3 examples/python/sdk_min_example.py
+    python3 research/vendor-tools/python/sdk_min_example.py
 
-Under emulation, with an aarch64 interpreter (see docs/sdk.md section 9):
+Under emulation, with an aarch64 interpreter (see research/vendor-analysis/sdk.md section 9):
 
     qemu-aarch64-static -L run/sysroot run/sysroot/usr/bin/python3.11 \
-        examples/python/sdk_min_example.py
+        research/vendor-tools/python/sdk_min_example.py
 """
 from __future__ import annotations
 
-from shensi_robot.sdk import Controller
+from juxie_sdk import Controller
 
 
 def main() -> int:
@@ -27,7 +27,7 @@ def main() -> int:
         # --------------------------------------------------------------- without on_robot()
         # These work before on_robot() and touch no hardware. fk_pose takes 7 to 14 values and
         # refuses anything else; 14 with 7 + 7 is the shape that was measured. See
-        # docs/sdk-usage.md section 6.1 for why more is dangerous.
+        # research/vendor-analysis/sdk-usage.md section 6.1 for why more is dangerous.
         pose = robot.fk_pose([0.0] * 14)
         print("FK(zeros)    =", " ".join(f"{value:.6f}" for value in pose))
 

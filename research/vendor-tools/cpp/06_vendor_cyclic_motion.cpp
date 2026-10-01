@@ -20,7 +20,7 @@
 // powers the low-level board. That happens even in a dry run; --yes is what commands motion.
 // DRY RUN BY DEFAULT. READ docs/hardware-acceptance.md BEFORE RUNNING THIS ON THE ROBOT.
 //
-// Build: ./examples/cpp/build.sh
+// Build: ./research/vendor-tools/cpp/build.sh
 // Run:   DUAL_ARM_SDK_CONFIG=<sdk>/usr/etc LD_LIBRARY_PATH=<sdk>/usr/lib \
 //            qemu-aarch64-static -L <sysroot> <build>/06_vendor_cyclic_motion        (dry run)
 #include <juxie_controller/juxie_controller.h>
@@ -166,7 +166,7 @@ int main(int argc, char **argv) {
         if (to_home != 0 || to_pose != 0) {
             failures = 1;
             std::printf("  a move was rejected -- stopping here. -1 is what you get with no CAN\n");
-            std::printf("  bus; see docs/error-codes.md\n");
+            std::printf("  bus; see research/vendor-analysis/error-codes.md\n");
             break;
         }
     }

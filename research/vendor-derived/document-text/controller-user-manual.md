@@ -50,7 +50,7 @@ leftLimits.size() : 7
 runing...
 ```
 
-> `updateImpl` 出现在启动日志里，与 `docs/sdk-usage.md` §3 里「`State::m_impl` 由
+> `updateImpl` 出现在启动日志里，与 `research/vendor-analysis/sdk-usage.md` §3 里「`State::m_impl` 由
 > `updateImpl()` 赋值」的推断一致。
 > 第三行 14 个 `±1` 与 `executor.yml` 的 `MotorDirect` 是同一类东西（见下）。
 > ⚠️ 日志里的符号序列 `1,1,1,-1,1,1,-1,1,1,-1,1,1,1,-1` 与下面 `executor.yml` 截图里读到的
@@ -89,7 +89,7 @@ limits:
 - **机器人状态**（应用层命名）：`ready`（无报错未使能）/ `idle`（无报错已使能）/
   `running`（运动中）/ `error`（报错，报错码显示在下方）。
   > 注意这是 **4 个**状态，没有 SDK `GetRobotState()` 里的 `power_off`（0）。
-  > `docs/error-codes.md` 记的是 SDK 的 5 个（0..4），两者命名也不同（`fault` vs `error`）。
+  > `research/vendor-analysis/error-codes.md` 记的是 SDK 的 5 个（0..4），两者命名也不同（`fault` vs `error`）。
 - 未使能时可手动推动机器人，观察监控数值变化来验证轴方向。
 - 示教页：`movej`（关节角）、`movej_p`（笛卡尔的关节运动）、`movel`（直线运动）。
 - **循环运动**是控制器内预设轨迹，点一次即可。文档明确警告：**点多次会导致点位异常造成危险；
@@ -104,13 +104,13 @@ limits:
 - 因此板子上的部署根目录是 `/home/root/DualArm`，配置在 `/home/root/DualArm/usr/etc`，
   可执行文件在 `/home/root/DualArm/usr/bin/`，日志在 `/home/root/logs/`。
 
-> 这回答了 `docs/running-on-the-robot.md` 里「node 是怎么起来的、装在哪」的一部分：
+> 这回答了 `research/vendor-analysis/running-on-the-robot.md` 里「node 是怎么起来的、装在哪」的一部分：
 > 部署根是 `/home/root/DualArm`，且**应该自启动**（用 `top` 验证；没起来就手动跑）。
 
 ## 四、错误码
 
 网页端报错形如 `0x01010001`。完整表（`etc/error.json` 的自造格式，**与伺服的 `0x603F`
-无关**，见 `docs/can-protocol-comparison.md` §5 末尾）：
+无关**，见 `research/vendor-analysis/can-protocol-comparison.md` §5 末尾）：
 
 | 格式 | 含义 |
 |---|---|

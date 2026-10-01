@@ -11,11 +11,11 @@
 | 抓取方式 | 全文抓取后手工整理为本 Markdown |
 
 **为什么要存这份快照**：只有 URL 无法固定我们结论所依赖的版本。厂家文档在改版（见
-`docs/can-protocol-comparison.md` §5：同一批故障码在新旧文档里定义不同），所以必须留一份
+`research/vendor-analysis/can-protocol-comparison.md` §5：同一批故障码在新旧文档里定义不同），所以必须留一份
 带日期的副本。
 
 **这不是权威副本**，是整理稿：原文含大量配图与 OCR 错位，这里只保留协议本身需要的表格。
-逐字段与驱动实现的比对在 [`../../../docs/can-protocol-comparison.md`](../../../docs/can-protocol-comparison.md)。
+逐字段与驱动实现的比对在 [`../../../research/vendor-analysis/can-protocol-comparison.md`](../../vendor-analysis/can-protocol-comparison.md)。
 
 ---
 
@@ -157,7 +157,7 @@ Kd 12 bit（`0..4095` ↔ `0..5`）、力矩 12 bit。**原文没有给出位置
 ## 10. 故障码
 
 见 `_V1.0.1.docx`（`research/vendor-derived/doc_v101.txt`）与 `V1.3.xlsx`（`doc_v13.txt`）。
-注意新旧文档对同一批码的定义不同，详见 [`../../../docs/can-protocol-comparison.md`](../../../docs/can-protocol-comparison.md) §5。
+注意新旧文档对同一批码的定义不同，详见 [`../../../research/vendor-analysis/can-protocol-comparison.md`](../../vendor-analysis/can-protocol-comparison.md) §5。
 
 ## 11. 其他要点
 

@@ -144,7 +144,7 @@ MoveLRectTest                      MoveJCanfdTest      Move_StopTest
 
 CSV 列到 17 槽的映射（从 `MoveJCanfdTest` 的指令里读出来的，不是猜的）：`joints[0] = -100.0`（腰，保持不动），`joints[1..7] = csv[0..6]`（左臂），`joints[8..14] = csv[7..13]`（右臂），`joints[15..16]` 厂家**没有写**（未定义行为）。
 
-回放这段轨迹的 demo：[`examples/cpp/07_replay_trajectory.cpp`](../examples/cpp/07_replay_trajectory.cpp)。
+回放这段轨迹的 demo：[`research/vendor-tools/cpp/07_replay_trajectory.cpp`](../vendor-tools/cpp/07_replay_trajectory.cpp)。
 
 ---
 
@@ -178,7 +178,7 @@ CSV 列到 17 槽的映射（从 `MoveJCanfdTest` 的指令里读出来的，不
 
 实测：`get_FK_pose` 在零位返回 `[0,0,0.6755, 0,-0,0]`；`get_tcp_pose` 零位返回 `z = 0.6752`，与 `M` 完全一致。两者相差 0.3 mm —— 这不是笔误，是三方模型不一致的一部分，别把它当成相符。
 
-> **已经实现了**：见 [`src/shensi_robot/kinematics.py`](../src/shensi_robot/kinematics.py)（FK + 数值 IK，不依赖机器人）和 [`kinematics.md`](kinematics.md)（模型、RPY 约定、TCP 偏置、校验结果）。**只部分校验**：本库 FK 加拟合的 84.721 mm 偏置能复现厂家 IK 的目标位姿；本库 IK 未与厂家比过；与厂家 FK 对不上。范围见 kinematics.md 开头。
+> **已经实现了**：见 [`src/shensi_robot/kinematics.py`](../../src/shensi_robot/kinematics.py)（FK + 数值 IK，不依赖机器人）和 [`kinematics.md`](kinematics.md)（模型、RPY 约定、TCP 偏置、校验结果）。**只部分校验**：本库 FK 加拟合的 84.721 mm 偏置能复现厂家 IK 的目标位姿；本库 IK 未与厂家比过；与厂家 FK 对不上。范围见 kinematics.md 开头。
 
 `/usr/etc/params.yml` 里注意 `MaxVelocityFactor: 0.04`（默认速度系数被压到 4%）、`UseLimit: false`（关掉的是每拍的速度 / 加速度限制，`LeftLimits` / `RightLimits` 的 `[1.5, 6.5]` 就是这两个上限；不是位置限位，见 `hardware-acceptance.md` P0-4）。
 
@@ -279,7 +279,7 @@ DUAL_ARM_SDK_CONFIG=/usr/etc qemu-aarch64-static -L $ROOT $ROOT/usr/bin/dual_arm
 
 （那个应用不属于 SDK，本仓库不提供驱动它的客户端；下面 `get_FK_pose` 那个已知问题是通过它观察到的。）
 
-**要在模拟环境里跑 Python 那条路**（`shensi_robot.sdk`，见 `sdk-usage.md` §7），sysroot 里还需要一个 aarch64 的解释器。它和 SDK 一样是 arm64，所以宿主机的 python 不行：
+**要在模拟环境里跑 Python 那条路**（`juxie_sdk`，见 `sdk-usage.md` §7），sysroot 里还需要一个 aarch64 的解释器。它和 SDK 一样是 arm64，所以宿主机的 python 不行：
 
 ```bash
 for p in python3.11-minimal libpython3.11-minimal libpython3.11-stdlib libffi8 \
@@ -291,10 +291,10 @@ for d in *.deb; do dpkg-deb -x "$d" $ROOT; done
 ln -sf blas/libblas.so.3 $ROOT/usr/lib/aarch64-linux-gnu/libblas.so.3      # Debian 把 BLAS 放在子目录里
 ln -sf lapack/liblapack.so.3 $ROOT/usr/lib/aarch64-linux-gnu/liblapack.so.3
 
-./python/build_bridge.sh
+./research/vendor-tools/python/build_bridge.sh
 DUAL_ARM_SDK_CONFIG=$PWD/vendor/sdk/dual-arm-app/0.6.4/usr/etc \
-JUXIE_SDK_BRIDGE=$PWD/python/build/juxie_sdk_bridge.so PYTHONPATH=$PWD/src \
-qemu-aarch64-static -L $ROOT $ROOT/usr/bin/python3.11 examples/python/sdk_min_example.py
+JUXIE_SDK_BRIDGE=$PWD/research/vendor-tools/python/build/juxie_sdk_bridge.so PYTHONPATH=$PWD/src:$PWD/research/vendor-tools/python \
+qemu-aarch64-static -L $ROOT $ROOT/usr/bin/python3.11 research/vendor-tools/python/sdk_min_example.py
 ```
 
 （qemu-user 的 guest 进程直接跑在宿主内核上，所以 `PYTHONPATH`、`JUXIE_SDK_BRIDGE` 这些用宿主绝对路径就行；`-L $ROOT` 只影响动态库的搜索前缀。）
@@ -302,7 +302,7 @@ qemu-aarch64-static -L $ROOT $ROOT/usr/bin/python3.11 examples/python/sdk_min_ex
 ### 已知问题：`get_FK_pose` 会让整个应用崩溃
 
 **根因与机制的正本在 [`sdk-usage.md`](sdk-usage.md) §6.1**：`getFKpose` 分配固定 7 个 double，却拷入 `n - 7` 个，
-所以输入超过 14 个元素就堆溢出（ASan 确定性复现，复现程序 `examples/cpp/fk_overflow_repro.cpp`）。
+所以输入超过 14 个元素就堆溢出（ASan 确定性复现，复现程序 `research/vendor-tools/cpp/fk_overflow_repro.cpp`）。
 这一节只记录**从厂家应用这一侧**观察到的现象，因为它们只能在应用里看到。
 
 `get_FK_pose` 会**直接 abort 整个进程**。用 qemu gdbstub + gdb-multiarch 抓到的栈：
@@ -334,7 +334,7 @@ Fatal glibc error: malloc assertion failure in sysmalloc:
 - `get_device_state` / `get_joint_position` / `get_tcp_pose` / `get_config` / `get_IK_joint_position` 都稳定，几十次调用没问题。
 - 早先偶尔能成功调用 `get_FK_pose`（零位返回 `[0,0,0.6755,0,-0,0]`），所以不是 100% 必崩。这个 0.6755 与直接调 `getFKpose` 的零位结果一致（而 `get_tcp_pose` 是 0.6752），印证 `get_FK_pose` 是 `getFKpose` 的薄包装。
 
-WebSocket 的 `get_FK_pose` 没有任何请求形态是安全的，只能不调。真机上的复现步骤见 [`hardware-acceptance.md`](hardware-acceptance.md) P0-3。
+WebSocket 的 `get_FK_pose` 没有任何请求形态是安全的，只能不调。真机上的复现步骤见 [`hardware-acceptance.md`](../../docs/hardware-acceptance.md) P0-3。
 
 ### 已知问题（另一个，独立）：`IK()` 返回的 Eigen 向量析构时越界读
 
@@ -348,7 +348,7 @@ WebSocket 的 `get_FK_pose` 没有任何请求形态是安全的，只能不调�
 
 ## 10. 交付物索引
 
-文档索引只维护一份：[`index.md`](index.md)。代码与示例见 README 的 Layout / Demos 两节。
+文档索引只维护一份：[`index.md`](../../docs/index.md)。代码与示例见 README 的 Layout / Demos 两节。
 
 证据文件（本报告的结论出自这里）：
 

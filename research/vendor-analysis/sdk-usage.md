@@ -108,7 +108,7 @@ AddressSanitizer 下的实测（`-fsanitize=address -static-libasan`，这是**�
 
 **不加 sanitizer 时会怎样**：`getFKpose` 照常返回一个看起来正常的位姿，不报错；越界破坏堆元数据，**在下一次分配时才可能被发现**。能不能被发现取决于二进制和之前的分配历史 —— 所以「没崩」不代表安全，也可能是**静默的内存损坏**。这正是逐方法探针漏掉它的原因（每个进程只调一个方法，越界后没有下一次分配）。
 
-复现程序：`examples/cpp/fk_overflow_repro.cpp`，头部带 ASan 编译命令。**本节是这个缺陷的正本**；它在厂家 WebSocket 应用里表现为整个进程崩溃，那一侧的观察见 [sdk.md](sdk.md) §9「已知问题」。
+复现程序：`research/vendor-tools/cpp/fk_overflow_repro.cpp`，头部带 ASan 编译命令。**本节是这个缺陷的正本**；它在厂家 WebSocket 应用里表现为整个进程崩溃，那一侧的观察见 [sdk.md](sdk.md) §9「已知问题」。
 
 ### 6.2 `IK()` 返回的向量析构时越界读（独立问题）
 
@@ -161,7 +161,7 @@ b.OnRobot();               // 这里段错误
 - 没有 CAN（qemu 下）：第一次 `OnRobot()` 停在 `fault`、不启动线程；第二次启动；**第三次终止进程**（`terminate called without an active exception`，SIGABRT）；
 - 有 CAN、第一次就成功：按同样的逻辑，**第二次**就会终止进程（静态推断，未实测）。
 
-复现：`examples/cpp/state_machine_probe.cpp onrobot3`。
+复现：`research/vendor-tools/cpp/state_machine_probe.cpp onrobot3`。
 
 ### 6.6 线程启动之后不能 `OffRobot()`
 
@@ -173,9 +173,9 @@ b.OnRobot();               // 这里段错误
 
 **§6.5–§6.7 合起来：一个 controller 实例只走一轮 `OnRobot()`（/ `OffRobot()`）**。要重来就销毁它、再新建一个：析构函数会先清掉轮询线程的运行标志、再 `join` 它（`Impl+0xb0` / `Impl+0xa8`），在模拟环境里实测「线程已启动 → 销毁 → 新建 → `OnRobot()`」和「`OffRobot()` → 销毁 → 新建 → `OnRobot()`」都干净。三者在状态机里的位置见 [robot-state-machine.md](robot-state-machine.md) §4；Python 垫片替这三条做了守卫（§7 的表）。
 
-## 7. 从 Python 调用（`python/` + `shensi_robot.sdk`）
+## 7. 从 Python 调用（`research/vendor-tools/python/`）
 
-C++ 那边靠 `cmake/juxie-sdk.cmake` 接入；Python 这边对应的是 `python/juxie_sdk_bridge.cpp` —— 一个把 SDK 包成 C ABI 的垫片，配合 `src/shensi_robot/sdk.py` 用 ctypes 调用。原因很直接：SDK 的公开签名里有 `std::array` / `std::vector` / `Eigen`，ctypes 一个都表达不了。
+C++ 那边靠 `research/vendor-tools/cmake/juxie-sdk.cmake` 接入；Python 这边对应的是 `research/vendor-tools/python/juxie_sdk_bridge.cpp` —— 一个把 SDK 包成 C ABI 的垫片，配合 `research/vendor-tools/python/juxie_sdk.py` 用 ctypes 调用。原因很直接：SDK 的公开签名里有 `std::array` / `std::vector` / `Eigen`，ctypes 一个都表达不了。
 
 **为什么是 C ABI + ctypes，而不是 pybind11。** 不是因为 pybind11 表达不了这些类型 —— 它表达得很好。差别在构建输入：pybind11 的扩展模块要**目标架构的 `Python.h`**，还要对上 CPython 的 minor 版本（头文件布局、`pyconfig.h`、扩展名后缀都得匹配），所以从 x86 交叉编译就得额外准备板子的 Python 开发头文件 —— 这是本仓库没有、也没法从宿主机推出来的东西。C ABI 垫片对 Python 一点依赖都没有：它就是个普通的 aarch64 共享库，任何 CPython minor 版本都能用 ctypes 加载。这既是「一条命令，两台机器都适用」成立的前提，也让阻塞的 `MoveJ` / `MoveL` 顺带拿到了 GIL 释放 —— `ctypes.CDLL` 每次调用都会放掉 GIL，而 pybind11 要显式加 `py::call_guard<py::gil_scoped_release>()` 才有同样的行为。
 
@@ -186,22 +186,18 @@ C++ 那边靠 `cmake/juxie-sdk.cmake` 接入；Python 这边对应的是 `python
 **一条命令，两台机器都适用。** `build_bridge.sh` 自己判断该用哪个编译器（`uname -m` 是 aarch64 就用板子自己的 `g++` 原生编译，否则用 `aarch64-linux-gnu-g++` 交叉编译），自己找 SDK 树（`$SDK` → 仓库里的 `vendor/sdk/...` → 部署好的 `/opt/juxie` → `/usr`）和 Eigen，然后**把它用的是哪棵 SDK 树记在桥旁边**（`juxie_sdk_bridge.sdk`）。模块读这个记录来设 `DUAL_ARM_SDK_CONFIG` —— 库和它的配置永远来自同一棵树，不是运行时猜的。
 
 ```bash
-./python/build_bridge.sh
-python3 examples/python/sdk_min_example.py
+./research/vendor-tools/python/build_bridge.sh
+python3 research/vendor-tools/python/sdk_min_example.py
 ```
 
 不需要 export 任何东西。要覆盖的话：`JUXIE_SDK_BRIDGE` 指定加载哪个桥，`DUAL_ARM_SDK_CONFIG` 指定配置根（后者优先级最高，模块不会覆盖你显式设的值）。
 
-**装包时也会自动编译一次。** `setup.py` 里挂了个 best-effort 的 `build_py`：`pip install -e .` 会顺带跑一遍 `build_bridge.sh`，所以板上装完包就能直接用。三条边界：
-
-- 它**永远不会让安装失败** —— 没有编译器、没有 Eigen、没有 SDK 树，安装照常成功，只是桥没编出来（那时按模块的报错提示手动跑一次脚本即可）。
-- 它写到 `python/build/`（和脚本同一个位置），所以**可编辑安装**（`pip install -e .`）能自动找到；**非可编辑安装**（`pip install .`）把包装到 site-packages，找不到那个目录 —— 那种情况用 `JUXIE_SDK_BRIDGE` 指过去。
-- 设 `SHENSI_SKIP_BRIDGE=1` 可以跳过。
+（以前 `setup.py` 会在 `pip install -e .` 时 best-effort 编译这个桥；工具冻结进 `research/` 之后去掉了，需要时手动跑上面那条命令。模块不再是 `shensi_robot` 的一部分，用的时候把 `research/vendor-tools/python` 加进 `PYTHONPATH`。）
 
 > **关于 `pyproject` extra**：加 extra 解决不了这件事。extra 只能声明 **Python** 依赖，而这个桥需要的是 **C++ 编译器 + Eigen 头 + SDK 树**，pip 装不了。所以这里没有加 extra，而是把「编译」变成一条命令、把「找到它」变成自动 —— 这两件事才是原来那三步里真正烦人的部分。
 
 ```python
-from shensi_robot.sdk import Controller
+from juxie_sdk import Controller
 
 with Controller() as robot:
     print(robot.state_name(), robot.joint_positions())
@@ -237,20 +233,20 @@ with Controller() as robot:
 
 | 文件 | 说明 |
 |---|---|
-| `examples/cpp/01_offline_kinematics.cpp` | **Demo**：离线 FK / IK / 限位，不需要机器人 |
-| `examples/cpp/02_read_telemetry.cpp` | **Demo**：状态、关节、TCP、力矩、三套错误编码 |
-| `examples/cpp/04_guarded_motion.cpp` | **Demo**：带前置检查的运动序列，默认 dry-run，要 `--yes` |
-| `examples/cpp/06_vendor_cyclic_motion.cpp` | **Demo**：复现厂家「循环运动」按钮的动作，直接用 SDK |
-| `examples/cpp/07_replay_trajectory.cpp` | **Demo**：按 50 Hz 流式回放厂家录制的轨迹 |
-| `examples/cpp/fk_overflow_repro.cpp` | **故障复现程序（会崩）**：证明 §6.1 的越界，头部带 ASan 编译命令 |
-| `examples/cpp/sdk_probe.cpp` | 逐方法探针，每个方法一次运行，可选 `onrobot` 参数 |
-| `examples/cpp/state_machine_probe.cpp` | 状态机探针：`power_off` / `fault` 两列逐方法，以及 §6.5–§6.7 三个崩溃。只用于模拟环境 |
-| `examples/cpp/sdk_min_example.cpp` | 最小可用示例（只含 `juxie_controller.h`） |
-| `python/juxie_sdk_bridge.cpp` | **C ABI 垫片**：把 SDK 包成 Python 能调的 C 接口（§7） |
-| `python/build_bridge.sh` | 编译垫片，产出 `python/build/juxie_sdk_bridge.so` |
-| `src/shensi_robot/sdk.py` | ctypes 封装，对外就是 `Controller` 一个类 |
-| `examples/python/sdk_min_example.py` | 最小 Python 示例（对应 `sdk_min_example.cpp`） |
-| `tools/probes/validate_fk_direct.py` | 用厂家 `getFKpose` 直接校验离线 FK 的脚本 |
+| `research/vendor-tools/cpp/01_offline_kinematics.cpp` | **Demo**：离线 FK / IK / 限位，不需要机器人 |
+| `research/vendor-tools/cpp/02_read_telemetry.cpp` | **Demo**：状态、关节、TCP、力矩、三套错误编码 |
+| `research/vendor-tools/cpp/04_guarded_motion.cpp` | **Demo**：带前置检查的运动序列，默认 dry-run，要 `--yes` |
+| `research/vendor-tools/cpp/06_vendor_cyclic_motion.cpp` | **Demo**：复现厂家「循环运动」按钮的动作，直接用 SDK |
+| `research/vendor-tools/cpp/07_replay_trajectory.cpp` | **Demo**：按 50 Hz 流式回放厂家录制的轨迹 |
+| `research/vendor-tools/cpp/fk_overflow_repro.cpp` | **故障复现程序（会崩）**：证明 §6.1 的越界，头部带 ASan 编译命令 |
+| `research/vendor-tools/cpp/sdk_probe.cpp` | 逐方法探针，每个方法一次运行，可选 `onrobot` 参数 |
+| `research/vendor-tools/cpp/state_machine_probe.cpp` | 状态机探针：`power_off` / `fault` 两列逐方法，以及 §6.5–§6.7 三个崩溃。只用于模拟环境 |
+| `research/vendor-tools/cpp/sdk_min_example.cpp` | 最小可用示例（只含 `juxie_controller.h`） |
+| `research/vendor-tools/python/juxie_sdk_bridge.cpp` | **C ABI 垫片**：把 SDK 包成 Python 能调的 C 接口（§7） |
+| `research/vendor-tools/python/build_bridge.sh` | 编译垫片，产出 `research/vendor-tools/python/build/juxie_sdk_bridge.so` |
+| `research/vendor-tools/python/juxie_sdk.py` | ctypes 封装，对外就是 `Controller` 一个类 |
+| `research/vendor-tools/python/sdk_min_example.py` | 最小 Python 示例（对应 `sdk_min_example.cpp`） |
+| `research/vendor-tools/probes/validate_fk_direct.py` | 用厂家 `getFKpose` 直接校验离线 FK 的脚本 |
 
 构建好的 aarch64 二进制在 `run/sysroot/usr/bin/sdk_probe`，用 qemu 跑：
 
@@ -259,10 +255,10 @@ DUAL_ARM_SDK_CONFIG=/usr/etc LD_LIBRARY_PATH=/usr/lib \
 qemu-aarch64-static -L run/sysroot run/sysroot/usr/bin/sdk_probe fkvec onrobot 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 ```
 
-Python 那侧同理，只是要一个 aarch64 的解释器（`docs/sdk.md` §9）：
+Python 那侧同理，只是要一个 aarch64 的解释器（`research/vendor-analysis/sdk.md` §9）：
 
 ```bash
-./python/build_bridge.sh
+./research/vendor-tools/python/build_bridge.sh
 PYTHONPATH=$PWD/src qemu-aarch64-static -L run/sysroot run/sysroot/usr/bin/python3.11 \
-    examples/python/sdk_min_example.py
+    research/vendor-tools/python/sdk_min_example.py
 ```

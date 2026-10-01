@@ -3,8 +3,8 @@
 > **这是草稿，不是承诺。** 划分和子任务都会随真机验证结果大幅变动。目的只是把工作切成
 > 可并行的单位，让每个人知道自己在哪一层、依赖谁、以及"做完"由什么判定。
 >
-> 依据：[`can-protocol-comparison.md`](can-protocol-comparison.md)（协议对照）、
-> [`kinematics.md`](kinematics.md)（三方模型）、[`sdk-usage.md`](sdk-usage.md)（API 实测行为）、
+> 依据：[`can-protocol-comparison.md`](../research/vendor-analysis/can-protocol-comparison.md)（协议对照）、
+> [`kinematics.md`](../research/vendor-analysis/kinematics.md)（三方模型）、[`sdk-usage.md`](../research/vendor-analysis/sdk-usage.md)（API 实测行为）、
 > [`hardware-acceptance.md`](hardware-acceptance.md)（真机验收门）。
 > 协议正本：PR0002（厂家 CANopen/CiA402 文档）。
 > 架构参照：厂家 `libexecutor` / `libbot_servo` / `libjuxie_controller` 的头文件与配置——
@@ -149,7 +149,7 @@ L3，这一层只做「把 10–50 Hz 的稀疏输入变成每拍一个点」，
 |---|---|
 | 5.1 | ~~`0x200` 广播组包~~ **移到 7.2。** |
 | 5.2 | ~~`-100` 保持语义~~ **移到 8.3**：L3 用 mask 表达「保持」，`-100` 只是对外 API 的兼容写法。 |
-| 5.3 | 跟随误差与滞后测量：下发值 vs 实测关节位置的最大偏差（`examples/cpp/07_replay_trajectory.cpp` 已有此统计）。 |
+| 5.3 | 跟随误差与滞后测量：下发值 vs 实测关节位置的最大偏差（`research/vendor-tools/cpp/07_replay_trajectory.cpp` 已有此统计）。 |
 | 5.4 | 上游中断：输入断流多久算断流、断流后插值器如何收尾（交给 L3 保持）；`joint_stream_enable_` / `joint_stream_freq_` 的真实作用。 |
 | 5.5 | `MoveP_Canfd`：每 tick 需要一次 IK。**依赖任务 4。** |
 | 5.6 | 插值器：带时间戳的输入缓冲、插值方式、速度 / 加速度 / jerk 系数。参照 `ArmServoMode` 的 `StampedJoint` 缓冲与 `m_vel_factor` / `m_acc_factor` / `m_jek_factor`。 |
@@ -187,11 +187,11 @@ L3，这一层只做「把 10–50 Hz 的稀疏输入变成每拍一个点」，
 | 子任务 | 内容 |
 |---|---|
 | 8.1 | `ControllerJuxie` 兼容 API：同名方法、同号返回码（`bot_common::ErrorCode`）。**只兼容名字和码，不兼容缺陷**：允许多实例或显式拒绝，不在 `OnRobot()` 之前段错误，`getFKpose` 不越界（`sdk-usage.md` §6、§7）。 |
-| 8.2 | 机器人状态机 `power_off / ready / idle / running / fault`，对齐 `GetRobotState()` 的 0..4（原 3.2）。**厂家自造，PR0002 里没有**。规格是 [`robot-state-machine.md`](robot-state-machine.md) §2 的「状态 × 方法」表：每格的返回码照抄（`ready` 下 `MoveP_Canfd` 的 `-101` 除外，见该文注 4），厂家的缺陷不抄（§4、§2.2、无超时忙等）。结构上只留一个写者：状态由 L3 快照推导（该文 §5），不像厂家那样由状态类和 5 ms 轮询线程两处同时写。 |
+| 8.2 | 机器人状态机 `power_off / ready / idle / running / fault`，对齐 `GetRobotState()` 的 0..4（原 3.2）。**厂家自造，PR0002 里没有**。规格是 [`robot-state-machine.md`](../research/vendor-analysis/robot-state-machine.md) §2 的「状态 × 方法」表：每格的返回码照抄（`ready` 下 `MoveP_Canfd` 的 `-101` 除外，见该文注 4），厂家的缺陷不抄（§4、§2.2、无超时忙等）。结构上只留一个写者：状态由 L3 快照推导（该文 §5），不像厂家那样由状态类和 5 ms 轮询线程两处同时写。 |
 | 8.3 | 17 维 `JointSpaceData` ↔ 14 个设备；`-100`「保持当前位置」→ L3 的 mask（原 5.2）。读侧不再用 `-100` 表示「暂无数据」。 |
 | 8.4 | 阻塞语义：`MoveJ` / `MoveJ_P` / `MoveL` 阻塞到 L3 报告运动结束；阻塞期间 `Stop()` 必须能从另一个线程生效（原 6.2 的一半）。 |
 | 8.5 | `MoveEnd(v, part)`：给每路的 Dev_ID 8 发单轴速度帧（`0x108`，模式 2，加减速 1000 RPM/s；`can-protocol-comparison.md` §2），用 L0 的 `encode_single_axis` 即可（原 6.4）。`v` 的单位、8 号设备是什么都未知。**可以推迟或直接砍掉。** |
-| 8.6 | C ABI 导出 + Python ctypes，沿用 `python/juxie_sdk_bridge.cpp` / `src/shensi_robot/sdk.py` 的套路。 |
+| 8.6 | C ABI 导出 + Python ctypes，沿用 `research/vendor-tools/python/juxie_sdk_bridge.cpp` / `research/vendor-tools/python/juxie_sdk.py` 的套路。 |
 
 ## 并行注意事项
 
@@ -213,5 +213,5 @@ L3，这一层只做「把 10–50 Hz 的稀疏输入变成每拍一个点」，
 - v1.1：按反汇编复核（`research/evidence/disasm/`）更新 1.5、7.2、7.4、8.5：厂家发送周期就是
   `Resample`（2 ms）；厂家侧 `0x200` 组包已读出；`[1.5, 6.5]` 是速度 / 加速度上限；`MoveEnd` 是给 Dev_ID 8
   的普通单轴帧。v1 理由表里「驱动不发 `0x80`」一句删去——厂家空闲拍正是发 `0x80`。
-- v1.2：8.2 的规格改指 [`robot-state-machine.md`](robot-state-machine.md)（厂家状态机逐状态、逐方法的
+- v1.2：8.2 的规格改指 [`robot-state-machine.md`](../research/vendor-analysis/robot-state-machine.md)（厂家状态机逐状态、逐方法的
   反汇编结果，`power_off` / `fault` 两列已在 qemu 下实测）。

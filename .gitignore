@@ -1,14 +1,14 @@
-# Build output for examples/cpp/build.sh. The SDK itself is committed under vendor/sdk/.
+# Build output for research/vendor-tools/cpp/build.sh. The SDK itself is committed under vendor/sdk/.
 /.sdk/
 
 # Build output for cpp/build.sh (the L0 wire/transport tests).
 /.l0/
 
-# Build output for python/build_bridge.sh.
-/python/build/
+# Build output for research/vendor-tools/python/build_bridge.sh.
+/research/vendor-tools/python/build/
 
 # The qemu test bench: arm64 sysroot, faked /dev/mem, built probe binaries.
-# Rebuildable — see docs/sdk-usage.md. Never commit a 74 MB sysroot.
+# Rebuildable — see research/vendor-analysis/sdk-usage.md. Never commit a 74 MB sysroot.
 /run/
 
 # Python

@@ -20,10 +20,10 @@
 // powers the low-level board. That happens even in a dry run; --yes is what commands motion.
 // READ docs/hardware-acceptance.md BEFORE RUNNING THIS ON THE ROBOT. Several conclusions in
 // this repository are unverified on real hardware, including whether the joint angles that
-// IK returns reach the pose you asked for (docs/kinematics.md records a 180 mm disagreement
+// IK returns reach the pose you asked for (research/vendor-analysis/kinematics.md records a 180 mm disagreement
 // between the vendor's own IK and FK).
 //
-// Build: ./examples/cpp/build.sh
+// Build: ./research/vendor-tools/cpp/build.sh
 #include <juxie_controller/juxie_controller.h>
 
 #include <cmath>
@@ -150,8 +150,8 @@ int main(int argc, char **argv) {
     if (state == 4) {
         problems.push_back(
             "robot is in 'fault'. Motion is refused. Clear the fault first and find out why "
-            "it happened -- see docs/error-codes.md and the vendor fault table in "
-            "docs/can-protocol-comparison.md.");
+            "it happened -- see research/vendor-analysis/error-codes.md and the vendor fault table in "
+            "research/vendor-analysis/can-protocol-comparison.md.");
     } else if (!movable(state)) {
         problems.push_back(std::string("robot state is ") + state_name(state) +
                            ", expected one of [ready, idle]");

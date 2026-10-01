@@ -1,7 +1,7 @@
 """Tests for the Python side of the SDK bridge that need no bridge and no robot.
 
 The bridge itself is aarch64, so everything that actually calls into the SDK is verified under
-emulation (docs/sdk.md section 9) or on the robot. What is checkable here is the marshalling
+emulation (research/vendor-analysis/sdk.md section 9) or on the robot. What is checkable here is the marshalling
 rules, the error messages, and that a missing bridge fails with instructions rather than with
 an ImportError or a crash.
 """
@@ -12,7 +12,7 @@ from pathlib import Path
 
 import pytest
 
-from shensi_robot import sdk
+import juxie_sdk as sdk
 
 
 def test_state_names_cover_the_five_states():

@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # Regenerate the disassembly excerpts in research/evidence/disasm/ from the vendored binaries.
 #
-# Every "confirmed in the binary" claim in docs/can-protocol-comparison.md and
+# Every "confirmed in the binary" claim in research/vendor-analysis/can-protocol-comparison.md and
 # docs/l3-executor-interface.md points at one of these files. They are committed so the claims
 # can be checked without re-running anything; this script exists so they can be re-derived.
 #
 # Needs llvm-objdump with the AArch64 target (LLVM 18 was used) and python3.
 set -euo pipefail
 
-root="$(cd "$(dirname "$0")/../.." && pwd)"
+root="$(cd "$(dirname "$0")/../../.." && pwd)"
 lib="$root/vendor/sdk/dual-arm-app/0.6.4/usr/lib"
 out="$root/research/evidence/disasm"
 objdump="${LLVM_OBJDUMP:-llvm-objdump}"
@@ -45,7 +45,7 @@ fn "$drv" driver.rk3576_canfd_recv_frame_data _ZN16rk3576_can_canfd18RK3576CanCa
 fn "$drv" driver.ucas_can0_task_send_thread   _ZN16rk3576_can_canfd18RK3576CanCanfdImpl26ucas_can0_task_send_threadEPv
 
 # libjuxie_controller: Juxie::State* and the ControllerJuxieImpl code that drives them
-# (docs/robot-state-machine.md).
+# (research/vendor-analysis/robot-state-machine.md).
 ctl=libjuxie_controller.so.0.6.4
 # Which State method is which address. Many are 4-8 byte stubs that the linker folded together
 # (identical code folding), so one address can stand for several symbols; this table is the key.

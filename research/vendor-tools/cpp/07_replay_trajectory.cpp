@@ -32,7 +32,7 @@
 // The vendor's test leaves the head slots unwritten, which is undefined. This demo sends
 // -100.0 there, the documented "leave alone" value, so it is at least deliberate.
 //
-// Build: ./examples/cpp/build.sh
+// Build: ./research/vendor-tools/cpp/build.sh
 // Run:   DUAL_ARM_SDK_CONFIG=<sdk>/usr/etc LD_LIBRARY_PATH=<sdk>/usr/lib \
 //            qemu-aarch64-static -L <sysroot> <build>/07_replay_trajectory          (dry run)
 #include <juxie_controller/juxie_controller.h>
@@ -77,7 +77,7 @@ const char *config_root() {
         std::printf("  this is a requirement of the vendor library, not of this demo. For the\n");
         std::printf("  committed SDK tree:\n\n");
         std::printf("      export DUAL_ARM_SDK_CONFIG=$PWD/vendor/sdk/dual-arm-app/0.6.4/usr/etc\n\n");
-        std::printf("  See docs/sdk.md section 8, item 4.\n");
+        std::printf("  See research/vendor-analysis/sdk.md section 8, item 4.\n");
         std::exit(2);
     }
     return root;
@@ -362,7 +362,7 @@ int main(int argc, char **argv) {
                 sent, count, worst_track);
     if (failures) {
         std::printf("  the stream did not complete cleanly (-1 is what you get with no CAN\n");
-        std::printf("  bus; see docs/error-codes.md)\n");
+        std::printf("  bus; see research/vendor-analysis/error-codes.md)\n");
     }
     return failures ? 1 : 0;
 }

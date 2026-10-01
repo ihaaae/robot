@@ -3,7 +3,7 @@
 > **草稿 v3.1**（历史见文末）。目的是让 6 个人在真机到货前就能并行推进，所以先把 L0 的边界和签名冻结下来。
 > 内容会变；变的时候改这一份，不要各自在代码里另立一套。
 >
-> 依据：[`can-protocol-comparison.md`](can-protocol-comparison.md)（协议对照与字节序）、
+> 依据：[`can-protocol-comparison.md`](../research/vendor-analysis/can-protocol-comparison.md)（协议对照与字节序）、
 > PR0002（协议正本）、[`hardware-acceptance.md`](hardware-acceptance.md)（真机验收门）。
 > 相关：[`development-plan.md`](development-plan.md)（任务划分）。
 
@@ -11,7 +11,7 @@
 
 | 决定 | 结论 |
 |---|---|
-| 语言 | **C++ 为第一公民**；对外导出 C ABI，Python 通过 ctypes 使用（沿用仓库现有 `python/juxie_sdk_bridge.cpp` + `src/shensi_robot/sdk.py` 的套路）。C ABI 还顺带让 Python 侧拿到 GIL 释放。 |
+| 语言 | **C++ 为第一公民**；对外导出 C ABI，Python 通过 ctypes 使用（沿用仓库现有 `research/vendor-tools/python/juxie_sdk_bridge.cpp` + `research/vendor-tools/python/juxie_sdk.py` 的套路）。C ABI 还顺带让 Python 侧拿到 GIL 释放。 |
 | 总线独占 | **L0 在任何情况下都不与 `Juxie::ControllerJuxie` 同进程共存。** 见 §5。 |
 | 分层 | L0 只做"字节 ↔ 线上结构体 + 收发 + trace"，**不含策略、时序、状态**。 |
 | RX 边界 | **原始帧。** 不走厂家 `setReadFunction` 解好的 `JointState`——那个结构没有温度字段，且解码必须能独立验证。见 §4.3。 |

@@ -2,7 +2,7 @@
 //
 // The SDK's public signatures use std::array, std::vector and Eigen, none of which ctypes can
 // express. This shim exposes the same methods with plain C types: arrays of double in, arrays
-// of double out, int return codes. It is the Python counterpart of cmake/juxie-sdk.cmake.
+// of double out, int return codes. It is the Python counterpart of research/vendor-tools/cmake/juxie-sdk.cmake.
 //
 // It converts the ways this library can take the interpreter down with it into return codes:
 //
@@ -23,7 +23,7 @@
 //     then reassigns that std::thread member and std::terminate()s, and OffRobot() frees the
 //     executor the thread keeps reading and segfaults. Separately, OnRobot() after OffRobot()
 //     leaves the controller in a state whose destructor segfaults. All three measured under
-//     emulation (docs/sdk-usage.md 6.5-6.7). The bridge refuses them with
+//     emulation (research/vendor-analysis/sdk-usage.md 6.5-6.7). The bridge refuses them with
 //     JUXIE_ERR_NEEDS_NEW_CONTROLLER without calling in. Closing and creating a new controller
 //     is the way out, measured clean: the destructor stops and joins the thread.
 //   * getFKpose's heap overflow. It copies (n - 7) doubles into a fixed 7-double buffer, so it
@@ -35,7 +35,7 @@
 // inside a call. A single lock across calls would also block a concurrent stop() behind a
 // blocking MoveJ, which is worse on a robot.
 //
-// Build: python/build_bridge.sh. The result is aarch64 Linux, like the SDK itself.
+// Build: research/vendor-tools/python/build_bridge.sh. The result is aarch64 Linux, like the SDK itself.
 #include <juxie_controller/juxie_controller.h>
 
 #include <atomic>

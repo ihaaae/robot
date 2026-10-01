@@ -1,6 +1,6 @@
 # 离线运动学（部分校验：只对齐了厂家 IK 的目标位姿）
 
-[`src/shensi_robot/kinematics.py`](../src/shensi_robot/kinematics.py) 是从 `/usr/etc/juxie_73/kinematics_*.yml` 还原出的独立运动学库，**不需要机器人**就能算 FK / IK。
+[`src/shensi_robot/kinematics.py`](../../src/shensi_robot/kinematics.py) 是从 `/usr/etc/juxie_73/kinematics_*.yml` 还原出的独立运动学库，**不需要机器人**就能算 FK / IK。
 
 **校验范围，一句话**：本库的 **FK** 加一个**拟合**出来的 84.721 mm 工具偏置，能复现厂家 IK 被要求到达的目标位姿（0.089 mm）。本库的**数值 IK 从没和厂家比过**；本库 FK 与厂家 `getFKpose` 在一般位姿下差 200–700 mm。详见下文「三方不一致」。本文件是这个话题的**唯一正本**，其他文档只引用这里。
 
@@ -67,7 +67,7 @@ tcp_offset=0.084721 (matches get_IK_joint_position):
   max rotation error : 0.0000 deg
 ```
 
-复现：产生上表的校验脚本（`validate_kin.py`）随 WebSocket 那层一起移出了仓库，没有保留下来；它当时是通过厂家应用暴露的 IK 驱动的。**FK 侧的对齐校验仍在仓库里**：`tools/probes/validate_fk_direct.py`，走 `sdk_probe fkvec` 直接对比两边的 `getFKpose`。
+复现：产生上表的校验脚本（`validate_kin.py`）随 WebSocket 那层一起移出了仓库，没有保留下来；它当时是通过厂家应用暴露的 IK 驱动的。**FK 侧的对齐校验仍在仓库里**：`research/vendor-tools/probes/validate_fk_direct.py`，走 `sdk_probe fkvec` 直接对比两边的 `getFKpose`。
 
 另外：
 

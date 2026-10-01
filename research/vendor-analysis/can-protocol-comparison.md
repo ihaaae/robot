@@ -14,7 +14,7 @@
 结论先说：**驱动的 CAN 层与文档基本逐位吻合**，只有少数几处需要留意（见文末「差异与坑」）。
 
 **证据在哪**：下文凡写「二进制里」「实测」的，反汇编片段都在
-[`research/evidence/disasm/`](../research/evidence/disasm/)（由 `tools/probes/disasm_excerpts.sh`
+[`research/evidence/disasm/`](../evidence/disasm/)（由 `research/vendor-tools/probes/disasm_excerpts.sh`
 从 `vendor/sdk/` 里的库重新生成，那里的 README 列出每个片段支撑哪条结论）。表里的 ✅ 表示在片段里
 找得到对应指令；⚠️ 表示找不到或与文档不一致。
 
@@ -56,7 +56,7 @@
   `trunc(q × 32768 / π)` 再乘对象偏移 `+0x600` 处 17 维数组的第 `i+1` 项后截断（这一项推测是逐轴方向
   `MotorDirect`，未逐条确认）。
 - **`UseLimit` 为真时**，下发前每个关节先过 `JointVelocityPlanner::limit_angle`（速度/加速度限制，
-  见 [`hardware-acceptance.md`](hardware-acceptance.md) P0-4）。
+  见 [`hardware-acceptance.md`](../../docs/hardware-acceptance.md) P0-4）。
 - **死代码里的另一种帧。** `sendCommandThread0` 逐关节发 `0x200 | (i+1)`、DLC 8、内容
   `0F 00 00 00` + 小端 int32 位置（`65536 / 2π` 刻度）。形状像标准 CANopen 的 RPDO1（控制字 + 目标位置），
   厂家自定义协议文档里没有。它不会被调用，不需要实现；记在这里，是因为它的 `orr w1, w1, #0x200`
