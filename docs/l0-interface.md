@@ -16,7 +16,7 @@
 | 总线独占 | **一条总线只有一个主站。** 我们的栈拥有总线时，任何别的主站（包括厂家栈）都不能在上面跑。见 §5。 |
 | 分层 | L0 只做"字节 ↔ 线上结构体 + 收发 + trace"，**不含策略、时序、状态**。 |
 | RX 边界 | **原始帧。** 不走厂家 `setReadFunction` 解好的 `JointState`——那个结构没有温度字段，且解码必须能独立验证。见 §4.3。 |
-| 厂家 `.so` | **允许链接**，但 `VendorShmTransport` 只是可选的 TX 后端之一，不是必选路径。见 §4.2。 |
+| 厂家 `.so` | **不链接。** 我们的 SDK 不依赖厂家任何库；所有后端都是我们自己的。见 §4.2。 |
 | 公共 API | **我们自己的 API**，只在能力层次上对标厂家 SDK，不追求同名方法、同号返回码（`development-plan.md` 8.1）。 |
 | 原始帧来源 | **未定，等真机。** 见 §4.4。 |
 
@@ -196,7 +196,7 @@ public:
 };
 ```
 
-「发送 + 接收回调」，小到 SocketCAN、USB-CAN 适配器、控制器板子的寄存器驱动都能作为其中一个后端接入。
+「发送 + 接收回调」，小到 SocketCAN、USB-CAN 适配器都能作为其中一个后端接入。
 
 ### 4.2 后端
 
@@ -205,30 +205,26 @@ public:
 | `FakeTransport` | 脚本化应答 | 现在 |
 | `ReplayTransport` | 回放录好的 trace | 现在 |
 | `RecordingTransport` | 装饰器，把任意后端录成 trace | 现在 |
-| `VendorShmTransport` | 走 `librk3576_can_canfd.so` 的 `can_send_frame` | 板子；可选（§9 第 2 项）|
-| `SocketCanTransport` | `can0` / `can1` | 未确认内核是否暴露 |
-| `ZlgUsbCanTransport` | PC 侧 USB-CAN | 以后 |
+| `SocketCanTransport` | Linux SocketCAN 接口（`can0` / `can1`） | 下一个要写的真实后端 |
+| `UsbCanTransport` | USB-CAN 适配器（具体型号未定） | 以后 |
 
-### 4.3 RX 边界（**待拍板**）
+### 4.3 RX 边界（**已定：原始帧**）
 
 厂家驱动的 `setReadFunction` 回调签名是 `void(JointState&, JointState&)`——它给的是**已经解码好的** `JointState`，不是原始帧。而且 vendored 头里的 `JointState` 只有
 `MotionState / ControlType / Current / Vel / single_torque / six_axis_torque / FaultData / origPosAct / isUpdated`，**没有温度字段**——走它的解码就永远读不到反馈帧 `[8..9]`。
 
-因此 L0 的 RX 边界定为**原始帧**（推荐）：解码借厂家的，等于把自己的 L1 / L2 交给一个无法独立验证的实现。反馈帧的字节解码已经落在 L0 的 `decode_feedback`，物理量换算是 L1（任务 2.6）。`VendorShmTransport` 只作为 TX / 时序 / capture 的便利后端。
+我们不链接厂家库（§0），这个选项本来也不存在；记在这里是因为它说明了原始帧边界的另一条理由：解码必须能独立验证。反馈帧的字节解码在 L0 的 `decode_feedback`，物理量换算是 L1（任务 2.6）。
 
-若改选"用厂家解码"，则 `decode_feedback` 与任务 2.6 整个消失，且 L0 的 `Frame` 类型对 RX 侧失去意义。
+### 4.4 原始帧从哪来
 
-### 4.4 原始帧从哪来（**现在拍不了，等真机**）
+两条路径，都是标准 CAN FD 接口，都不经过厂家的驱动：
 
-三条候选路径：
+1. **SocketCAN**——Linux 上的 `can0` / `can1`，无论接口是板载的还是外接设备提供的
+2. **USB-CAN 适配器**——厂商自带的用户态库
 
-1. 自己读 `/dev/misc_shm_can0|1`——需要那个未确认的 4 KB 结构（`can-protocol-comparison.md` §6）
-2. SocketCAN——取决于真机上 `ls /sys/class/net` 有没有 `can0`/`can1`（`hardware-acceptance.md` P2 的一项）
-3. PC + USB-CAN 适配器
+厂家板子内部的寄存器驱动和 `/dev/misc_shm_can*` 共享内存（`hardware-facts.md` 1.7）是厂家栈的实现细节，我们不走这条路。
 
-注意 vendored 头 `rk3576_can_canfd/rk3576_can_canfd.h` 里**已经有完整的寄存器映射**（`CAN0_PHYADDR 0x2AC00000`、`CAN1_PHYADDR 0x2AC10000`、`CANFD_NBTP 0x100`、`CANFD_DBTP 0x104`、`CANFD_BRS_CFG 0x10c`、`CANFD_TXID 0x204`、`CANFD_TXDAT0 0x208`…），所以"自己写寄存器级驱动"是可行的，不必依赖那个 `.so`。
-
-L0 的接口对四条路都成立，所以**先落 `FakeTransport` + `ReplayTransport`，离线就能推进**。
+两条路的带宽都够用（`l3-executor-interface.md` §2.1 有估算），选哪条不影响 L0 接口。离线开发用 `FakeTransport` + `ReplayTransport`。
 
 ## 5. 总线独占（已定）
 
@@ -345,9 +341,9 @@ DiffResult result = diff(golden, bus.sent_trace());
 | # | 事项 | 状态 |
 |---|---|---|
 | 1 | RX 边界：原始帧 | **已定**：原始帧 |
-| 2 | 允许链接厂家 `.so` | **已定**：允许，但只作可选的 TX 后端 |
+| 2 | 是否链接厂家 `.so` | **已定**：不链接 |
 | 3 | 公共 API | **已定**：我们自己的 API，只在能力层次上对标厂家 |
-| 4 | 原始帧从哪来（shm / SocketCAN / USB-CAN） | **未定**，等真机 `ls /sys/class/net` |
+| 4 | 原始帧从哪来 | **已定**：SocketCAN 或 USB-CAN，都是我们自己的后端；不走厂家板子的寄存器 / 共享内存（§4.4） |
 
 ## 10. 控制器手册带来的信息
 
