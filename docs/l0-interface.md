@@ -18,12 +18,12 @@
 | RX 边界 | **原始帧。** 不走厂家 `setReadFunction` 解好的 `JointState`——那个结构没有温度字段，且解码必须能独立验证。见 §4.3。 |
 | 厂家 `.so` | **不链接。** 我们的 SDK 不依赖厂家任何库；所有后端都是我们自己的。见 §4.2。 |
 | 公共 API | **我们自己的 API**，只在能力层次上对标厂家 SDK，不追求同名方法、同号返回码（`development-plan.md` 8.1）。 |
-| 原始帧来源 | **未定，等真机。** 见 §4.4。 |
+| 原始帧来源 | **已定**：SocketCAN 或 USB-CAN，都是我们自己的后端（§4.4、§9）。 |
 
 ## 实现状态
 
 `cpp/` 下已经落地 **wire + transport + trace/差分** 三块，`./cpp/build.sh` 一条命令构建并跑测：
-1078 个断言，0 失败，`-Wall -Wextra -Wpedantic` 零警告，ASan + UBSan 下干净。
+1081 个断言，0 失败，`-Wall -Wextra -Wpedantic` 零警告，ASan + UBSan 下干净。
 golden vector 全部取自 PR0002 自带的例子，并已并入 `tools/verify.sh` 第 6 步（离线，只需宿主 C++ 编译器）。
 
 | 文件 | 内容 |
@@ -50,8 +50,8 @@ golden vector 全部取自 PR0002 自带的例子，并已并入 `tools/verify.s
 
 **不拥有**
 
-- 什么时候发什么（L1 的时序 / DS402 序列）
-- 关节索引到机器人的映射（L2：14 个关节 ↔ `Dev_ID` ↔ 通道）
+- 什么时候发什么（L1：控制字节里的使能 / 抱闸 / 清错位，SDO 诊断）
+- 关节索引到机器人的映射（L3 的构造配置：14 个关节 ↔ `Dev_ID` ↔ 通道，`l3-executor-interface.md` §3.2）
 - 什么时候必须发帧（L3 的节拍与喂狗，见 [`l3-executor-interface.md`](l3-executor-interface.md)）
 - 单位换算的**语义**（上层决定用 rad 还是 deg）；L0 只提供 `cnt ↔ rad` 的纯函数
 - 运动学（84.721 mm 偏置属于任务 4，不属于 L0）
@@ -163,9 +163,10 @@ JointFeedback decode(const Frame&);
 ```cpp
 constexpr double CNT_PER_REV = 65536.0;
 
-// 向零截断，与厂家驱动一致（cast / fcvtzs），不是四舍五入。
-// 这条差异在 cnt 边界上会差 1，任何性质测试都看不见。
-int16_t rad_to_cnt(double rad);     // trunc(rad / 2pi * 65536)
+// 四舍五入到最近的 cnt（半数远离零）。厂家驱动是向零截断（hardware-facts.md 8.6）；
+// 四舍五入的最大误差减半、正负对称，且 cnt -> rad -> cnt 是恒等。
+// 差 1 cnt 任何性质测试都看不见，所以由单元测试钉住。
+int16_t rad_to_cnt(double rad);     // round(rad / 2pi * 65536)
 double  cnt_to_rad(int16_t cnt);    // cnt * pi / 32768
 ```
 
@@ -279,12 +280,12 @@ DiffResult diff(const Trace& golden, const Trace& actual, const NormalizeOptions
 三个设计决定各有理由：
 
 1. **`include_rx` 默认 `false`。** 反馈帧的 payload 物理相关，不可能复现；把它当失败会产生无意义的红。
-2. **`collapse_consecutive_duplicates` 默认 `false`。** 控制器手册明说**停止需要多点几下**才会生效，所以重复的停止帧可能是真实协议行为而不是重试。默认折叠会掩盖真实差异。
+2. **`collapse_consecutive_duplicates` 默认 `false`。** 控制器手册说**停止需要多点几下**才会生效（这是厂家栈的表现，只当提示），所以重复的帧可能是真实行为而不是重试。默认折叠会掩盖真实差异。
 3. **`timing_tolerance_ns` 默认关闭。** 真实周期从没测过（`can-protocol-comparison.md` §8.4），给个阈值等于编。
 
 `BusMismatch` 是独立一类，不是"缺帧 + 多帧"：同 id 同长度但换了总线，是左右臂互换，必须一眼看出来。
 
-**必须从定义好的初始状态抓。** DS402 序列依赖关节当前状态字（`0x06` 是否先于 `0x0F`）。
+**必须从定义好的初始状态抓。** 使能过程依赖关节的当前状态，起点不同，帧序列就不同。
 
 配套两个后端：
 
@@ -320,7 +321,7 @@ DiffResult result = diff(golden, bus.sent_trace());
 1. `0x200` 组包——编码已定（CSP、`0xC6`，HF 2.3、2.4），剩真机确认模块的响应
 2. `0x110` MIT 单轴 9 字节顺序（12 位字段跨字节，容易错位）；没有任何样本（HF 2.8）
 3. 反馈 `byte[10]` / `byte[11]` 的语义（HF 2.5）
-4. 控制周期的抖动——标称 2 ms（HF 4.1），真机要测
+4. 控制周期——按实测定（`l3-executor-interface.md` §2.1；厂家用 2 ms，HF 8.8），抖动真机要测
 
 写 wire 层时又钉出四条**文档自身**的问题，都已经写成可执行断言（`cpp/tests/test_wire.cpp`
 的 `pr0002_documented_anomalies` 与 `frame_classification_and_device_ids`），不会随时间被遗忘：
@@ -349,9 +350,9 @@ DiffResult result = diff(golden, bus.sent_trace());
 
 `vendor/originals/documents/controller-user-manual.pdf`（整理稿：
 `research/vendor-derived/document-text/controller-user-manual.md`）是**控制器**那一层的文档，
-本仓库此前只有关节模组那一层。其中三条直接影响 L0 / L1 / L2：
+本仓库此前只有关节模组那一层。其中三条直接影响 L0 / L1 / L3：
 
-1. **左臂 CAN1、右臂 CAN2。** 这是任务 3.1 缺的那一半。⚠️ 但手册用 **1 基**的 `CAN1`/`CAN2`，
+1. **左臂 CAN1、右臂 CAN2。** 这是整机映射（`development-plan.md` 7.8）缺的那一半。⚠️ 但手册用 **1 基**的 `CAN1`/`CAN2`，
    而 `rk3576_can_canfd.h` 和 `/dev/misc_shm_can*` 用 **0 基**的 `CAN0`/`CAN1`；若两者对应，
    则**左臂 = `Bus::Can0`**。这个推断必须真机确认——它是左右臂互换最可能的来源，所以
    trace 表头把它写进文件，`diff()` 也把 `BusMismatch` 单列一类。

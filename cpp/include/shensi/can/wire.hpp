@@ -24,9 +24,10 @@ namespace shensi::can {
 inline constexpr double kPi = 3.14159265358979323846;
 inline constexpr double kCntPerRev = 65536.0;  // load-side encoder: 16 bit single-turn
 
-// The vendor driver truncates toward zero (an ARM `fcvtzs`, or a C cast), it does not round.
-// At a count boundary that is a one-count difference -- invisible to any property test, which
-// is exactly why it is pinned here by a unit test instead.
+// Rounds to the nearest count, halves away from zero. That halves the worst-case error of
+// truncation (the vendor driver's choice) and keeps it symmetric in sign, and it makes
+// cnt -> rad -> cnt the identity. Pinned by a unit test: a one-count difference is invisible to
+// any property test.
 std::int16_t rad_to_cnt(double rad);
 double cnt_to_rad(std::int16_t cnt);
 

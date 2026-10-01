@@ -5,8 +5,8 @@ public CAN / CAN-FD protocol (PR0002).
 
 The vendor ships a binary controller SDK (`dual_arm_app` 0.6.4, `Juxie::ControllerJuxie`):
 aarch64-only, closed, reaching the joints through its board's `/dev/mem` registers. We match it
-**at the level of abstraction** — the same capabilities and the same layering — and not in its
-details: not its method names, return codes, state-machine cells or bus traffic. Its details are
+**at the level of abstraction** — capabilities at the same level, derived from our own use cases
+and checked against its list — and not in its details: not its method names, return codes, state-machine cells or bus traffic. Its details are
 often opaque and sometimes self-contradictory, and following them distorted our design. We still
 study it, because it is the only stack known to drive this hardware; that study lives in
 [`research/`](research/README.md), frozen, as reference material.
@@ -31,7 +31,7 @@ Nothing has run on the robot yet — the gates before the first motion are in
 ```
 cpp/             our controller SDK (C++); L0 is implemented and tested
 docs/            plan, layer interfaces, hardware facts, acceptance gates
-src/             Python package shensi_robot (offline kinematics)
+src/             Python package shensi_robot (offline kinematics; discarded, to be replaced — see below)
 examples/        Python examples for the package
 tests/           offline unit tests (no network, no robot)
 tools/           verify.sh
@@ -49,9 +49,10 @@ vendor's YAML configuration.
 | Layer | What it is | State |
 |---|---|---|
 | L0 | CAN frame codec for PR0002, transport interface, trace recording and diff | done |
-| L1 | one joint module: DS402 state, commands, feedback; no threads | planned |
-| L2 | the 14 joints: mapping, grouping, limits | planned |
-| L3 | executor: the one clocked layer — tick, `0x200` heartbeat, watchdog, freshness, a safety gate that cannot be disabled | interface draft |
+| — | virtual joint module: PR0002 as an executable spec, the offline test bench for L1 and L3; built before L1 | planned |
+| L1 | one joint module: enable / brake / clear / mode via the control byte, SDO diagnostics, units; no threads | planned |
+| L2 | merged into L3 as its construction-time config (joint ↔ bus, Dev_ID); the number is kept unused | — |
+| L3 | executor: the one clocked layer — tick, `0x200` heartbeat, watchdog, freshness, a safety gate that cannot be disabled, the 14-joint map | interface draft |
 | L4 | streaming and offline trajectory planning | planned |
 | L5 | facade: our own API, error codes and state machine, and a C ABI | planned |
 
@@ -69,7 +70,9 @@ Everything below runs offline, without the robot and without root.
 # Build and run only the L0 tests
 ./cpp/build.sh
 
-# Offline kinematics (pure Python)
+# Offline kinematics (pure Python). DISCARDED: it reads the vendor's YAML and was never validated;
+# it is not a basis or a reference and will be replaced by a from-scratch C++ implementation with
+# our own model file (docs/development-plan.md task 4). Kept only until then.
 python3 -m venv .venv && . .venv/bin/activate && pip install -e ".[dev]"
 export DUAL_ARM_SDK_CONFIG="$PWD/vendor/sdk/dual-arm-app/0.6.4/usr/etc"
 shensi-kin --arm left fk --joints "0 0 0 0 0 0 0"

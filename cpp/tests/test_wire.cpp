@@ -540,13 +540,21 @@ SHENSI_TEST_CASE(the_two_byte_orders_stay_apart) {
     CHECK_EQ(static_cast<int>(feedback.pos_cnt), 16382);
 }
 
-SHENSI_TEST_CASE(rad_to_cnt_truncates_toward_zero) {
-    // The vendor driver casts, which truncates. std::floor would differ for negatives, so this
-    // case is what separates the two.
-    const double counts = 1234.9;
-    const double rad = counts * 2.0 * kPi / kCntPerRev;
-    CHECK_EQ(static_cast<int>(rad_to_cnt(rad)), 1234);
-    CHECK_EQ(static_cast<int>(rad_to_cnt(-rad)), -1234);
+SHENSI_TEST_CASE(rad_to_cnt_rounds_to_nearest) {
+    // Truncation would give 1234 here, and std::floor would give -1235 for the negative.
+    const auto rad_of = [](double counts) { return counts * 2.0 * kPi / kCntPerRev; };
+    CHECK_EQ(static_cast<int>(rad_to_cnt(rad_of(1234.9))), 1235);
+    CHECK_EQ(static_cast<int>(rad_to_cnt(rad_of(-1234.9))), -1235);
+    CHECK_EQ(static_cast<int>(rad_to_cnt(rad_of(1234.4))), 1234);
+    CHECK_EQ(static_cast<int>(rad_to_cnt(rad_of(-1234.4))), -1234);
+
+    // cnt -> rad -> cnt is the identity over the whole range.
+    bool round_trips = true;
+    for (int cnt = -32768; cnt <= 32767; ++cnt) {
+        const auto value = static_cast<std::int16_t>(cnt);
+        if (rad_to_cnt(cnt_to_rad(value)) != value) round_trips = false;
+    }
+    CHECK_MSG(round_trips, "rad_to_cnt(cnt_to_rad(c)) == c for every 16-bit count");
 
     CHECK_EQ(static_cast<int>(rad_to_cnt(0.0)), 0);
     // The extreme counts clamp instead of wrapping.

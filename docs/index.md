@@ -11,8 +11,9 @@ The documents fall into two groups with different lifecycles:
   frozen. It records what the vendor's `dual_arm_app` 0.6.4 package contains and how it behaves.
   It changes only when a finding is corrected or the robot confirms or refutes something.
 
-We match the vendor SDK only at the level of abstraction: the same capabilities and the same
-layer boundaries, not the same method names, return codes or bus traffic. The two groups meet at
+We match the vendor SDK only at the level of abstraction: capabilities at the same level (derived
+from our own use cases) and similar layer boundaries, not the same method names, return codes or
+bus traffic. The two groups meet at
 one narrow interface, [`hardware-facts.md`](hardware-facts.md): design documents take hardware
 facts from there and never cite vendor behaviour directly. The order of authority is PR0002 and
 measurements on the robot, then our own requirements, then vendor behaviour (a hint only).

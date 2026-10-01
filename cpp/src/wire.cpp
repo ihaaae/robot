@@ -32,9 +32,8 @@ void write_le16(std::uint8_t* p, std::uint16_t value) {
 // ------------------------------------------------------------------ units
 
 std::int16_t rad_to_cnt(double rad) {
-    // Truncation toward zero, matching the vendor driver (a C cast on ARM, i.e. fcvtzs).
-    // std::floor would be wrong for negative values.
-    const double cnt = std::trunc(rad / (2.0 * kPi) * kCntPerRev);
+    // Nearest count, halves away from zero (wire.hpp).
+    const double cnt = std::round(rad / (2.0 * kPi) * kCntPerRev);
     if (cnt >= 32767.0) return 32767;
     if (cnt <= -32768.0) return -32768;
     return static_cast<std::int16_t>(cnt);
