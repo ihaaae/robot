@@ -38,7 +38,7 @@ golden vector 全部取自 PR0002 自带的例子，并已并入 `tools/verify.s
 | `cpp/tests/test_trace.cpp` | 文本往返、解析报错、六类差分、左右臂互换、录制回放 |
 | `cpp/CMakeLists.txt`, `cpp/build.sh` | 构建（cmake 优先，无 cmake 时直接 g++） |
 
-还没做：C ABI 导出（Python 侧）；`0x110` MIT 单轴编解码（§8 未确认，故意先不做）。
+还没做：`0x110` MIT 单轴编解码（§8 未确认，故意先不做）。
 
 ## 1. 边界：L0 拥有什么，不拥有什么
 
