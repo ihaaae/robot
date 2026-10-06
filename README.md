@@ -22,7 +22,10 @@ Every hardware fact the design relies on is one row in
 documents cite that file, not the vendor analysis.
 
 **Status.** L0 (wire codec, transport, trace) is implemented and tested in `cpp/`. L1–L4 are
-designed in [`docs/development-plan.md`](docs/development-plan.md); L2 has an interface draft.
+designed in [`docs/development-plan.md`](docs/development-plan.md); L2 has an interface draft. The work runs
+in three phases: (0) capture the vendor stack's bus traffic as reference motions and freeze the RPC
+protocol, (1) replay those motions through our own stack on the control board over the RPC,
+(2) the off-board L3 and the full L4.
 Nothing has run on the robot yet — the gates before the first motion are in
 [`docs/hardware-acceptance.md`](docs/hardware-acceptance.md).
 

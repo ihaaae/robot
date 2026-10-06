@@ -1,8 +1,8 @@
 # 部署架构：板上与板外（草稿）
 
 > 决定的是**每一层跑在哪台机器上、两台机器之间走什么**。各层内部的设计不在这里：
-> L2 见 [`l2-executor-interface.md`](l2-executor-interface.md)，分层与任务见
-> [`development-plan.md`](development-plan.md)。实现语言不在本文范围内。
+> L2 见 [`l2-executor-interface.md`](l2-executor-interface.md)，分层、阶段与任务见
+> [`development-plan.md`](development-plan.md)（RPC 协议在阶段 0 冻结，回放子集在阶段 1 实现）。实现语言不在本文范围内。
 
 ## 1. 结论
 
