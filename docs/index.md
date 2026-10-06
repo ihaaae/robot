@@ -25,7 +25,7 @@ links to the home rather than repeating the argument.
 
 | Document | What it covers | Status |
 |---|---|---|
-| [`development-plan.md`](development-plan.md) | The goal, the layering (L0–L4), the three phases and their exit criteria, the tasks, and what "done" means for each. **Start here** | Draft |
+| [`development-plan.md`](development-plan.md) | The goal, the layering (L0–L4), the three phases and their exit criteria, five work packages per phase with effort estimates and owners, and what "done" means for each. **Start here** | Draft |
 | [`deployment.md`](deployment.md) | Which layer runs on which machine: L0–L2 and the L4 state machine on the control board, L3 on an external computer, an RPC between them (time conversion, link loss) | Draft |
 | [`hardware-facts.md`](hardware-facts.md) | Every hardware fact the design relies on, one row each: source, confidence, evidence. Conflicts and unknowns are marked | Living |
 | [`l0-interface.md`](l0-interface.md) | L0 — wire codec, transport, trace and diff | Implemented in `cpp/` |
