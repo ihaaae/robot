@@ -37,7 +37,8 @@ vendor/          the vendor's originals and the SDK tree extracted from them, wi
 ```
 
 `cpp/`, `docs/` and `tools/` are ours and are where new work goes. The SDK is C++ only;
-Python access will go through the L4 C ABI. `research/` and `vendor/` are records; nothing
+external programs, Python included, will reach it through an RPC to the control board
+([`docs/deployment.md`](docs/deployment.md)). `research/` and `vendor/` are records; nothing
 outside them depends on them, except that `tools/verify.sh` checks the vendor originals' hashes.
 The old Python model of the vendor's kinematics now lives, frozen, in
 `research/vendor-tools/python/vendor_model/`.
@@ -51,7 +52,7 @@ The old Python model of the vendor's kinematics now lives, frozen, in
 | L1 | one joint module: enable / brake / clear / mode via the control byte, SDO diagnostics, units; no threads | planned |
 | L2 | executor: the one clocked layer — tick, `0x200` heartbeat, watchdog, freshness, a safety gate that cannot be disabled; the 14-joint map is its construction-time config | interface draft |
 | L3 | streaming and offline trajectory planning | planned |
-| L4 | facade: our own API, error codes and state machine, and a C ABI | planned |
+| L4 | facade: our own API, error codes and state machine; an RPC for the external computer | planned |
 
 Details and the "done" criterion of each task: [`docs/development-plan.md`](docs/development-plan.md).
 
@@ -74,7 +75,7 @@ robot. The frozen vendor tooling has its own check, `research/vendor-tools/verif
 ## Documents
 
 The index is [`docs/index.md`](docs/index.md). Start with
-[`development-plan.md`](docs/development-plan.md), then
+[`development-plan.md`](docs/development-plan.md) and [`deployment.md`](docs/deployment.md), then
 [`hardware-facts.md`](docs/hardware-facts.md); the layer interfaces are
 [`l0-interface.md`](docs/l0-interface.md) and [`l2-executor-interface.md`](docs/l2-executor-interface.md).
 
