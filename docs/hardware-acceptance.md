@@ -132,9 +132,9 @@ P0-1、P0-4（模型与限位安全）在这条路线上同样适用，而且必
 - 清错位是电平还是边沿触发：持续置 `clear_error = 1` 与只置一拍，分别看故障是否清除、持续置位有没有副作用（`hardware-facts.md` 4.7）
 - 抱闸开合的实际延时（文档约 100 ms，`hardware-facts.md` 4.8），以反馈 `byte[11]` bit6 为准
 
-**怎么做**：如果总线能引出来，接个 CAN 分析仪（周立功 USB-CAN 或 PEAK），抓下来的帧可以转成我们的 trace 格式，
-用 `diff()` 对照我们自己发的帧（`l0-interface.md` §6）。如果不方便引出，用 `sdk_probe` 的思路写个 C++ 小程序，
-hook `RK3576CanCanfd::can_send_frame` 打印厂家栈发的每帧——**这条依赖能替换厂家程序，只作参考**。
+**怎么做**：用 `development-plan.md` 任务 11 的钩子库（`LD_PRELOAD` 替换厂家驱动库里的 `can_send_data`）记录厂家栈发的
+每一帧，转成我们的 trace 格式，用 `diff()` 对照我们自己发的帧（`l0-interface.md` §6）。依赖反馈原始字节的项
+（`byte[11]` 的各位）钩子拿不到，要借一台 CAN FD 适配器只听抓包，或者用我们自己的栈发帧、由 `RecordingTransport` 记录反馈。
 
 **决定了什么**：我们 L0 / L1 / L2 的待解项（`l0-interface.md` §8、`l2-executor-interface.md` §8）。
 
