@@ -5,7 +5,7 @@
 >
 > 依据：PR0002、[`hardware-facts.md`](hardware-facts.md)（下文 `HF x.y` 指它的第 x.y 行）、
 > [`hardware-acceptance.md`](hardware-acceptance.md)。
-> 相关：[`development-plan.md`](development-plan.md)（分层与任务 7）。
+> 相关：[`development-plan.md`](development-plan.md)（分层；L2 的任务是 0D.1、1C、1E.1）。
 >
 > 这是**我们自己的**接口。厂家 `ExecutorBase` 的职责边界和这一层大致对应，对照放在附录 A，
 > 只作参考；正文的决定不以「和厂家一致」为理由。
@@ -48,7 +48,7 @@ L2 回答的是：**谁拥有时钟。**
 | 机器人状态机（`power_off / ready / idle / running / fault`） | L4 |
 | 每轴的使能 / 抱闸 / 清错逻辑（本拍置哪些位、等哪个状态位、SDO 诊断） | L1。L2 只负责按拍调用它 |
 | 单轴的方向、零偏、单位换算 | L1 |
-| 运动学 | 任务 4 |
+| 运动学 | 2A |
 
 **L2 是 L0 之上唯一带线程、带时钟的层。** L1 做成无线程、无时钟的库，由 L2 在节拍里
 调用。这样 L1 能完全离线地做单测，时序问题也只需要在一处审查。
@@ -227,7 +227,7 @@ struct JointAddress {
 
 struct ExecutorConfig {
     std::array<JointAddress, kJoints> joints;   // 关节 i 在哪条总线、哪个 Dev_ID。无默认值
-    std::array<l1::AxisConfig, kJoints> axes;   // 方向、零偏、力矩常数（任务 2.6）
+    std::array<l1::AxisConfig, kJoints> axes;   // 方向、零偏、力矩常数（1B.4）
     JointVector lower, upper;                   // 位置限位（§5）。无默认值
     double v_max = 0;                           // 单拍步长上限对应的速度，rad/s（§5）
     std::chrono::nanoseconds tick_period{};     // §2.1
@@ -239,7 +239,7 @@ struct ExecutorConfig {
 
 ### 3.1 L4 状态机从这里读什么
 
-L4 的机器人状态从 L2 推导（`development-plan.md` 8.2），不另起轮询线程。所以上面的接口必须能回答
+L4 的机器人状态从 L2 推导（`development-plan.md` 2D.2），不另起轮询线程。所以上面的接口必须能回答
 这几个问题：
 
 | L4 要知道 | 这里 | 备注 |
@@ -262,7 +262,7 @@ L4 的机器人状态从 L2 推导（`development-plan.md` 8.2），不另起轮
 真机逐轴点动确认之前，配置文件必须显式写出来。
 
 「是否全部使能、是否有轴报错、是否有轴掉线」这类聚合不再是单独的函数：L2 的 `Snapshot` 和 `ArmHealth`
-已经给出了原始数据，聚合由 L4 的状态机在读快照时做（`development-plan.md` 8.2）。
+已经给出了原始数据，聚合由 L4 的状态机在读快照时做（`development-plan.md` 2D.2）。
 
 ### 3.3 运动源：带时间戳的点，L2 线性插值
 
@@ -341,7 +341,7 @@ L3 交给 L2 的是**带时间戳的点**，不是「每拍一个点」。L2 每
 | 假实现 | 在哪一层假 | 给谁用 |
 |---|---|---|
 | `SimExecutor` | 实现 `Executor` 接口本身。关节理想跟随目标（可选一阶滞后），可注入故障、掉帧 | L3 / L4 开发。不需要 L1，不需要写 CAN 应答脚本 |
-| 虚拟关节模组 | 挂在 `FakeTransport` 的 responder 上，按 PR0002 模拟关节模组：收控制帧回 `0x300`，按控制字节的使能 / 抱闸 / 清错位改变自身状态，收 SDO 回 `0x580`，超过 500 ms 没收到控制帧就自锁。规格与任务见 `development-plan.md` 任务 9 | 测真实的 `Executor` + L1 整条链 |
+| 虚拟关节模组 | 挂在 `FakeTransport` 的 responder 上，按 PR0002 模拟关节模组：收控制帧回 `0x300`，按控制字节的使能 / 抱闸 / 清错位改变自身状态，收 SDO 回 `0x580`，超过 500 ms 没收到控制帧就自锁。规格与任务见 `development-plan.md` 0D.2、1A | 测真实的 `Executor` + L1 整条链 |
 
 `SimExecutor` 和真实 `Executor` 必须跑**同一套**接口契约测试，否则 L3 在假实现上验证过的东西，
 换到真实实现上可能不成立。
@@ -408,7 +408,7 @@ L3 交给 L2 的是**带时间戳的点**，不是「每拍一个点」。L2 每
 | `SetSending(bool, part)` | 无 | 它写的两个原子标志（按头文件成员顺序是 `isLeftSending_` / `isRightSending_`）由 `move()` 和 `isMoving()` 读，看起来是「这条臂正在执行轨迹」的状态位，不是开关总线发送。对应物是 `motion_active(part)`，不需要单独的写接口 |
 | `MoveEnd(v, part)` | 无 | 发给 Dev_ID 8 的普通单轴速度帧（`can-protocol-comparison.md` §2）。L2 目前不管 Dev_ID 8；要支持时加一个面向它的轴请求，不走 `send_raw` |
 | `getDof()` / `getJointNames()` / `getHomeJointValues()` | 无 | 配置，不是运行时状态；归 `ExecutorConfig`（§3.2）和 L4 |
-| `setJointZeroPosition()` | 无 | 标定操作，须先失能（任务 2.3）；由 L4 在停拍状态下调 L1 |
+| `setJointZeroPosition()` | 无 | 标定操作，须先失能（1B.2）；由 L4 在停拍状态下调 L1 |
 
 ### A.3 厂家状态机读的四个谓词
 

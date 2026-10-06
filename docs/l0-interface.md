@@ -17,7 +17,7 @@
 | 分层 | L0 只做"字节 ↔ 线上结构体 + 收发 + trace"，**不含策略、时序、状态**。 |
 | RX 边界 | **原始帧。** 不走厂家 `setReadFunction` 解好的 `JointState`——那个结构没有温度字段，且解码必须能独立验证。见 §4.3。 |
 | 厂家 `.so` | **不链接。** 我们的 SDK 不依赖厂家任何库；所有后端都是我们自己的。见 §4.2。 |
-| 公共 API | **我们自己的 API**，只在能力层次上对标厂家 SDK，不追求同名方法、同号返回码（`development-plan.md` 8.1）。 |
+| 公共 API | **我们自己的 API**，只在能力层次上对标厂家 SDK，不追求同名方法、同号返回码（`development-plan.md` 2D.1）。 |
 | 原始帧来源 | **已定**：SocketCAN 或 USB-CAN，都是我们自己的后端（§4.4、§9）。 |
 
 ## 实现状态
@@ -54,7 +54,7 @@ golden vector 全部取自 PR0002 自带的例子，并已并入 `tools/verify.s
 - 关节索引到机器人的映射（L2 的构造配置：14 个关节 ↔ `Dev_ID` ↔ 通道，`l2-executor-interface.md` §3.2）
 - 什么时候必须发帧（L2 的节拍与喂狗，见 [`l2-executor-interface.md`](l2-executor-interface.md)）
 - 单位换算的**语义**（上层决定用 rad 还是 deg）；L0 只提供 `cnt ↔ rad` 的纯函数
-- 运动学（84.721 mm 偏置属于任务 4，不属于 L0）
+- 运动学（84.721 mm 偏置属于运动学 2A，不属于 L0）
 
 ## 2. 三块结构
 
@@ -214,7 +214,7 @@ public:
 厂家驱动的 `setReadFunction` 回调签名是 `void(JointState&, JointState&)`——它给的是**已经解码好的** `JointState`，不是原始帧。而且 vendored 头里的 `JointState` 只有
 `MotionState / ControlType / Current / Vel / single_torque / six_axis_torque / FaultData / origPosAct / isUpdated`，**没有温度字段**——走它的解码就永远读不到反馈帧 `[8..9]`。
 
-我们不链接厂家库（§0），这个选项本来也不存在；记在这里是因为它说明了原始帧边界的另一条理由：解码必须能独立验证。反馈帧的字节解码在 L0 的 `decode_feedback`，物理量换算是 L1（任务 2.6）。
+我们不链接厂家库（§0），这个选项本来也不存在；记在这里是因为它说明了原始帧边界的另一条理由：解码必须能独立验证。反馈帧的字节解码在 L0 的 `decode_feedback`，物理量换算是 L1（`development-plan.md` 1B.4）。
 
 ### 4.4 原始帧从哪来
 
@@ -352,7 +352,7 @@ DiffResult result = diff(golden, bus.sent_trace());
 `research/vendor-derived/document-text/controller-user-manual.md`）是**控制器**那一层的文档，
 本仓库此前只有关节模组那一层。其中三条直接影响 L0 / L1 / L2：
 
-1. **左臂 CAN1、右臂 CAN2。** 这是整机映射（`development-plan.md` 7.8）缺的那一半。⚠️ 但手册用 **1 基**的 `CAN1`/`CAN2`，
+1. **左臂 CAN1、右臂 CAN2。** 这是整机映射（`development-plan.md` 1C.1）缺的那一半。⚠️ 但手册用 **1 基**的 `CAN1`/`CAN2`，
    而 `rk3576_can_canfd.h` 和 `/dev/misc_shm_can*` 用 **0 基**的 `CAN0`/`CAN1`；若两者对应，
    则**左臂 = `Bus::Can0`**。这个推断必须真机确认——它是左右臂互换最可能的来源，所以
    trace 表头把它写进文件，`diff()` 也把 `BusMismatch` 单列一类。
