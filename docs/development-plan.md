@@ -62,7 +62,7 @@ L0 已冻结。**下一个要冻结的是 L2 的 `Executor` 接口**，草案见
 [`l2-executor-interface.md`](l2-executor-interface.md)。冻结之后配一个 `SimExecutor`（1E.1），
 L3 / L4 就可以不等 L1 独立推进——这和 L0 用 `FakeTransport` 解开 L1 是同一个手法。
 
-**L0 已完成并跑通**（wire + transport + trace，1103 个断言，离线可跑）：帧结构体、
+**L0 已完成并跑通**（wire + transport + trace，1127 个断言，离线可跑）：帧结构体、
 `Transport` 签名和 `Trace` 文本格式都已冻结，虚拟关节模组、L1、L2 可以据此开工。
 运动学本来就不依赖 L0。
 

@@ -54,6 +54,8 @@ enum class SdoCmd : std::uint8_t {
 int sdo_value_width(std::uint8_t cmd);
 bool is_sdo_write(std::uint8_t cmd);
 bool is_sdo_read_response(std::uint8_t cmd);
+// 60h or a read response: a byte only the module sends.
+bool is_sdo_response(std::uint8_t cmd);
 
 struct SdoRequest {
     std::uint8_t dev_id = 0;
@@ -84,8 +86,15 @@ SdoRequest sdo_write3(std::uint8_t dev_id, std::uint16_t index, std::uint8_t sub
 SdoRequest sdo_write4(std::uint8_t dev_id, std::uint16_t index, std::uint8_t sub, std::uint32_t value);
 SdoRequest sdo_read(std::uint8_t dev_id, std::uint16_t index, std::uint8_t sub);
 
-// Throws std::invalid_argument for a Dev_ID above kMaxDevId or an unknown command byte.
+// Throws std::invalid_argument for a Dev_ID above kMaxDevId or a command byte that is not a
+// request (2Fh/2Bh/27h/23h/40h).
 Frame encode_sdo(const SdoRequest& request);
+
+// The module's side, for the fake transport, the virtual joint module and tests: builds the
+// 0x580 + Dev_ID frame a module would answer with. `value_width` is ignored; the command byte
+// decides the width. Throws std::invalid_argument for a Dev_ID above kMaxDevId or a command
+// byte that is not a response (60h/4Fh/4Bh/47h/43h).
+Frame encode_sdo_response(const SdoResponse& response);
 
 // False when `frame` is not an SDO response at all (wrong identifier range, wrong DLC, or an
 // unknown command byte). The caller decides whether that is an error.

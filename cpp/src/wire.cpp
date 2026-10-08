@@ -69,6 +69,10 @@ bool is_sdo_read_response(std::uint8_t cmd) {
     return cmd == 0x4F || cmd == 0x4B || cmd == 0x47 || cmd == 0x43;
 }
 
+bool is_sdo_response(std::uint8_t cmd) {
+    return cmd == 0x60 || is_sdo_read_response(cmd);
+}
+
 std::int32_t SdoResponse::value_signed() const {
     if (value_width <= 0 || value_width >= 4) return static_cast<std::int32_t>(value);
     const std::uint32_t sign_bit = 1u << (value_width * 8 - 1);
@@ -97,18 +101,18 @@ SdoRequest sdo_read(std::uint8_t dev_id, std::uint16_t index, std::uint8_t sub) 
     return SdoRequest{dev_id, SdoCmd::Read, index, sub, 0};
 }
 
-Frame encode_sdo(const SdoRequest& request) {
-    const std::uint8_t cmd = static_cast<std::uint8_t>(request.cmd);
-    if (request.dev_id > kMaxDevId) throw std::invalid_argument("encode_sdo: Dev_ID out of range");
-    const int width = sdo_value_width(cmd);
-    if (width < 0) throw std::invalid_argument("encode_sdo: unknown command byte");
+namespace {
 
+// Shared by both directions: the layout is the same, only the identifier base differs.
+Frame encode_sdo_frame(std::uint32_t base, std::uint8_t dev_id, std::uint8_t cmd,
+                       std::uint16_t index, std::uint8_t sub, std::uint32_t value) {
+    const int width = sdo_value_width(cmd);
     Frame frame;
-    frame.id = kSdoRequestBase | request.dev_id;
+    frame.id = base | dev_id;
     frame.len = kSdoDlc;
     frame.data[0] = cmd;
-    write_le16(&frame.data[1], request.index);
-    frame.data[3] = request.sub;
+    write_le16(&frame.data[1], index);
+    frame.data[3] = sub;
     // Only the bytes the command width makes meaningful reach the wire; the rest stay zero.
     // PR0002 §4.1 leaves them undefined, and sending a caller's unused high bytes there would
     // put unspecified content in an unspecified field.
@@ -117,9 +121,34 @@ Frame encode_sdo(const SdoRequest& request) {
     frame.data[6] = 0;
     frame.data[7] = 0;
     for (int i = 0; i < width; ++i) {
-        frame.data[4 + i] = static_cast<std::uint8_t>((request.value >> (8 * i)) & 0xFF);
+        frame.data[4 + i] = static_cast<std::uint8_t>((value >> (8 * i)) & 0xFF);
     }
     return frame;
+}
+
+}  // namespace
+
+Frame encode_sdo(const SdoRequest& request) {
+    const std::uint8_t cmd = static_cast<std::uint8_t>(request.cmd);
+    // A response byte on 0x600 + Dev_ID would be a frame decode_sdo_request itself rejects.
+    if (!is_sdo_write(cmd) && cmd != 0x40) {
+        throw std::invalid_argument("encode_sdo: not a request command byte");
+    }
+    if (request.dev_id > kMaxDevId) throw std::invalid_argument("encode_sdo: Dev_ID out of range");
+    return encode_sdo_frame(kSdoRequestBase, request.dev_id, cmd, request.index, request.sub,
+                            request.value);
+}
+
+Frame encode_sdo_response(const SdoResponse& response) {
+    const std::uint8_t cmd = static_cast<std::uint8_t>(response.cmd);
+    if (!is_sdo_response(cmd)) {
+        throw std::invalid_argument("encode_sdo_response: not a response command byte");
+    }
+    if (response.dev_id > kMaxDevId) {
+        throw std::invalid_argument("encode_sdo_response: Dev_ID out of range");
+    }
+    return encode_sdo_frame(kSdoResponseBase, response.dev_id, cmd, response.index, response.sub,
+                            response.value);
 }
 
 bool decode_sdo(const Frame& frame, SdoResponse& out) {
@@ -129,7 +158,7 @@ bool decode_sdo(const Frame& frame, SdoResponse& out) {
     const int width = sdo_value_width(cmd);
     if (width < 0) return false;
     // A request command byte on a response identifier is not a response.
-    if (cmd == 0x40 || is_sdo_write(cmd)) return false;
+    if (!is_sdo_response(cmd)) return false;
 
     out.dev_id = dev_id_of(frame);
     out.cmd = static_cast<SdoCmd>(cmd);
@@ -151,7 +180,7 @@ bool decode_sdo_request(const Frame& frame, SdoRequest& out) {
     const int width = sdo_value_width(cmd);
     if (width < 0) return false;
     // A response command byte on a request identifier is not a request.
-    if (cmd == 0x60 || is_sdo_read_response(cmd)) return false;
+    if (is_sdo_response(cmd)) return false;
 
     out.dev_id = dev_id_of(frame);
     out.cmd = static_cast<SdoCmd>(cmd);

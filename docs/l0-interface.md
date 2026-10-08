@@ -24,7 +24,7 @@
 ## 实现状态
 
 `cpp/` 下已经落地 **wire + transport + trace/差分** 三块，`./cpp/build.sh` 一条命令构建并跑测：
-1103 个断言，0 失败，`-Wall -Wextra -Wpedantic` 零警告，ASan + UBSan 下干净。
+1127 个断言，0 失败，`-Wall -Wextra -Wpedantic` 零警告，ASan + UBSan 下干净。
 golden vector 全部取自 PR0002 自带的例子，并已并入 `tools/verify.sh` 第 3 步（离线，只需宿主 C++ 编译器）。
 
 | 文件 | 内容 |
@@ -115,7 +115,8 @@ enum class SdoCmd : uint8_t {
 struct SdoRequest  { uint8_t dev_id; SdoCmd cmd; uint16_t index; uint8_t sub; uint32_t value; };
 struct SdoResponse { uint8_t dev_id; SdoCmd cmd; uint16_t index; uint8_t sub; uint32_t value; };
 
-Frame encode_sdo(const SdoRequest&);                  // Dev_ID > 0x7F 抛 std::invalid_argument
+Frame encode_sdo(const SdoRequest&);                  // 只收请求命令字；Dev_ID > 0x7F 抛 std::invalid_argument
+Frame encode_sdo_response(const SdoResponse&);        // 模块那一侧（假后端、虚拟关节模组、测试用），只收应答命令字
 bool  decode_sdo(const Frame&, SdoResponse& out);     // false 表示不是 SDO 应答
 bool  decode_sdo_request(const Frame&, SdoRequest& out);
 // 便捷构造：sdo_write1/2/3/4(dev_id, index, sub, value)、sdo_read(dev_id, index, sub)

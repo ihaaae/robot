@@ -319,9 +319,8 @@ SHENSI_TEST_CASE(sdo_round_trips_through_encode_and_decode) {
         } else {
             SdoResponse response;
             CHECK(decode_sdo(frame, response));
-            const SdoRequest request{response.dev_id, response.cmd, response.index, response.sub,
-                                     response.value};
-            const Frame reencoded = encode_sdo(request);
+            const Frame reencoded = encode_sdo_response(response);
+            CHECK_EQ(reencoded.id, frame.id);
             CHECK_EQ(to_hex(reencoded.data.data(), reencoded.len),
                      to_hex(bytes.data(), bytes.size()));
         }
@@ -694,3 +693,18 @@ SHENSI_TEST_CASE(encoders_reject_a_dev_id_past_the_11_bit_range) {
     // The top valid id still encodes.
     CHECK_EQ(encode_sdo(sdo_read(kMaxDevId, 0x6064, 0)).id, static_cast<std::uint32_t>(0x67F));
 }
+
+SHENSI_TEST_CASE(encode_sdo_only_builds_requests) {
+    SdoRequest ack = sdo_read(0x01, 0x6040, 0);
+    ack.cmd = SdoCmd::AckWrite;
+    CHECK_THROWS(encode_sdo(ack));
+    SdoRequest read1 = sdo_read(0x01, 0x6040, 0);
+    read1.cmd = SdoCmd::Read1;
+    CHECK_THROWS(encode_sdo(read1));
+
+    SdoResponse wrong;
+    wrong.dev_id = 0x01;
+    wrong.cmd = SdoCmd::Write2;
+    CHECK_THROWS(encode_sdo_response(wrong));
+}
+
