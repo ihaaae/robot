@@ -1,22 +1,19 @@
 # Documentation index
 
-Start with the [repository README](../README.md) if you have not read it. This is the only
-document index; other files link here instead of keeping their own list.
+Start with [`ARCHITECTURE.md`](../ARCHITECTURE.md): the layering, the constraints and the order
+of authority. This is the only document index; other files link here instead of keeping their
+own list.
 
 The documents fall into two groups with different lifecycles:
 
 * **Our own controller SDK** — living documents. The plan and the layer interfaces change as
-  work lands; each keeps a history section at the end.
+  work lands.
 * **Vendor SDK analysis** — reference material under [`research/`](../research/README.md),
   frozen. It records what the vendor's `dual_arm_app` 0.6.4 package contains and how it behaves.
   It changes only when a finding is corrected or the robot confirms or refutes something.
 
-We match the vendor SDK only at the level of abstraction: capabilities at the same level (derived
-from our own use cases) and similar layer boundaries, not the same method names, return codes or
-bus traffic. The two groups meet at
-one narrow interface, [`hardware-facts.md`](hardware-facts.md): design documents take hardware
-facts from there and never cite vendor behaviour directly. The order of authority is PR0002 and
-measurements on the robot, then our own requirements, then vendor behaviour (a hint only).
+The two groups meet at one narrow interface, [`hardware-facts.md`](hardware-facts.md): design
+documents take hardware facts from there and never cite vendor behaviour directly.
 
 Each finding has **one home**. Where another document mentions it, it summarises in a line and
 links to the home rather than repeating the argument.
@@ -25,7 +22,8 @@ links to the home rather than repeating the argument.
 
 | Document | What it covers | Status |
 |---|---|---|
-| [`development-plan.md`](development-plan.md) | The goal, the layering (L0–L4), the three phases and their exit criteria, five work packages per phase with effort estimates and owners, and what "done" means for each. **Start here** | Draft |
+| [`ARCHITECTURE.md`](../ARCHITECTURE.md) | The goal, the three constraints, the layering (L0–L4) and why it is cut that way, interface freeze status, the capability list, a code map. **Start here** | Living |
+| [`development-plan.md`](development-plan.md) | Current status, the three phases and their exit criteria, five work packages per phase with effort estimates and owners, and what "done" means for each task | Draft |
 | [`deployment.md`](deployment.md) | Which layer runs on which machine: L0–L2 and the L4 state machine on the control board, L3 on an external computer, an RPC between them (time conversion, link loss) | Draft |
 | [`hardware-facts.md`](hardware-facts.md) | Every hardware fact the design relies on, one row each: source, confidence, evidence. Conflicts and unknowns are marked | Living |
 | [`l0-interface.md`](l0-interface.md) | L0 — wire codec, transport, trace and diff | Implemented in `cpp/` |

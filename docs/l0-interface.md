@@ -13,13 +13,13 @@
 
 | 决定 | 结论 |
 |---|---|
-| 语言 | **C++ 为第一公民**；对外导出 C ABI，Python 通过 ctypes 使用（套路可参考 `research/vendor-tools/python/` 里给厂家 SDK 做的桥）。C ABI 还顺带让 Python 侧拿到 GIL 释放。 |
+| 语言 | 现有实现是 C++。开发板侧的实现语言在阶段 0 结束时定，换语言则移植（`development-plan.md` 1A.1）。不提供 C ABI 绑定：外部程序一律经 RPC 访问（`ARCHITECTURE.md`「部署」）。 |
 | 总线独占 | **一条总线只有一个主站。** 我们的栈拥有总线时，任何别的主站（包括厂家栈）都不能在上面跑。见 §5。 |
 | 分层 | L0 只做"字节 ↔ 线上结构体 + 收发 + trace"，**不含策略、时序、状态**。 |
 | RX 边界 | **原始帧。** 不走厂家 `setReadFunction` 解好的 `JointState`——那个结构没有温度字段，且解码必须能独立验证。见 §4.3。 |
 | 厂家 `.so` | **不链接。** 我们的 SDK 不依赖厂家任何库；所有后端都是我们自己的。见 §4.2。 |
-| 公共 API | **我们自己的 API**，只在能力层次上对标厂家 SDK，不追求同名方法、同号返回码（`development-plan.md` 2D.1）。 |
-| 原始帧来源 | **已定**：SocketCAN 或 USB-CAN，都是我们自己的后端（§4.4、§9）。 |
+| 公共 API | **我们自己的 API**，只在能力层次上对标厂家 SDK，不追求同名方法、同号返回码（`ARCHITECTURE.md`）。 |
+| 原始帧来源 | **未定**：板上有 SocketCAN 就用；没有则打开内核驱动，或直接读写寄存器。由真机摸底定（`development-plan.md` 0C.3、1D.1；§4.4）。只影响后端，不影响接口。 |
 
 ## 实现状态
 
@@ -216,8 +216,8 @@ public:
 | `FakeTransport` | 脚本化应答 | 现在 |
 | `ReplayTransport` | 回放录好的 trace | 现在 |
 | `RecordingTransport` | 装饰器，把任意后端录成 trace | 现在 |
-| `SocketCanTransport` | Linux SocketCAN 接口（`can0` / `can1`） | 下一个要写的真实后端 |
-| `UsbCanTransport` | USB-CAN 适配器（具体型号未定） | 以后 |
+| 板上真实后端 | SocketCAN（`can0` / `can1`）或寄存器直接读写，由 0C.3 定 | 1D.1 |
+| `UsbCanTransport` | USB-CAN 适配器，台架调试用（具体型号未定） | 需要时 |
 
 ### 4.3 RX 边界（**已定：原始帧**）
 
@@ -228,14 +228,15 @@ public:
 
 ### 4.4 原始帧从哪来
 
-两条路径，都是标准 CAN FD 接口，都不经过厂家的驱动：
+控制板上：
 
-1. **SocketCAN**——Linux 上的 `can0` / `can1`，无论接口是板载的还是外接设备提供的
-2. **USB-CAN 适配器**——厂商自带的用户态库
+1. **SocketCAN**——板子内核若有 `can0` / `can1`（`hardware-facts.md` 1.8，未知）就用它
+2. **没有 SocketCAN**——改设备树 / 内核打开标准驱动，或者像厂家那样直接读写 RK3576 寄存器（`hardware-facts.md` 1.7）。
+   两者都是我们自己写的后端，不链接厂家驱动库，也不碰厂家的 `/dev/misc_shm_can*` 共享内存
 
-厂家板子内部的寄存器驱动和 `/dev/misc_shm_can*` 共享内存（`hardware-facts.md` 1.7）是厂家栈的实现细节，我们不走这条路。
+台架上另有 **USB-CAN 适配器**一条路（厂商自带的用户态库）。
 
-两条路的带宽都够用（`l2-executor-interface.md` §2.1 有估算），选哪条不影响 L0 接口。离线开发用 `FakeTransport` + `ReplayTransport`。
+哪条路由 `development-plan.md` 0C.3 摸底定、1D.1 实现。带宽都够用（`l2-executor-interface.md` §2.1 有估算），选哪条不影响 L0 接口。离线开发用 `FakeTransport` + `ReplayTransport`。
 
 ## 5. 总线独占（已定）
 
@@ -354,7 +355,7 @@ DiffResult result = diff(golden, bus.sent_trace());
 | 1 | RX 边界：原始帧 | **已定**：原始帧 |
 | 2 | 是否链接厂家 `.so` | **已定**：不链接 |
 | 3 | 公共 API | **已定**：我们自己的 API，只在能力层次上对标厂家 |
-| 4 | 原始帧从哪来 | **已定**：SocketCAN 或 USB-CAN，都是我们自己的后端；不走厂家板子的寄存器 / 共享内存（§4.4） |
+| 4 | 原始帧从哪来 | **未定**：SocketCAN 或寄存器直接读写，0C.3 摸底后定（§4.4）；不链接厂家驱动库 |
 
 ## 10. 控制器手册带来的信息
 

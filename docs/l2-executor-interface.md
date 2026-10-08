@@ -5,7 +5,7 @@
 >
 > 依据：PR0002、[`hardware-facts.md`](hardware-facts.md)（下文 `HF x.y` 指它的第 x.y 行）、
 > [`hardware-acceptance.md`](hardware-acceptance.md)。
-> 相关：[`development-plan.md`](development-plan.md)（分层；L2 的任务是 0D.1、1C、1E.1）。
+> 相关：[`ARCHITECTURE.md`](../ARCHITECTURE.md)（分层）、[`development-plan.md`](development-plan.md)（L2 的任务是 0D.1、1C、1E.1）。
 >
 > 这是**我们自己的**接口。厂家 `ExecutorBase` 的职责边界和这一层大致对应，对照放在附录 A，
 > 只作参考；正文的决定不以「和厂家一致」为理由。

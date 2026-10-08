@@ -1,7 +1,7 @@
 # 厂家的机器人状态机（`Juxie::State*`）
 
 厂家 `libjuxie_controller` 里 `power_off / ready / idle / running / fault` 这 5 个状态，逐状态、
-逐方法的行为。这是开发计划 2D.2 的规格来源（[`development-plan.md`](../../docs/development-plan.md)）。
+逐方法的行为。开发计划 2D.2 把它当**场景清单**用，不当规格（[`development-plan.md`](../../docs/development-plan.md)）。
 
 **怎么得出来的**：
 

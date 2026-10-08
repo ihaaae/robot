@@ -39,10 +39,10 @@ for one of them:
 
 | | Use the vendor SDK | Write your own CAN layer (our `cpp/` SDK) |
 |---|---|---|
-| When | control software on the vendor's board | replacing the board, or driving the joints from a PC |
+| When | control software on the vendor's board | our own stack, on the same board (or a PC on the bench) |
 | You write | `MoveJ`, `IK`, `MoveJ_Canfd`, … | the CAN frames themselves |
-| Your CAN interface | the vendor stack's, via `/dev/mem` | **yours**: SocketCAN, a ZLG USB-CAN adapter, … |
-| `/dev/mem` | required, because the vendor's driver uses it | **irrelevant** |
+| Your CAN interface | the vendor stack's, via `/dev/mem` | **yours**: SocketCAN if the board kernel has it, else your own register backend; a USB-CAN adapter on the bench |
+| `/dev/mem` | required, because the vendor's driver uses it | only if the board has no SocketCAN and you write a register backend |
 | The CAN protocol document | an implementation detail you never touch | **your specification** |
 
 **Why the second path is legitimate, and why the bundled ZLG library was not the reason.** The
