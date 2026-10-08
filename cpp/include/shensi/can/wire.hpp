@@ -27,7 +27,8 @@ inline constexpr double kCntPerRev = 65536.0;  // load-side encoder: 16 bit sing
 // Rounds to the nearest count, halves away from zero. That halves the worst-case error of
 // truncation (the vendor driver's choice) and keeps it symmetric in sign, and it makes
 // cnt -> rad -> cnt the identity. Pinned by a unit test: a one-count difference is invisible to
-// any property test.
+// any property test. Out-of-range angles clamp to the int16 limits; NaN and infinity throw
+// std::invalid_argument.
 std::int16_t rad_to_cnt(double rad);
 double cnt_to_rad(std::int16_t cnt);
 
@@ -83,6 +84,7 @@ SdoRequest sdo_write3(std::uint8_t dev_id, std::uint16_t index, std::uint8_t sub
 SdoRequest sdo_write4(std::uint8_t dev_id, std::uint16_t index, std::uint8_t sub, std::uint32_t value);
 SdoRequest sdo_read(std::uint8_t dev_id, std::uint16_t index, std::uint8_t sub);
 
+// Throws std::invalid_argument for a Dev_ID above kMaxDevId or an unknown command byte.
 Frame encode_sdo(const SdoRequest& request);
 
 // False when `frame` is not an SDO response at all (wrong identifier range, wrong DLC, or an
@@ -109,7 +111,7 @@ struct ControlSubframe {
     bool enable = false;         // byte0 bit7, 1 = 上使能
     bool brake_release = false;  // byte0 bit6, 1 = 抱闸释放
     bool clear_error = false;    // byte0 bit5, 1 = 复位错误
-    std::uint8_t mode = 0;       // byte0 bit4..1, a MotionMode value
+    std::uint8_t mode = 0;       // byte0 bit4..1, a project mode value (1..7, above)
     std::int16_t target1 = 0;    // bytes1..2; meaning depends on mode
     std::int16_t target2 = 0;    // bytes3..4; profile acceleration in PP/PV modes
     std::int16_t feedforward = 0;  // bytes5..6; output-side profile velocity in position modes
@@ -122,6 +124,7 @@ std::array<std::uint8_t, kSingleAxisDlc> encode_subframe(const ControlSubframe& 
 // an assumed size, research/vendor-analysis/sdk-usage.md §6.1), so no decoder here trusts a bare pointer.
 bool decode_subframe(const std::uint8_t* bytes, std::size_t len, ControlSubframe& out);
 
+// Throws std::invalid_argument for a Dev_ID above kMaxDevId.
 Frame encode_single_axis(Bus bus, std::uint8_t dev_id, const ControlSubframe& sub);
 bool decode_single_axis(const Frame& frame, ControlSubframe& out);
 
@@ -146,7 +149,7 @@ struct JointFeedback {
     std::int16_t current_ma = 0;  // [4..5], Iq
     std::uint16_t fault = 0;      // [6..7], see research/vendor-analysis/error-codes.md
     std::int16_t temp_dc = 0;     // [8..9], 0.1 degC
-    std::uint8_t mode = 0;        // [10], a MotionMode value
+    std::uint8_t mode = 0;        // [10], a project mode value (1..7)
     bool enabled = false;         // [11] bit7
     bool brake_released = false;  // [11] bit6
     bool error = false;           // [11] bit5

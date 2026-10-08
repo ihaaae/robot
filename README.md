@@ -121,7 +121,7 @@ ls "$SDK/usr/lib" "$SDK/usr/include" "$SDK/usr/etc"
 | | Where | What it is for |
 |---|---|---|
 | **The SDK** | `vendor/sdk/dual-arm-app/0.6.4/usr/{lib,include,etc}` | What you build against. The symlink chains are real symlinks, because `-ljuxie_controller` depends on them. |
-| **The evidence** | `vendor/originals/dual-arm-app/0.6.4/*.deb` plus the three vendor documents | Proof of where the SDK came from and what the vendor actually shipped. Never modified, never derived from at build time. Its sha256 is recorded in `vendor/manifests/`, and `tools/verify.sh` checks it. |
+| **The evidence** | `vendor/originals/dual-arm-app/0.6.4/*.deb` plus the four vendor documents | Proof of where the SDK came from and what the vendor actually shipped. Never modified, never derived from at build time. Its sha256 is recorded in `vendor/manifests/`, and `tools/verify.sh` checks it. |
 
 Nothing in this repository extracts, unpacks or repacks the `.deb`. It is kept because a
 re-issued 0.6.4 with different bytes has to be distinguishable from this one, and because it

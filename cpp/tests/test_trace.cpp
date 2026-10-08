@@ -122,6 +122,16 @@ SHENSI_TEST_CASE(trace_rejects_malformed_lines) {
     EXPECT_TRACE_ERROR("1 tx 0 601 8 1 1 2b4060000600000 -\n", "odd number of hex digits");
     EXPECT_TRACE_ERROR("1 tx 0 nothex 8 1 1 2b40600006000000 -\n",
                        "identifier or length is not a number");
+    // Numbers are digits only: no sign, no prefix, no trailing junk.
+    EXPECT_TRACE_ERROR("-1 tx 0 601 8 1 1 2b40600006000000 -\n", "t_ns is not a number");
+    EXPECT_TRACE_ERROR("+1 tx 0 601 8 1 1 2b40600006000000 -\n", "t_ns is not a number");
+    EXPECT_TRACE_ERROR("12abc tx 0 601 8 1 1 2b40600006000000 -\n", "t_ns is not a number");
+    EXPECT_TRACE_ERROR("1 tx 0 0x601 8 1 1 2b40600006000000 -\n",
+                       "identifier or length is not a number");
+    EXPECT_TRACE_ERROR("1 tx -0 601 8 1 1 2b40600006000000 -\n",
+                       "identifier or length is not a number");
+    EXPECT_TRACE_ERROR("1 tx 0 601 1g0 1 1 2b40600006000000 -\n",
+                       "identifier or length is not a number");
 
     // The message names the offending line, so a long trace is diagnosable.
     EXPECT_TRACE_ERROR(
@@ -392,4 +402,36 @@ SHENSI_TEST_CASE(diff_kind_labels_are_stable) {
     CHECK(is_defect(DiffKind::BusMismatch));
     CHECK(!is_defect(DiffKind::RxMismatch));
     CHECK(!is_defect(DiffKind::TimingOutOfTolerance));
+}
+
+SHENSI_TEST_CASE(diff_timing_handles_timestamps_that_go_backwards) {
+    // A golden gap of +1 ms against an actual gap of -1 ms is 2 ms apart, not ~2^64 ns.
+    Trace golden;
+    golden.add(frame(Bus::Can0, 0x601, kWrite6), 5000000, Direction::Tx);
+    golden.add(frame(Bus::Can0, 0x601, kWrite7), 6000000, Direction::Tx);
+    Trace actual;
+    actual.add(frame(Bus::Can0, 0x601, kWrite6), 5000000, Direction::Tx);
+    actual.add(frame(Bus::Can0, 0x601, kWrite7), 4000000, Direction::Tx);
+
+    NormalizeOptions loose;
+    loose.timing_tolerance_ns = 3000000;  // 3 ms covers the true 2 ms difference
+    CHECK_EQ(diff(golden, actual, loose).count(DiffKind::TimingOutOfTolerance),
+             static_cast<std::size_t>(0));
+
+    NormalizeOptions tight;
+    tight.timing_tolerance_ns = 1000000;
+    CHECK_EQ(diff(golden, actual, tight).count(DiffKind::TimingOutOfTolerance),
+             static_cast<std::size_t>(1));
+}
+
+SHENSI_TEST_CASE(a_destroyed_recorder_leaves_the_inner_transport_safe) {
+    FakeTransport inner;
+    {
+        RecordingTransport recorder(inner);
+        inner.inject(frame(Bus::Can0, 0x301, kFeedback));
+        CHECK_EQ(recorder.trace().size(), static_cast<std::size_t>(1));
+    }
+    // Before the fix this called into the destroyed recorder.
+    inner.inject(frame(Bus::Can0, 0x301, kFeedback));
+    CHECK_EQ(inner.sent_count(), static_cast<std::size_t>(0));
 }

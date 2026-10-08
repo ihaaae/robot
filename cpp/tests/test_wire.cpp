@@ -671,3 +671,26 @@ SHENSI_TEST_CASE(pr0002_documented_anomalies) {
     CHECK_EQ(static_cast<int>(clear_request[3]), 0);
     CHECK_EQ(static_cast<int>(clear_response[3]), 1);
 }
+
+SHENSI_TEST_CASE(the_vendor_dlc8_sync_classifies_as_sync) {
+    // hardware-facts.md 2.7: the vendor stack sends 0x080 with eight zero bytes.
+    const std::uint8_t zeros[8] = {};
+    const Frame vendor = frame_from_bytes(Bus::Can0, kSyncId, zeros, kSyncVendorDlc);
+    CHECK_EQ(static_cast<int>(classify(vendor)), static_cast<int>(FrameClass::Sync));
+    // Any other length on 0x080 is not a sync.
+    const Frame odd = frame_from_bytes(Bus::Can0, kSyncId, zeros, 4);
+    CHECK_EQ(static_cast<int>(classify(odd)), static_cast<int>(FrameClass::Unknown));
+}
+
+SHENSI_TEST_CASE(rad_to_cnt_rejects_non_finite_angles) {
+    CHECK_THROWS(rad_to_cnt(std::nan("")));
+    CHECK_THROWS(rad_to_cnt(INFINITY));
+    CHECK_THROWS(rad_to_cnt(-INFINITY));
+}
+
+SHENSI_TEST_CASE(encoders_reject_a_dev_id_past_the_11_bit_range) {
+    CHECK_THROWS(encode_sdo(sdo_read(kMaxDevId + 1, 0x6064, 0)));
+    CHECK_THROWS(encode_single_axis(Bus::Can0, kMaxDevId + 1, ControlSubframe{}));
+    // The top valid id still encodes.
+    CHECK_EQ(encode_sdo(sdo_read(kMaxDevId, 0x6064, 0)).id, static_cast<std::uint32_t>(0x67F));
+}

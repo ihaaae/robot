@@ -131,7 +131,10 @@ DiffResult diff(const Trace& golden, const Trace& actual, const NormalizeOptions
 // or not anyone asked for them; set_receiver only adds a handler on top of the recording.
 class RecordingTransport final : public Transport {
 public:
+    // `inner` must outlive this object. On destruction the inner transport is left with no
+    // receiver: whatever it had before construction is not restored.
     explicit RecordingTransport(Transport& inner);
+    ~RecordingTransport() override;
 
     void send(const Frame& frame) override;
     void set_receiver(Receiver receiver) override;

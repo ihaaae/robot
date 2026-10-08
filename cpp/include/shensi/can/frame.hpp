@@ -1,7 +1,7 @@
 // L0 wire format: the frame container and the CAN identifier map.
 //
 // See docs/l0-interface.md. L0 owns bytes <-> wire structs, sending and receiving frames,
-// and (next) the trace/diff harness. It owns no policy, no sequencing and no state.
+// and the trace/diff harness. It owns no policy, no sequencing and no state.
 #ifndef SHENSI_CAN_FRAME_HPP
 #define SHENSI_CAN_FRAME_HPP
 
@@ -33,7 +33,8 @@ struct Frame {
 // Identifier map, PR0002 §4-§7. Everything except the NMT, sync and broadcast identifiers
 // carries Dev_ID in the low byte.
 inline constexpr std::uint32_t kNmtId = 0x000;  // DLC 2, node-addressed in the payload
-inline constexpr std::uint32_t kSyncId = 0x080;  // DLC 0
+inline constexpr std::uint32_t kSyncId = 0x080;  // we send DLC 0
+inline constexpr std::uint8_t kSyncVendorDlc = 8;  // the vendor stack sends DLC 8, all zero
 inline constexpr std::uint32_t kSingleAxisBase = 0x100;  // + Dev_ID, DLC 7
 inline constexpr std::uint32_t kMitSingleBase = 0x110;  // + Dev_ID, DLC 9
 inline constexpr std::uint32_t kMultiAxisId = 0x200;  // DLC 64: 8 subframes + 8 Dev_IDs
@@ -88,9 +89,9 @@ Frame frame_from_bytes(Bus bus, std::uint32_t id, const std::uint8_t* data, std:
 std::string to_hex(const std::uint8_t* data, std::size_t len);
 std::string to_hex(const Frame& frame);
 
-// Parses hex with optional whitespace between bytes ("2B406000" and "2B 40 60 00" both work).
-// Throws std::invalid_argument on an odd digit count or a character that is not hex and not
-// whitespace -- a corrupt trace should say so rather than decode into something plausible.
+// Parses hex with optional spaces, tabs or underscores between bytes ("2B406000" and
+// "2B 40 60 00" both work). Throws std::invalid_argument on an odd digit count or any other
+// character, line breaks included -- a corrupt trace should say so rather than decode into something plausible.
 std::vector<std::uint8_t> from_hex(const std::string& text);
 
 }  // namespace shensi::can

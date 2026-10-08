@@ -32,6 +32,8 @@ void write_le16(std::uint8_t* p, std::uint16_t value) {
 // ------------------------------------------------------------------ units
 
 std::int16_t rad_to_cnt(double rad) {
+    // A NaN passes both clamps below and the cast is undefined; it must never become a target.
+    if (!std::isfinite(rad)) throw std::invalid_argument("rad_to_cnt: not a finite angle");
     // Nearest count, halves away from zero (wire.hpp).
     const double cnt = std::round(rad / (2.0 * kPi) * kCntPerRev);
     if (cnt >= 32767.0) return 32767;
@@ -97,6 +99,7 @@ SdoRequest sdo_read(std::uint8_t dev_id, std::uint16_t index, std::uint8_t sub) 
 
 Frame encode_sdo(const SdoRequest& request) {
     const std::uint8_t cmd = static_cast<std::uint8_t>(request.cmd);
+    if (request.dev_id > kMaxDevId) throw std::invalid_argument("encode_sdo: Dev_ID out of range");
     const int width = sdo_value_width(cmd);
     if (width < 0) throw std::invalid_argument("encode_sdo: unknown command byte");
 
@@ -192,6 +195,7 @@ bool decode_subframe(const std::uint8_t* bytes, std::size_t len, ControlSubframe
 }
 
 Frame encode_single_axis(Bus bus, std::uint8_t dev_id, const ControlSubframe& sub) {
+    if (dev_id > kMaxDevId) throw std::invalid_argument("encode_single_axis: Dev_ID out of range");
     const auto bytes = encode_subframe(sub);
     return frame_from_bytes(bus, kSingleAxisBase | dev_id, bytes.data(), kSingleAxisDlc);
 }

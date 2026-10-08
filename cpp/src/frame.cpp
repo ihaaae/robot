@@ -19,7 +19,9 @@ FrameClass classify(const Frame& frame) {
     // Exact identifiers first: 0x200 and 0x210 are fixed, and 0x210 also falls inside the
     // 0x200..0x27F window, so a range test would be wrong.
     if (id == kNmtId && len == kNmtDlc) return FrameClass::Nmt;
-    if (id == kSyncId && len == 0) return FrameClass::Sync;
+    // We send sync with DLC 0; the vendor stack sends DLC 8, all zero (hardware-facts.md 2.7).
+    // Both must classify, or a captured vendor trace reads its syncs as unknown.
+    if (id == kSyncId && (len == 0 || len == kSyncVendorDlc)) return FrameClass::Sync;
     if (id == kMultiAxisId && len == kMultiAxisDlc) return FrameClass::MultiAxisCommand;
     if (id == kMitMultiAxisId && len == kMultiAxisDlc) return FrameClass::MitMultiAxisCommand;
 

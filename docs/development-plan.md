@@ -62,7 +62,7 @@ L0 已冻结。**下一个要冻结的是 L2 的 `Executor` 接口**，草案见
 [`l2-executor-interface.md`](l2-executor-interface.md)。冻结之后配一个 `SimExecutor`（1E.1），
 L3 / L4 就可以不等 L1 独立推进——这和 L0 用 `FakeTransport` 解开 L1 是同一个手法。
 
-**L0 已完成并跑通**（wire + transport + trace，1081 个断言，离线可跑）：帧结构体、
+**L0 已完成并跑通**（wire + transport + trace，1103 个断言，离线可跑）：帧结构体、
 `Transport` 签名和 `Trace` 文本格式都已冻结，虚拟关节模组、L1、L2 可以据此开工。
 运动学本来就不依赖 L0。
 
@@ -106,7 +106,8 @@ L3 / L4 就可以不等 L1 独立推进——这和 L0 用 `FakeTransport` 解�
 2. 参考运动齐全：厂家栈回放 `array04_2.csv` 至少 3 遍，外加几段不同速度的点到点运动；每遍都有抓包、
    解出的目标轨迹文件和反馈曲线。由同一段运动多遍之间的差异定出**重复性容差**（0B.2–0B.3）。
 3. `hardware-facts.md` 里能靠抓包关掉的未知项已关（0B.4）；开发板有没有 SocketCAN（`hardware-facts.md` 1.8）已查明（0C.3）。
-4. 「第一次动」之前的安全门已过：P0-4 限位、逐轴方向、左右臂映射（`hardware-acceptance.md`；0C.1–0C.2）。
+4. 「第一次动」之前的安全门已过：P0-4 限位（`hardware-acceptance.md`；0C.1）、逐轴方向与左右臂映射
+   （`hardware-facts.md` 1.4、1.5；0C.2）。
    阶段 1 回放的第一帧就会让机械臂动。
 5. 冻结：RPC 协议（0E.1）、`Executor` 接口（0D.1）、运动学接口与模型文件格式（0D.4）、
    最小 L4 的范围（0E.2）、虚拟关节模组的行为规格（0D.2）。

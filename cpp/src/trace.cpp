@@ -1,10 +1,12 @@
 #include "shensi/can/trace.hpp"
 
 #include <algorithm>
+#include <charconv>
 #include <chrono>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+#include <system_error>
 
 namespace shensi::can {
 namespace {
@@ -132,6 +134,19 @@ std::string Trace::to_text() const {
     return out;
 }
 
+namespace {
+
+// Whole-field unsigned parse. std::stoull would take "-1" (wrapping it), "+1", "0x601" and
+// "12abc"; a trace field is digits and nothing else.
+bool parse_unsigned(const std::string& field, int base, std::uint64_t& out) {
+    const char* const first = field.data();
+    const char* const last = first + field.size();
+    const std::from_chars_result result = std::from_chars(first, last, out, base);
+    return result.ec == std::errc() && result.ptr == last;
+}
+
+}  // namespace
+
 Trace Trace::from_text(const std::string& text) {
     Trace trace;
     std::istringstream stream(text);
@@ -153,11 +168,7 @@ Trace Trace::from_text(const std::string& text) {
         if (fields.size() != 9) bad("expected 9 fields, got " + std::to_string(fields.size()));
 
         TraceEntry entry;
-        try {
-            entry.t_ns = std::stoull(fields[0]);
-        } catch (const std::exception&) {
-            bad("t_ns is not a number");
-        }
+        if (!parse_unsigned(fields[0], 10, entry.t_ns)) bad("t_ns is not a number");
         if (fields[1] == "tx") {
             entry.direction = Direction::Tx;
         } else if (fields[1] == "rx") {
@@ -165,21 +176,19 @@ Trace Trace::from_text(const std::string& text) {
         } else {
             bad("direction must be tx or rx");
         }
-        try {
-            const unsigned long bus = std::stoul(fields[2]);
-            if (bus > 1) bad("bus must be 0 or 1");
-            entry.frame.bus = static_cast<Bus>(bus);
-            const unsigned long id = std::stoul(fields[3], nullptr, 16);
-            if (id > 0x7FF) bad("identifier must fit in 11 bits");
-            entry.frame.id = static_cast<std::uint32_t>(id);
-            const unsigned long len = std::stoul(fields[4]);
-            if (len > kMaxDlc) bad("len must be 0..64");
-            entry.frame.len = static_cast<std::uint8_t>(len);
-        } catch (const std::runtime_error&) {
-            throw;
-        } catch (const std::exception&) {
+        std::uint64_t bus = 0;
+        std::uint64_t id = 0;
+        std::uint64_t len = 0;
+        if (!parse_unsigned(fields[2], 10, bus) || !parse_unsigned(fields[3], 16, id) ||
+            !parse_unsigned(fields[4], 10, len)) {
             bad("bus, identifier or length is not a number");
         }
+        if (bus > 1) bad("bus must be 0 or 1");
+        entry.frame.bus = static_cast<Bus>(bus);
+        if (id > 0x7FF) bad("identifier must fit in 11 bits");
+        entry.frame.id = static_cast<std::uint32_t>(id);
+        if (len > kMaxDlc) bad("len must be 0..64");
+        entry.frame.len = static_cast<std::uint8_t>(len);
         if (fields[5] != "0" && fields[5] != "1") bad("brs must be 0 or 1");
         if (fields[6] != "0" && fields[6] != "1") bad("fdf must be 0 or 1");
         entry.frame.brs = fields[5] == "1";
@@ -279,11 +288,15 @@ DiffResult diff(const Trace& golden, const Trace& actual, const NormalizeOptions
         }
 
         if (options.timing_tolerance_ns >= 0 && have_previous) {
-            const std::uint64_t golden_gap = ga.t_ns - a_previous;
-            const std::uint64_t actual_gap = ac.t_ns - b_previous;
-            const std::uint64_t delta = golden_gap > actual_gap ? golden_gap - actual_gap
-                                                                : actual_gap - golden_gap;
-            if (delta > static_cast<std::uint64_t>(options.timing_tolerance_ns)) {
+            // Signed: a trace whose timestamps go backwards gives a negative gap, which must
+            // be reported as such rather than wrap to a huge unsigned value.
+            const std::int64_t golden_gap =
+                static_cast<std::int64_t>(ga.t_ns) - static_cast<std::int64_t>(a_previous);
+            const std::int64_t actual_gap =
+                static_cast<std::int64_t>(ac.t_ns) - static_cast<std::int64_t>(b_previous);
+            const std::int64_t delta = golden_gap > actual_gap ? golden_gap - actual_gap
+                                                               : actual_gap - golden_gap;
+            if (delta > options.timing_tolerance_ns) {
                 result.items.push_back(DiffItem{DiffKind::TimingOutOfTolerance, ai, bi,
                                                 "gap " + std::to_string(actual_gap) +
                                                     " ns vs golden " +
@@ -430,6 +443,12 @@ RecordingTransport::RecordingTransport(Transport& inner) : inner_(inner), clock_
         trace_.add(frame, clock_(), Direction::Rx);
         if (user_receiver_) user_receiver_(frame);
     });
+}
+
+RecordingTransport::~RecordingTransport() {
+    // The receiver installed above captures `this`; leaving it behind would let the inner
+    // transport call into a destroyed object.
+    inner_.set_receiver(nullptr);
 }
 
 void RecordingTransport::send(const Frame& frame) {

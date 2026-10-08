@@ -1,7 +1,8 @@
-# L0 接口草案
+# L0 接口
 
-> **草稿。**目的是让 5 个人在真机到货前就能并行推进，所以先把 L0 的边界和签名冻结下来。
-> 内容会变；变的时候改这一份，不要各自在代码里另立一套。
+> **已冻结，已实现**（`cpp/`）。目的是让 5 个人在真机到货前就能并行推进，所以 L0 的边界和签名先定下来。
+> 下面的签名摘自 `cpp/include/shensi/can/` 的头文件；两者不一致时以头文件为准，并回来改这一份，
+> 不要各自在代码里另立一套。
 >
 > 依据：PR0002（协议正本）、[`hardware-facts.md`](hardware-facts.md)（硬件事实）、
 > [`hardware-acceptance.md`](hardware-acceptance.md)（真机验收门）。协议与厂家实现的逐项对照在
@@ -23,7 +24,7 @@
 ## 实现状态
 
 `cpp/` 下已经落地 **wire + transport + trace/差分** 三块，`./cpp/build.sh` 一条命令构建并跑测：
-1081 个断言，0 失败，`-Wall -Wextra -Wpedantic` 零警告，ASan + UBSan 下干净。
+1103 个断言，0 失败，`-Wall -Wextra -Wpedantic` 零警告，ASan + UBSan 下干净。
 golden vector 全部取自 PR0002 自带的例子，并已并入 `tools/verify.sh` 第 3 步（离线，只需宿主 C++ 编译器）。
 
 | 文件 | 内容 |
@@ -96,7 +97,7 @@ struct Frame {
 | 多轴广播 | `0x200` | 64 | 大端 |
 | MIT 多轴 | `0x210` | 64 | 未确认 |
 | 执行器反馈 | `0x300 + Dev_ID` | 12 | **大端** |
-| 同步帧 | `0x80` | 文档未写；厂家发 8 字节全 0 | — |
+| 同步帧 | `0x80` | 文档未写。我们发 DLC 0；厂家发 8 字节全 0（`hardware-facts.md` 2.7）。`classify()` 两种都认 | — |
 | 心跳 / 上线 | `0x700 + Dev_ID` | 1 | — |
 | Dev_ID 8 单轴帧 | `0x108` | 7 | 就是 `0x100 + 8`，格式同单轴控制（大端），见 §3.7 |
 
@@ -114,8 +115,10 @@ enum class SdoCmd : uint8_t {
 struct SdoRequest  { uint8_t dev_id; SdoCmd cmd; uint16_t index; uint8_t sub; uint32_t value; };
 struct SdoResponse { uint8_t dev_id; SdoCmd cmd; uint16_t index; uint8_t sub; uint32_t value; };
 
-Frame encode(const SdoRequest&);
-bool  decode(const Frame&, SdoResponse& out);   // false 表示不是 SDO 应答
+Frame encode_sdo(const SdoRequest&);                  // Dev_ID > 0x7F 抛 std::invalid_argument
+bool  decode_sdo(const Frame&, SdoResponse& out);     // false 表示不是 SDO 应答
+bool  decode_sdo_request(const Frame&, SdoRequest& out);
+// 便捷构造：sdo_write1/2/3/4(dev_id, index, sub, value)、sdo_read(dev_id, index, sub)
 ```
 
 索引与值小端；`value` 占 `[4..7]`，只有低 N 字节有意义（N 由 cmd 决定）。
@@ -133,8 +136,12 @@ struct ControlSubframe {        // 7 字节
     int16_t feedforward;        // bytes5..6 大端；位置模式下为输出端轮廓速度
 };
 
-std::array<uint8_t, 7> encode(const ControlSubframe&);
-ControlSubframe        decode(const std::array<uint8_t, 7>&);
+std::array<uint8_t, 7> encode_subframe(const ControlSubframe&);
+bool  decode_subframe(const uint8_t* bytes, size_t len, ControlSubframe& out);   // 带长度，不信裸指针
+Frame encode_single_axis(Bus, uint8_t dev_id, const ControlSubframe&);           // Dev_ID > 0x7F 抛异常
+bool  decode_single_axis(const Frame&, ControlSubframe& out);
+Frame encode_multi_axis(const MultiAxisCommand&);                                // 0x200 广播
+bool  decode_multi_axis(const Frame&, MultiAxisCommand& out);
 ```
 
 模式值：`1` PP / `2` PV / `3` CSP / `4` CSV / `5` 电流 / `6` MIT / `7` 力矩传感器闭环。
@@ -155,18 +162,18 @@ struct JointFeedback {          // 12 字节
     bool     in_position;       // byte11 bit4
 };
 
-JointFeedback decode(const Frame&);
+bool decode_feedback(const Frame&, JointFeedback& out);   // false 表示不是反馈帧
 ```
 
 ### 3.6 单位换算（放在 L0，因为它贴着线格式且有实测陷阱）
 
 ```cpp
-constexpr double CNT_PER_REV = 65536.0;
+inline constexpr double kCntPerRev = 65536.0;
 
 // 四舍五入到最近的 cnt（半数远离零）。厂家驱动是向零截断（hardware-facts.md 8.6）；
 // 四舍五入的最大误差减半、正负对称，且 cnt -> rad -> cnt 是恒等。
 // 差 1 cnt 任何性质测试都看不见，所以由单元测试钉住。
-int16_t rad_to_cnt(double rad);     // round(rad / 2pi * 65536)
+int16_t rad_to_cnt(double rad);     // round(rad / 2pi * 65536)；NaN/无穷抛 std::invalid_argument
 double  cnt_to_rad(int16_t cnt);    // cnt * pi / 32768
 ```
 
@@ -175,7 +182,9 @@ double  cnt_to_rad(int16_t cnt);    // cnt * pi / 32768
 ### 3.7 原始逃生口
 
 ```cpp
-void send_raw(Bus, uint32_t id, uint8_t len, const uint8_t* data, bool brs);
+// Transport 的非虚成员；CAN 2.0 帧传 brs = false, fdf = false
+void send_raw(Bus bus, uint32_t id, const uint8_t* data, uint8_t len,
+              bool brs = true, bool fdf = true);
 ```
 
 任何未文档化的帧都走这里，不污染上面那套类型。
@@ -234,7 +243,7 @@ public:
 
 理由：
 
-1. **协议不允许两个主站。** SDO `0x600|id` 是请求/应答且无源地址，两个主站的会话会撞。更糟的是看门狗靠周期控制帧喂（约 500 ms，否则自锁）：两个部分 owner 时"对方在喂狗"是运动中途锁死的失败模式。
+1. **协议不允许两个主站。** SDO `0x600|id` 是请求/应答且无源地址，两个主站的会话会撞。更糟的是看门狗靠周期控制帧喂（PR0002 写约 500 ms 否则自锁，厂家另一份文档写告警级、可配，`hardware-facts.md` 4.2）：两个部分 owner 时"对方在喂狗"是运动中途锁死的失败模式。
 2. **同一块硬件不能有两个驱动。** 在控制器板子上，第二个驱动实例会重映射同一块 `/dev/mem` 区域、mmap 同一块 shm、并成为同一帧队列的第二个消费者——帧会在两个读者之间非确定性地分裂。
 
 推论：**切换是整体的。** 应用要么整体用厂家 SDK，要么整体用我们的；要在真机上对照两者，就分开跑

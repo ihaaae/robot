@@ -154,3 +154,35 @@ SHENSI_TEST_CASE(a_receiver_only_sees_injected_frames) {
     CHECK_EQ(feedback.vel_rpm, -539);
     CHECK_EQ(feedback.current_ma, -175);
 }
+
+SHENSI_TEST_CASE(a_responder_may_replace_itself) {
+    FakeTransport bus;
+    int first = 0;
+    int second = 0;
+    const std::string marker(64, 'x');  // captured state the closure still reads after the swap
+    bus.set_responder([&, marker](const Frame&, FakeTransport& self) {
+        self.set_responder([&](const Frame&, FakeTransport&) { ++second; });
+        first += static_cast<int>(marker.size());
+    });
+    bus.send(encode_sdo(sdo_read(0x01, 0x6064, 0)));
+    bus.send(encode_sdo(sdo_read(0x01, 0x6064, 0)));
+    CHECK_EQ(first, 64);
+    CHECK_EQ(second, 1);
+}
+
+SHENSI_TEST_CASE(a_receiver_may_replace_itself) {
+    FakeTransport bus;
+    int first = 0;
+    int second = 0;
+    const std::string marker(64, 'x');
+    bus.set_receiver([&, marker](const Frame&) {
+        bus.set_receiver([&](const Frame&) { ++second; });
+        first += static_cast<int>(marker.size());
+    });
+    const std::vector<std::uint8_t> bytes = from_hex("09e1fde5ff51000000f001c0");
+    const Frame feedback = frame_from_bytes(Bus::Can0, 0x301, bytes.data(), 12);
+    bus.inject(feedback);
+    bus.inject(feedback);
+    CHECK_EQ(first, 64);
+    CHECK_EQ(second, 1);
+}
