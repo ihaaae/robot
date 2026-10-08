@@ -1,7 +1,7 @@
 # 厂家的机器人状态机（`Juxie::State*`）
 
 厂家 `libjuxie_controller` 里 `power_off / ready / idle / running / fault` 这 5 个状态，逐状态、
-逐方法的行为。这是开发计划任务 8.2 的规格来源（[`development-plan.md`](../../docs/development-plan.md)）。
+逐方法的行为。这是开发计划 2D.2 的规格来源（[`development-plan.md`](../../docs/development-plan.md)）。
 
 **怎么得出来的**：
 
@@ -178,7 +178,7 @@ qemu: uncaught target signal 11 (Segmentation fault)
 `join` 轮询线程，所以销毁后新建一个实例可以重来（模拟环境实测）。Python 垫片按这条规则拒绝第二轮
 （`sdk-usage.md` §7）。
 
-## 5. 对我们 L4（任务 8.2）的含义
+## 5. 对我们 L4（2D.2）的含义
 
 **要兼容的**（这是 8.1「同名方法、同号返回码」的具体内容）：
 

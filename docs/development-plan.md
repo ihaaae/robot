@@ -196,7 +196,7 @@ L3 / L4 就可以不等 L1 独立推进——这和 L0 用 `FakeTransport` 解�
 - **发送：** 两个发送线程（`ucas_can0/1_task_send_thread`）从队列取出一帧 `canfd_frame`，
   经 PLT 调用导出的 C 函数 `can_send_data(w0, w1, can_id, len, data)`（`driver.ucas_can0_task_send_thread.txt`，`0x42db0`）。
   经 PLT 的调用可以被 `LD_PRELOAD` 替换：钩子记下帧和时间戳，再转调原函数。所有 `0x200`、NMT、SDO 都走这里。
-- **接收：** `rk3576_canfd_recv_frame_data` 直接读寄存器、就地解析，原始字节不经过任何可替换的函数，
+- **接收：** `rk3576_canfd_recv_frame_data` 把寄存器逐字拷到栈上的缓冲区、在函数内解析（只分派 `0x301`–`0x307`），原始字节不经过任何可替换的函数，
   所以**拿不到原始 `0x300`**。能拿到的是解码后的关节状态：包住 `setReadFunction` 注册的回调
   （`std::function<void(JointState&, JointState&)>`，左右臂各一份）。这对参考运动（反馈曲线）够用。
 
