@@ -2,7 +2,7 @@
 # Regenerate the disassembly excerpts in research/evidence/disasm/ from the vendored binaries.
 #
 # Every "confirmed in the binary" claim in research/vendor-analysis/can-protocol-comparison.md and
-# docs/l2-executor-interface.md points at one of these files. They are committed so the claims
+# docs/components/l2-executor.md points at one of these files. They are committed so the claims
 # can be checked without re-running anything; this script exists so they can be re-derived.
 #
 # Needs llvm-objdump with the AArch64 target (LLVM 18 was used) and python3.

@@ -19,7 +19,7 @@
 // ----------------------------------------
 // MoveJ_Canfd / MoveP_Canfd are the least verified part of this SDK: nothing in this
 // repository has ever exercised them against hardware, and under emulation they return -1
-// (RobotConnectFailed). See docs/hardware-acceptance.md P1-2. Start with --limit 50 --rate 10.
+// (RobotConnectFailed). See docs/hardware-bringup.md P1-2. Start with --limit 50 --rate 10.
 //
 // Column mapping, taken from the vendor's test rather than guessed: the CSV has 14 columns
 // (left arm 7, then right arm 7) and it fills a 17-slot JointSpaceData as

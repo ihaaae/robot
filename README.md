@@ -13,7 +13,7 @@ document is listed in [`docs/index.md`](docs/index.md).
 
 **Status.** L0 (wire codec, transport, trace) is implemented and tested in `cpp/`; nothing above
 it exists yet. Nothing has run on the robot — the gates before the first motion are in
-[`docs/hardware-acceptance.md`](docs/hardware-acceptance.md).
+[`docs/hardware-bringup.md`](docs/hardware-bringup.md).
 
 ## Layout
 

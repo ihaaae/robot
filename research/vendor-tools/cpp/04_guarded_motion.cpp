@@ -18,7 +18,7 @@
 //
 // NOTE: this program calls OnRobot() at startup, which switches the robot to "ready" and
 // powers the low-level board. That happens even in a dry run; --yes is what commands motion.
-// READ docs/hardware-acceptance.md BEFORE RUNNING THIS ON THE ROBOT. Several conclusions in
+// READ docs/hardware-bringup.md BEFORE RUNNING THIS ON THE ROBOT. Several conclusions in
 // this repository are unverified on real hardware, including whether the joint angles that
 // IK returns reach the pose you asked for (research/vendor-analysis/kinematics.md records a 180 mm disagreement
 // between the vendor's own IK and FK).

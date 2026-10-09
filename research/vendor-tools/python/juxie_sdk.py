@@ -470,7 +470,7 @@ class Controller:
 
     # --------------------------------------------------------------------- motion
     #
-    # Read docs/hardware-acceptance.md before any of these. They return the SDK's own code:
+    # Read docs/hardware-bringup.md before any of these. They return the SDK's own code:
     # 0 accepted, -1 refused (usually the wrong state, or no CAN bus).
 
     def move_j(self, joints, v: int = 10) -> int:

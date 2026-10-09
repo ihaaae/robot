@@ -1,11 +1,11 @@
 # L2 Executor 接口草案
 
-> **草稿。** 和 [`l0-interface.md`](l0-interface.md) 一样：先把边界和签名冻结，让 L3 / L4
+> **草稿。** 和 [`l0-can-io.md`](l0-can-io.md) 一样：先把边界和签名冻结，让 L3 / L4
 > 能对着一个假 executor 开工，不必等 L1 做完。内容会变；变的时候改这一份。
 >
-> 依据：PR0002、[`hardware-facts.md`](hardware-facts.md)（下文 `HF x.y` 指它的第 x.y 行）、
-> [`hardware-acceptance.md`](hardware-acceptance.md)。
-> 相关：[`ARCHITECTURE.md`](../ARCHITECTURE.md)（分层）、[`development-plan.md`](development-plan.md)（L2 的任务是 0D.1、1C、1E.1）。
+> 依据：PR0002、[`hardware-facts.md`](../hardware-facts.md)（下文 `HF x.y` 指它的第 x.y 行）、
+> [`hardware-bringup.md`](../hardware-bringup.md)。
+> 相关：[`ARCHITECTURE.md`](../../ARCHITECTURE.md)（分层）、[`development-plan.md`](../development-plan.md)（L2 的任务是 0D.1、1C、1E.1）。
 >
 > 这是**我们自己的**接口。厂家 `ExecutorBase` 的职责边界和这一层大致对应，对照放在附录 A，
 > 只作参考；正文的决定不以「和厂家一致」为理由。
@@ -87,7 +87,7 @@ L2 回答的是：**谁拥有时钟。**
 就改回每通道一个线程。
 
 不设单独的看门狗线程：节拍线程自己检测误拍（`missed_ticks`），关节模组自己的 500 ms 看门狗是
-硬件兜底。另起一个线程去「补发」只会制造第二个总线主人，这正是 `l0-interface.md` §5 禁止的情况。
+硬件兜底。另起一个线程去「补发」只会制造第二个总线主人，这正是 `l0-can-io.md` §5 禁止的情况。
 
 ### 2.3 一拍里做什么
 
@@ -413,7 +413,7 @@ L3 交给 L2 的是**带时间戳的点**，不是「每拍一个点」。L2 每
 ### A.3 厂家状态机读的四个谓词
 
 厂家的机器人状态在轮询线程跑起来之后，实际上是 executor 四个谓词的函数：每 5 ms 按
-`isInFault → isMoving → isEnabled` 的优先级判定一次（[`robot-state-machine.md`](../research/vendor-analysis/robot-state-machine.md) §3）。
+`isInFault → isMoving → isEnabled` 的优先级判定一次（[`robot-state-machine.md`](../../research/vendor-analysis/robot-state-machine.md) §3）。
 它们和 §3.1 的四个问题一一对应：
 
 | 厂家谓词 | 这里 | 备注 |

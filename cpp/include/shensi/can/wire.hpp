@@ -1,7 +1,7 @@
 // L0 wire format: the typed codecs.
 //
 // Pure functions: bytes in, structs out, no I/O and no state. This is where the golden
-// vectors from PR0002 live. See docs/l0-interface.md §3.
+// vectors from PR0002 live. See docs/components/l0-can-io.md §3.
 //
 // THE ONE THING TO GET RIGHT: this protocol uses two byte orders.
 //   * SDO payloads (0x600/0x580) are LITTLE-endian.
@@ -112,7 +112,7 @@ bool decode_sdo_request(const Frame& frame, SdoRequest& out);
 //
 // `ControlSubframe::mode` and `JointFeedback::mode` stay plain bytes rather than an enum: the
 // document's own §5.3 example decodes to 8, which is outside that table, so a strict enum would
-// have to lie about it. See docs/l0-interface.md §8.
+// have to lie about it. See docs/components/l0-can-io.md §8.
 
 // 7 bytes. 16-bit fields are BIG-endian here. The same layout is the payload of a single-axis
 // frame (0x100 + Dev_ID) and one subframe of the 0x200 broadcast.

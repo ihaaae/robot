@@ -50,7 +50,7 @@ arm.fk_pose(q, "zyx", tcp_offset=IK_TCP_OFFSET) # 对齐 get_IK_joint_position
 **这个结论的适用范围（重要）**：上面的 84.721 mm 是用**厂家 IK 解出的关节角**代进**本库的 yml FK** 拟合出来的，它只说明「往本库的 yml FK 上加这个偏置，能让它和厂家 IK 的目标位姿对上」。它**没有**证明：
 
 - 厂家 IK 与**一般位姿**下的 `get_tcp_pose` / `get_FK_pose` 之间存在恒定 84.721 mm 偏置 —— 那条链子没有测过；
-- 同一位姿分别走 `get_IK_joint_position` 和 `MoveJ_P` 会差 84.7 mm。`MoveJ_P` 收的是笛卡尔位姿而不是关节角，两者不是可以直接串联的调用链，这个说法**只是推测**，真机要单独验证（`hardware-acceptance.md` P0-2）。
+- 同一位姿分别走 `get_IK_joint_position` 和 `MoveJ_P` 会差 84.7 mm。`MoveJ_P` 收的是笛卡尔位姿而不是关节角，两者不是可以直接串联的调用链，这个说法**只是推测**，真机要单独验证（`hardware-bringup.md` P0-2）。
 
 另外注意：那一节校验调的是本库的 **FK**（`fk_pose`），**没有**调用本库的数值 IK（`ArmKinematics.ik`）。所以「本库 IK 与厂家 IK 一致到 0.089 mm」不成立；0.089 mm 是「本库 FK + 该偏置 vs 厂家 IK 的目标位姿」。
 
@@ -139,7 +139,7 @@ PYTHONPATH=research/vendor-tools/python python3 -m vendor_model.cli --arm right 
 
 ## 还没做的
 
-- **IK 不做碰撞检查，也不做限位规避**（只按 yml 的 `limits` 做夹紧）。随包的位置限位只有 yml 里这组 ±3.1415，像占位值；`params.yml` 的 `UseLimit` 管的是速度 / 加速度限制，不是位置限位（`hardware-acceptance.md` P0-4）。真机上要注意。
+- **IK 不做碰撞检查，也不做限位规避**（只按 yml 的 `limits` 做夹紧）。随包的位置限位只有 yml 里这组 ±3.1415，像占位值；`params.yml` 的 `UseLimit` 管的是速度 / 加速度限制，不是位置限位（`hardware-bringup.md` P0-4）。真机上要注意。
 - **没有多解选择**：数值解依赖种子，返回的是种子附近的解，不保证与厂家 IK 选同一个分支。厂家那侧可能有肘部/腕部构型偏好（`ik_tolerance_emog_elbow` / `ik_tolerance_ev_elbow` 等参数暗示了按肘/腕分类的解析分支）。
 - **没做轨迹规划/插值**：`bot_traj_planner` 里用的是时间最优（TOTP）+ 迭代样条（`planner_*.yml` 里 `TrajectoryType: 1`），要复现得另做。
 - **没有校验右臂**：`kinematics_rightArm.yml` 已加载并且验证里双臂都通过了，但右臂的 `M` 与左臂相同（都是 0.6752），如果真机上两臂 TCP 不同需要修正。

@@ -4,10 +4,10 @@
 > 下面的签名摘自 `cpp/include/shensi/can/` 的头文件；两者不一致时以头文件为准，并回来改这一份，
 > 不要各自在代码里另立一套。
 >
-> 依据：PR0002（协议正本）、[`hardware-facts.md`](hardware-facts.md)（硬件事实）、
-> [`hardware-acceptance.md`](hardware-acceptance.md)（真机验收门）。协议与厂家实现的逐项对照在
-> [`can-protocol-comparison.md`](../research/vendor-analysis/can-protocol-comparison.md)，只作参考。
-> 相关：[`development-plan.md`](development-plan.md)（任务划分）。
+> 依据：PR0002（协议正本）、[`hardware-facts.md`](../hardware-facts.md)（硬件事实）、
+> [`hardware-bringup.md`](../hardware-bringup.md)（真机验收门）。协议与厂家实现的逐项对照在
+> [`can-protocol-comparison.md`](../../research/vendor-analysis/can-protocol-comparison.md)，只作参考。
+> 相关：[`development-plan.md`](../development-plan.md)（任务划分）。
 
 ## 0. 已定的决定
 
@@ -52,8 +52,8 @@ golden vector 全部取自 PR0002 自带的例子，并已并入 `tools/verify.s
 **不拥有**
 
 - 什么时候发什么（L1：控制字节里的使能 / 抱闸 / 清错位，SDO 诊断）
-- 关节索引到机器人的映射（L2 的构造配置：14 个关节 ↔ `Dev_ID` ↔ 通道，`l2-executor-interface.md` §3.2）
-- 什么时候必须发帧（L2 的节拍与喂狗，见 [`l2-executor-interface.md`](l2-executor-interface.md)）
+- 关节索引到机器人的映射（L2 的构造配置：14 个关节 ↔ `Dev_ID` ↔ 通道，`l2-executor.md` §3.2）
+- 什么时候必须发帧（L2 的节拍与喂狗，见 [`l2-executor.md`](l2-executor.md)）
 - 单位换算的**语义**（上层决定用 rad 还是 deg）；L0 只提供 `cnt ↔ rad` 的纯函数
 - 运动学（84.721 mm 偏置属于运动学 2A，不属于 L0）
 
@@ -236,7 +236,7 @@ public:
 
 台架上另有 **USB-CAN 适配器**一条路（厂商自带的用户态库）。
 
-哪条路由 `development-plan.md` 0C.3 摸底定、1D.1 实现。带宽都够用（`l2-executor-interface.md` §2.1 有估算），选哪条不影响 L0 接口。离线开发用 `FakeTransport` + `ReplayTransport`。
+哪条路由 `development-plan.md` 0C.3 摸底定、1D.1 实现。带宽都够用（`l2-executor.md` §2.1 有估算），选哪条不影响 L0 接口。离线开发用 `FakeTransport` + `ReplayTransport`。
 
 ## 5. 总线独占（已定）
 
@@ -332,7 +332,7 @@ DiffResult result = diff(golden, bus.sent_trace());
 1. `0x200` 组包——编码已定（CSP、`0xC6`，HF 2.3、2.4），剩真机确认模块的响应
 2. `0x110` MIT 单轴 9 字节顺序（12 位字段跨字节，容易错位）；没有任何样本（HF 2.8）
 3. 反馈 `byte[10]` / `byte[11]` 的语义（HF 2.5）
-4. 控制周期——按实测定（`l2-executor-interface.md` §2.1；厂家用 2 ms，HF 8.8），抖动真机要测
+4. 控制周期——按实测定（`l2-executor.md` §2.1；厂家用 2 ms，HF 8.8），抖动真机要测
 
 写 wire 层时又钉出四条**文档自身**的问题，都已经写成可执行断言（`cpp/tests/test_wire.cpp`
 的 `pr0002_documented_anomalies` 与 `frame_classification_and_device_ids`），不会随时间被遗忘：

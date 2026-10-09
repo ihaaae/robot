@@ -26,7 +26,7 @@ only thing that is known to drive it. The rule is:
 
 | Path | What it is |
 |---|---|
-| [`vendor-analysis/`](vendor-analysis/) | Write-ups: package contents, API contracts and defects, error codes, kinematics, the state machine, CAN protocol vs driver, deployment. Indexed in [`docs/index.md`](../docs/index.md) |
+| [`vendor-analysis/`](vendor-analysis) | Write-ups: package contents, API contracts and defects, error codes, kinematics, the state machine, CAN protocol vs driver, deployment. Indexed in [`docs/index.md`](../docs/index.md) |
 | [`vendor-tools/`](vendor-tools/README.md) | Programs that link the vendor binary: C++ demos and probes, the CMake target, the Python bridge, `verify-native.sh` |
 | `evidence/` | Symbol tables, DWARF source listings and disassembly excerpts behind every "found in the binary" claim (`evidence/disasm/README.md` maps files to claims) |
 | `vendor-derived/` | Text conversions of the vendor documents. Derived from vendor material, so still vendor material |

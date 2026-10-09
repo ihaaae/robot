@@ -4,7 +4,7 @@
 // then compare it against another: two runs of our own stack (did a change alter what goes on
 // the wire?), or our stack against an analyser capture from the robot (what did the bus actually
 // carry?). Correctness is judged against PR0002 and measurements on the robot
-// (docs/hardware-facts.md), not against any recorded trace. See docs/l0-interface.md §6.
+// (docs/hardware-facts.md), not against any recorded trace. See docs/components/l0-can-io.md §6.
 //
 // The comparison operator is NOT byte equality on a raw capture. It is: filter to the channel of
 // interest, keep relative order rather than absolute time, align on (bus, identifier, length),

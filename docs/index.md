@@ -24,11 +24,11 @@ links to the home rather than repeating the argument.
 |---|---|---|
 | [`ARCHITECTURE.md`](../ARCHITECTURE.md) | The goal, the three constraints, the layering (L0–L4) and why it is cut that way, interface freeze status, the capability list, a code map. **Start here** | Living |
 | [`development-plan.md`](development-plan.md) | Current status, the three phases and their exit criteria, five work packages per phase with effort estimates and owners, and what "done" means for each task | Draft |
-| [`deployment.md`](deployment.md) | Which layer runs on which machine: L0–L2 and the L4 state machine on the control board, L3 on an external computer, an RPC between them (time conversion, link loss) | Draft |
+| [`rpc.md`](interfaces/rpc.md) | Which layer runs on which machine: L0–L2 and the L4 state machine on the control board, L3 on an external computer, an RPC between them (time conversion, link loss) | Draft |
 | [`hardware-facts.md`](hardware-facts.md) | Every hardware fact the design relies on, one row each: source, confidence, evidence. Conflicts and unknowns are marked | Living |
-| [`l0-interface.md`](l0-interface.md) | L0 — wire codec, transport, trace and diff | Implemented in `cpp/` |
-| [`l2-executor-interface.md`](l2-executor-interface.md) | L2 — the executor that owns the control clock, the watchdog and the last safety gate | Draft |
-| [`hardware-acceptance.md`](hardware-acceptance.md) | What to verify when the robot arrives. The first section is the gate list for our own CAN master | Open work |
+| [`l0-can-io.md`](components/l0-can-io.md) | L0 — wire codec, transport, trace and diff | Implemented in `cpp/` |
+| [`l2-executor.md`](components/l2-executor.md) | L2 — the executor that owns the control clock, the watchdog and the last safety gate | Draft |
+| [`hardware-bringup.md`](hardware-bringup.md) | What to verify when the robot arrives. The first section is the gate list for our own CAN master | Open work |
 
 ## Vendor SDK analysis (reference, frozen)
 
