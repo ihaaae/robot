@@ -16,7 +16,7 @@
 
 | 决定 | 结论 |
 |---|---|
-| 语言 | 现有实现是 C++。开发板侧的实现语言在阶段 0 结束时定，换语言则移植（`development-plan.md` 1A.1）。不提供 C ABI 绑定：外部程序一律经 RPC 访问（`ARCHITECTURE.md` §3）。 |
+| 语言 | 开发板侧用 **Go**（`ARCHITECTURE.md` §6）。现有实现是 C++，要移植到 Go（`development-plan.md` 1A.1）；移植前下面的签名以 C++ 头文件为准，移植后改成 Go 的，语义和 trace 文本格式不变。不提供 C ABI 绑定：外部程序一律经 RPC 访问（`ARCHITECTURE.md` §3）。 |
 | 总线独占 | **一条总线只有一个 bus master。** 我们的栈拥有总线时，任何别的 bus master（包括厂家栈）都不能在上面跑。见 §5。 |
 | 分层 | L0 只做"字节 ↔ 线上结构体 + 收发 + trace"，**不含策略、时序、状态**。 |
 | RX 边界 | **原始帧。** 不走厂家 `setReadFunction` 解好的 `JointState`——那个结构没有温度字段，且解码必须能独立验证。见 §4.3。 |
