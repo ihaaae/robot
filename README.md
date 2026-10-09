@@ -19,7 +19,8 @@ it exists yet. Nothing has run on the robot — the gates before the first motio
 
 ```
 cpp/             our controller SDK (C++); L0 is implemented and tested
-docs/            plan, layer interfaces, hardware facts, acceptance gates
+docs/            requirements, safety concept, verification, RPC interface, component docs,
+                 plan, hardware facts, hardware bring-up, glossary
 tools/           verify.sh
 research/        reference only, frozen: vendor SDK analysis, tools that link it, evidence
 vendor/          the vendor's originals and the SDK tree extracted from them, with manifests
