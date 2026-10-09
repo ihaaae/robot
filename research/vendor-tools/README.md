@@ -4,7 +4,7 @@ Everything in this directory links or loads the vendor's binary SDK
 (`vendor/sdk/dual-arm-app/0.6.4`, `Juxie::ControllerJuxie`). It was written while this
 repository aimed to be detail-compatible with that SDK. That goal is gone: we now match the
 vendor SDK only at the level of abstraction, and the binary is reference material. These tools
-stay because they are how the findings in [`../vendor-analysis/`](../vendor-analysis/) were
+stay because they are how the findings in [`../vendor-analysis/`](../vendor-analysis) were
 obtained and can be reproduced. They are **frozen**: kept runnable, not extended. New code goes
 in `cpp/` and does not depend on anything here.
 
@@ -82,7 +82,7 @@ low-level board.
 | `python/vendor_model/` (`example_offline_kinematics.py`, `python -m vendor_model.cli`) | **Nothing at all** — no SDK, no socket, no device. Pure computation over the YAML. |
 | `research/vendor-tools/cpp/01_offline_kinematics.cpp` | **No power-on.** FK, `getConfig`, `GetRobotState` all work without `OnRobot()`, so this runs without energising anything. `--power-on` adds `getDof` and `IK` and does power the board. |
 | Dry runs of `04`, `06`, `07` | Read-only commands, but `OnRobot()` has already powered the board. |
-| Any invocation with `--yes` | **Commands motion.** Read `docs/hardware-acceptance.md` first. |
+| Any invocation with `--yes` | **Commands motion.** Read `docs/hardware-bringup.md` first. |
 
 `research/vendor-tools/cpp/02_read_telemetry.cpp` needs `OnRobot()` for `getJointerrcode()`, so it powers
 the board in order to read.

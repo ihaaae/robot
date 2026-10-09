@@ -13,13 +13,14 @@ document is listed in [`docs/index.md`](docs/index.md).
 
 **Status.** L0 (wire codec, transport, trace) is implemented and tested in `cpp/`; nothing above
 it exists yet. Nothing has run on the robot — the gates before the first motion are in
-[`docs/hardware-acceptance.md`](docs/hardware-acceptance.md).
+[`docs/hardware-bringup.md`](docs/hardware-bringup.md).
 
 ## Layout
 
 ```
 cpp/             our controller SDK (C++); L0 is implemented and tested
-docs/            plan, layer interfaces, hardware facts, acceptance gates
+docs/            requirements, safety concept, verification, RPC interface, component docs,
+                 plan, hardware facts, hardware bring-up, glossary
 tools/           verify.sh
 research/        reference only, frozen: vendor SDK analysis, tools that link it, evidence
 vendor/          the vendor's originals and the SDK tree extracted from them, with manifests

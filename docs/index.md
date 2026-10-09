@@ -20,15 +20,22 @@ links to the home rather than repeating the argument.
 
 ## Our own controller SDK
 
-| Document | What it covers | Status |
-|---|---|---|
-| [`ARCHITECTURE.md`](../ARCHITECTURE.md) | The goal, the three constraints, the layering (L0–L4) and why it is cut that way, interface freeze status, the capability list, a code map. **Start here** | Living |
-| [`development-plan.md`](development-plan.md) | Current status, the three phases and their exit criteria, five work packages per phase with effort estimates and owners, and what "done" means for each task | Draft |
-| [`deployment.md`](deployment.md) | Which layer runs on which machine: L0–L2 and the L4 state machine on the control board, L3 on an external computer, an RPC between them (time conversion, link loss) | Draft |
-| [`hardware-facts.md`](hardware-facts.md) | Every hardware fact the design relies on, one row each: source, confidence, evidence. Conflicts and unknowns are marked | Living |
-| [`l0-interface.md`](l0-interface.md) | L0 — wire codec, transport, trace and diff | Implemented in `cpp/` |
-| [`l2-executor-interface.md`](l2-executor-interface.md) | L2 — the executor that owns the control clock, the watchdog and the last safety gate | Draft |
-| [`hardware-acceptance.md`](hardware-acceptance.md) | What to verify when the robot arrives. The first section is the gate list for our own CAN master | Open work |
+Grouped by document type. Technical terms are used in English throughout; each one is defined
+once, in Chinese, in [`glossary.md`](glossary.md).
+
+| Type | Document | What it covers | Status |
+|---|---|---|---|
+| Requirements | [`requirements.md`](requirements.md) | Goal and scope, use cases (UC), functional (FR) and non-functional (NFR) requirements, gap check against the vendor SDK | Living |
+| Architecture | [`ARCHITECTURE.md`](../ARCHITECTURE.md) | Context, constraints (C1–C5), deployment view, logical view (L0–L4), runtime view, key decisions, open questions, code map. **Start here** | Living |
+| Cross-cutting | [`safety-concept.md`](safety-concept.md) | Every software safety mechanism across layers, how they relate, timing constraints, parameters still to calibrate, accepted risks | Draft |
+| Cross-cutting | [`verification.md`](verification.md) | What decides that the code is right: the Joint Emulator, test doubles, offline tests, acceptance by feedback curves | Draft |
+| Interface | [`interfaces/rpc.md`](interfaces/rpc.md) | The RPC contract between the external computer and the control board: operations, time conversion, link loss, the single control session | Draft |
+| Component | [`components/l0-can-io.md`](components/l0-can-io.md) | L0 CAN I/O — wire codec, `Transport`, trace and diff. Interface and internal design are marked | Implemented in `cpp/`, frozen |
+| Component | [`components/l2-executor.md`](components/l2-executor.md) | L2 Executor — the only clock owner: tick loop, motion sources, freshness, safety limiter. Interface and internal design are marked | Draft |
+| Plan | [`development-plan.md`](development-plan.md) | Current status, phases and exit criteria, work packages with estimates and owners, interface freeze status | Draft |
+| Hardware | [`hardware-facts.md`](hardware-facts.md) | Every hardware fact the design relies on, one row each: source, confidence, evidence. Conflicts and unknowns are marked | Living |
+| Hardware | [`hardware-bringup.md`](hardware-bringup.md) | Hardware bring-up: what to verify when the robot arrives, starting with the gates before our own stack first moves the arm | Open work |
+| Reference | [`glossary.md`](glossary.md) | Term → Chinese definition, with the document that owns each term | Living |
 
 ## Vendor SDK analysis (reference, frozen)
 

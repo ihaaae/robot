@@ -168,7 +168,7 @@ In order, before writing anything that moves:
    reads FK, limits and state without calling `OnRobot()`. If that runs and prints a sensible
    FK, your toolchain, deployment and configuration are all correct, and nothing has moved.
 5. **Only then** something that powers the robot, and only after reading
-   [`hardware-acceptance.md`](../../docs/hardware-acceptance.md) — that page lists what is unverified and
+   [`hardware-bringup.md`](../../docs/hardware-bringup.md) — that page lists what is unverified and
    in what order to check it.
 
 The emergency stop comes before all of this.
@@ -176,6 +176,6 @@ The emergency stop comes before all of this.
 ## Related
 
 - [`sdk-usage.md`](sdk-usage.md) — the API contracts, the `OnRobot()` ordering, the traps.
-- [`hardware-acceptance.md`](../../docs/hardware-acceptance.md) — what to verify on arrival, in priority order.
+- [`hardware-bringup.md`](../../docs/hardware-bringup.md) — what to verify on arrival, in priority order.
 - [`sdk.md`](sdk.md) §9 — the emulation bench, if you want to run the vendor's arm64 binaries
   without the robot.

@@ -3,7 +3,7 @@
 // Send plus a receive callback: small enough that SocketCAN or a USB-CAN adapter can each be
 // one backend behind it. Our SDK does not link the vendor's libraries.
 //
-// OWNERSHIP RULE (docs/l0-interface.md §5). A bus has exactly one master. While our stack owns
+// OWNERSHIP RULE (docs/components/l0-can-io.md §5). A bus has exactly one master. While our stack owns
 // it, no other master may run on it -- the vendor stack included:
 //
 //   * Two transports in one process remap the same /dev/mem window and the same

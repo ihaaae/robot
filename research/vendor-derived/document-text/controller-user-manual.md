@@ -72,7 +72,7 @@ limits:
 
 ⚠️ 每个关节 5 个数，后三个在所有关节上都是 `1.5, 6.5, 100`（像是速度/加速度类上限）。
 前两个数才是限位，但 `0: [-3.14, -3.14]` 是退化区间，说明要么截图读错，要么顺序是
-`[上限, 下限]` 而非 `[下限, 上限]`。**这与 `docs/hardware-acceptance.md` P0-4 记的
+`[上限, 下限]` 而非 `[下限, 上限]`。**这与 `docs/hardware-bringup.md` P0-4 记的
 「limits 全是 ±3.1415」需要一起重核。**
 
 同一个文件夹下的 `executor.yml` 可改**各轴正转方向** `MotorDirect`（14 项）。
@@ -95,7 +95,7 @@ limits:
 - **循环运动**是控制器内预设轨迹，点一次即可。文档明确警告：**点多次会导致点位异常造成危险；
   停止需要多点几下，否则后续轨迹填充会导致停不下来。**
   > 这条直接影响 `Stop()` 的重实现与 trace 语料设计：厂家自身的停止路径可能合法地重复下发
-  > 停止帧，见 `docs/l0-interface.md` §6 里 `collapse_consecutive_duplicates` 默认为 `false` 的理由。
+  > 停止帧，见 `docs/components/l0-can-io.md` §6 里 `collapse_consecutive_duplicates` 默认为 `false` 的理由。
 
 ## 三、程序刷新
 

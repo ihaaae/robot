@@ -29,7 +29,7 @@ Two traps caused wrong claims before, so they are worth stating:
 | `executor.ctor.resample.txt` + `rodata.txt` | `this+0x10` (`resample_delta`) defaults to 0.005 and is overwritten from YAML `Resample` (§1.1) |
 | `executor.ucas_can0_task_send_thread.txt`, `executor.ucas_can1_task_send_thread.txt` | One frame per tick: `0x200` DLC 64 when the command queue has a point, otherwise `0x80` DLC 8 (all zero) if `left_used_`/`right_used_`; sub-frame template `C6 …`; Dev_IDs at `[56+i]`; sleep step `this+0x10 × 1e9` ns (§1.1) |
 | `executor.ctor.flags.txt` | `left_used_` / `right_used_` (`+0x4bc` / `+0x4bd`) set to 1; `m_useLimit` (`+0x5f8`) default 1 |
-| `executor.ctor.limits-parse.txt`, `executor.ctor.limits-apply.txt` | `UseLimit` → `+0x5f8`; `LeftLimits` / `RightLimits` read as N×2; column 0 → `JointVelocityPlanner::max_velocity`, column 1 → `max_acc` (`hardware-acceptance.md` P0-4) |
+| `executor.ctor.limits-parse.txt`, `executor.ctor.limits-apply.txt` | `UseLimit` → `+0x5f8`; `LeftLimits` / `RightLimits` read as N×2; column 0 → `JointVelocityPlanner::max_velocity`, column 1 → `max_acc` (`hardware-bringup.md` P0-4) |
 | `executor.sendCommandThread0.txt` | The dead-code per-joint frame `0x200 \| (i+1)`, DLC 8, `0F 00 00 00` + little-endian int32 (§1.1) |
 | `executor.MoveEnd.txt` | `0x108` DLC 7 = `C4 HI LO 03 E8 00 00`; `part` 0 → both buses, 1 → CAN0, 2 → CAN1 (§2) |
 | `executor.SetSending.txt` | `SetSending(b, 1)` / `(b, 2)` write the atomics at `+0x4ba` / `+0x4bb` (`l3-executor-interface.md` §8) |

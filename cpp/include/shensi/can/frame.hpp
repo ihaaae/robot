@@ -1,6 +1,6 @@
 // L0 wire format: the frame container and the CAN identifier map.
 //
-// See docs/l0-interface.md. L0 owns bytes <-> wire structs, sending and receiving frames,
+// See docs/components/l0-can-io.md. L0 owns bytes <-> wire structs, sending and receiving frames,
 // and the trace/diff harness. It owns no policy, no sequencing and no state.
 #ifndef SHENSI_CAN_FRAME_HPP
 #define SHENSI_CAN_FRAME_HPP

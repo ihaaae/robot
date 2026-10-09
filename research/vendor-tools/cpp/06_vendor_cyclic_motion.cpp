@@ -18,7 +18,7 @@
 //
 // NOTE: this program calls OnRobot() at startup, which switches the robot to "ready" and
 // powers the low-level board. That happens even in a dry run; --yes is what commands motion.
-// DRY RUN BY DEFAULT. READ docs/hardware-acceptance.md BEFORE RUNNING THIS ON THE ROBOT.
+// DRY RUN BY DEFAULT. READ docs/hardware-bringup.md BEFORE RUNNING THIS ON THE ROBOT.
 //
 // Build: ./research/vendor-tools/cpp/build.sh
 // Run:   DUAL_ARM_SDK_CONFIG=<sdk>/usr/etc LD_LIBRARY_PATH=<sdk>/usr/lib \

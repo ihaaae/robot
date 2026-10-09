@@ -108,7 +108,7 @@ ControllerJuxie ──► ControllerJuxieImpl ──► m_state_（shared_ptr<St
 
 `Stop()` 调 executor 的 `disableServo()`：把 `+0x4b8` / `+0x4b9` 两个原子量置 1（按头文件成员顺序是
 `isLeftStop_` / `isRightStop_`），然后最多等 1 s，等某个状态位变化。从这里看不出是减速停还是立即停，
-这要在真机上测（[`hardware-acceptance.md`](../../docs/hardware-acceptance.md) P1-4）。`fault` 下 `Stop()` 被拒绝。
+这要在真机上测（[`hardware-bringup.md`](../../docs/hardware-bringup.md) P1-4）。`fault` 下 `Stop()` 被拒绝。
 
 ## 3. 自动转换：`UpdateStateThread`
 
@@ -128,7 +128,7 @@ ControllerJuxie ──► ControllerJuxieImpl ──► m_state_（shared_ptr<St
 - `isConnected()`：**恒返回 `true`**，所以第 1 行永远不会触发，「掉线 → `power_off`」不存在；
 - `isInFault()` / `isEnabled()`：读 `JuxieState` 里的 `isInFault` / `isEnabled`，由反馈更新；
 - `isMoving()`：`isLeftSending_ || isRightSending_`，即「有一条臂正在执行轨迹」
-  （[`l2-executor-interface.md`](../../docs/l2-executor-interface.md) 附录 A.2 的 `SetSending` 一行）。
+  （[`l2-executor.md`](../../docs/components/l2-executor.md) 附录 A.2 的 `SetSending` 一行）。
 
 由此得到三条结论：
 
@@ -205,7 +205,7 @@ qemu: uncaught target signal 11 (Segmentation fault)
 | `isInFault()` | `snapshot()` 里各关节的 `error` / `fault`，加上 `ArmHealth`（新鲜度失效也算故障） |
 | `isConnected()` | `ArmHealth::bus_ok`。厂家这一项恒为真；我们要真的实现「掉线」 |
 
-这张表也写进了 [`l2-executor-interface.md`](../../docs/l2-executor-interface.md) 附录 A.3。
+这张表也写进了 [`l2-executor.md`](../../docs/components/l2-executor.md) 附录 A.3。
 
 ## 6. 还需要真机确认的
 
@@ -214,4 +214,4 @@ qemu: uncaught target signal 11 (Segmentation fault)
 - `Stop()` 是减速停还是立即停（§2.3）；
 - 故障位自己消失时是否真的会自动离开 `fault`（§3 结论 3）。
 
-这些都并入 [`hardware-acceptance.md`](../../docs/hardware-acceptance.md) P1-4。
+这些都并入 [`hardware-bringup.md`](../../docs/hardware-bringup.md) P1-4。

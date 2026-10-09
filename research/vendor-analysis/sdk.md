@@ -180,7 +180,7 @@ CSV 列到 17 槽的映射（从 `MoveJCanfdTest` 的指令里读出来的，不
 
 > **已经实现了**：见 [`vendor_model/kinematics.py`](../vendor-tools/python/vendor_model/kinematics.py)（FK + 数值 IK，不依赖机器人）和 [`kinematics.md`](kinematics.md)（模型、RPY 约定、TCP 偏置、校验结果）。**只部分校验**：本库 FK 加拟合的 84.721 mm 偏置能复现厂家 IK 的目标位姿；本库 IK 未与厂家比过；与厂家 FK 对不上。范围见 kinematics.md 开头。
 
-`/usr/etc/params.yml` 里注意 `MaxVelocityFactor: 0.04`（默认速度系数被压到 4%）、`UseLimit: false`（关掉的是每拍的速度 / 加速度限制，`LeftLimits` / `RightLimits` 的 `[1.5, 6.5]` 就是这两个上限；不是位置限位，见 `hardware-acceptance.md` P0-4）。
+`/usr/etc/params.yml` 里注意 `MaxVelocityFactor: 0.04`（默认速度系数被压到 4%）、`UseLimit: false`（关掉的是每拍的速度 / 加速度限制，`LeftLimits` / `RightLimits` 的 `[1.5, 6.5]` 就是这两个上限；不是位置限位，见 `hardware-bringup.md` P0-4）。
 
 ---
 
@@ -334,7 +334,7 @@ Fatal glibc error: malloc assertion failure in sysmalloc:
 - `get_device_state` / `get_joint_position` / `get_tcp_pose` / `get_config` / `get_IK_joint_position` 都稳定，几十次调用没问题。
 - 早先偶尔能成功调用 `get_FK_pose`（零位返回 `[0,0,0.6755,0,-0,0]`），所以不是 100% 必崩。这个 0.6755 与直接调 `getFKpose` 的零位结果一致（而 `get_tcp_pose` 是 0.6752），印证 `get_FK_pose` 是 `getFKpose` 的薄包装。
 
-WebSocket 的 `get_FK_pose` 没有任何请求形态是安全的，只能不调。真机上的复现步骤见 [`hardware-acceptance.md`](../../docs/hardware-acceptance.md) P0-3。
+WebSocket 的 `get_FK_pose` 没有任何请求形态是安全的，只能不调。真机上的复现步骤见 [`hardware-bringup.md`](../../docs/hardware-bringup.md) P0-3。
 
 ### 已知问题（另一个，独立）：`IK()` 返回的 Eigen 向量析构时越界读
 

@@ -1,20 +1,23 @@
-# L0 接口
+# L0 CAN I/O
 
 > **已冻结，已实现**（`cpp/`）。目的是让 5 个人在真机到货前就能并行推进，所以 L0 的边界和签名先定下来。
 > 下面的签名摘自 `cpp/include/shensi/can/` 的头文件；两者不一致时以头文件为准，并回来改这一份，
 > 不要各自在代码里另立一套。
 >
-> 依据：PR0002（协议正本）、[`hardware-facts.md`](hardware-facts.md)（硬件事实）、
-> [`hardware-acceptance.md`](hardware-acceptance.md)（真机验收门）。协议与厂家实现的逐项对照在
-> [`can-protocol-comparison.md`](../research/vendor-analysis/can-protocol-comparison.md)，只作参考。
-> 相关：[`development-plan.md`](development-plan.md)（任务划分）。
+> 依据：PR0002（协议正本）、[`hardware-facts.md`](../hardware-facts.md)（硬件事实）、
+> [`hardware-bringup.md`](../hardware-bringup.md)（hardware bring-up）。协议与厂家实现的逐项对照在
+> [`can-protocol-comparison.md`](../../research/vendor-analysis/can-protocol-comparison.md)，只作参考。
+> 相关：[`development-plan.md`](../development-plan.md)（任务划分）、[`verification.md`](../verification.md)（test double 与判定依据）、[`glossary.md`](../glossary.md)。
+>
+> **接口（契约）**：§1 边界、§3 wire、§4.1 `Transport`、§5 总线独占、§6 trace 文本格式——这些已冻结。
+> **内部设计**：§4.2–4.4 后端与原始帧来源——只影响后端，不影响接口。
 
 ## 0. 已定的决定
 
 | 决定 | 结论 |
 |---|---|
-| 语言 | 现有实现是 C++。开发板侧的实现语言在阶段 0 结束时定，换语言则移植（`development-plan.md` 1A.1）。不提供 C ABI 绑定：外部程序一律经 RPC 访问（`ARCHITECTURE.md`「部署」）。 |
-| 总线独占 | **一条总线只有一个主站。** 我们的栈拥有总线时，任何别的主站（包括厂家栈）都不能在上面跑。见 §5。 |
+| 语言 | 现有实现是 C++。开发板侧的实现语言在阶段 0 结束时定，换语言则移植（`development-plan.md` 1A.1）。不提供 C ABI 绑定：外部程序一律经 RPC 访问（`ARCHITECTURE.md` §3）。 |
+| 总线独占 | **一条总线只有一个 bus master。** 我们的栈拥有总线时，任何别的 bus master（包括厂家栈）都不能在上面跑。见 §5。 |
 | 分层 | L0 只做"字节 ↔ 线上结构体 + 收发 + trace"，**不含策略、时序、状态**。 |
 | RX 边界 | **原始帧。** 不走厂家 `setReadFunction` 解好的 `JointState`——那个结构没有温度字段，且解码必须能独立验证。见 §4.3。 |
 | 厂家 `.so` | **不链接。** 我们的 SDK 不依赖厂家任何库；所有后端都是我们自己的。见 §4.2。 |
@@ -52,8 +55,8 @@ golden vector 全部取自 PR0002 自带的例子，并已并入 `tools/verify.s
 **不拥有**
 
 - 什么时候发什么（L1：控制字节里的使能 / 抱闸 / 清错位，SDO 诊断）
-- 关节索引到机器人的映射（L2 的构造配置：14 个关节 ↔ `Dev_ID` ↔ 通道，`l2-executor-interface.md` §3.2）
-- 什么时候必须发帧（L2 的节拍与喂狗，见 [`l2-executor-interface.md`](l2-executor-interface.md)）
+- 关节索引到机器人的映射（L2 的构造配置：14 个关节 ↔ `Dev_ID` ↔ 通道，`l2-executor.md` §3.2）
+- 什么时候必须发帧（L2 的 tick 与 watchdog keep-alive，见 [`l2-executor.md`](l2-executor.md)）
 - 单位换算的**语义**（上层决定用 rad 还是 deg）；L0 只提供 `cnt ↔ rad` 的纯函数
 - 运动学（84.721 mm 偏置属于运动学 2A，不属于 L0）
 
@@ -116,7 +119,7 @@ struct SdoRequest  { uint8_t dev_id; SdoCmd cmd; uint16_t index; uint8_t sub; ui
 struct SdoResponse { uint8_t dev_id; SdoCmd cmd; uint16_t index; uint8_t sub; uint32_t value; };
 
 Frame encode_sdo(const SdoRequest&);                  // 只收请求命令字；Dev_ID > 0x7F 抛 std::invalid_argument
-Frame encode_sdo_response(const SdoResponse&);        // 模块那一侧（假后端、虚拟关节模组、测试用），只收应答命令字
+Frame encode_sdo_response(const SdoResponse&);        // 模块那一侧（FakeTransport、Joint Emulator、测试用），只收应答命令字
 bool  decode_sdo(const Frame&, SdoResponse& out);     // false 表示不是 SDO 应答
 bool  decode_sdo_request(const Frame&, SdoRequest& out);
 // 便捷构造：sdo_write1/2/3/4(dev_id, index, sub, value)、sdo_read(dev_id, index, sub)
@@ -236,16 +239,16 @@ public:
 
 台架上另有 **USB-CAN 适配器**一条路（厂商自带的用户态库）。
 
-哪条路由 `development-plan.md` 0C.3 摸底定、1D.1 实现。带宽都够用（`l2-executor-interface.md` §2.1 有估算），选哪条不影响 L0 接口。离线开发用 `FakeTransport` + `ReplayTransport`。
+哪条路由 `development-plan.md` 0C.3 摸底定、1D.1 实现。带宽都够用（`l2-executor.md` §2.1 有估算），选哪条不影响 L0 接口。离线开发用 `FakeTransport` + `ReplayTransport`。
 
 ## 5. 总线独占（已定）
 
-一条总线只有一个主站。我们的栈拥有总线时，任何别的主站——包括厂家栈（`Juxie::ControllerJuxie`）——
+一条总线只有一个 bus master。我们的栈拥有总线时，任何别的 bus master——包括厂家栈（`Juxie::ControllerJuxie`）——
 都不能在上面跑，无论同进程还是另一个进程。这条写在 `transport.hpp` 的文档注释里。
 
 理由：
 
-1. **协议不允许两个主站。** SDO `0x600|id` 是请求/应答且无源地址，两个主站的会话会撞。更糟的是看门狗靠周期控制帧喂（PR0002 写约 500 ms 否则自锁，厂家另一份文档写告警级、可配，`hardware-facts.md` 4.2）：两个部分 owner 时"对方在喂狗"是运动中途锁死的失败模式。
+1. **协议不允许两个 bus master。** SDO `0x600|id` 是请求/应答且无源地址，两个 bus master 的会话会撞。更糟的是看门狗靠周期控制帧维持（PR0002 写约 500 ms 否则自锁，厂家另一份文档写告警级、可配，`hardware-facts.md` 4.2）：两个部分 owner 时"对方在做 watchdog keep-alive"是运动中途锁死的失败模式。
 2. **同一块硬件不能有两个驱动。** 在控制器板子上，第二个驱动实例会重映射同一块 `/dev/mem` 区域、mmap 同一块 shm、并成为同一帧队列的第二个消费者——帧会在两个读者之间非确定性地分裂。
 
 推论：**切换是整体的。** 应用要么整体用厂家 SDK，要么整体用我们的；要在真机上对照两者，就分开跑
@@ -332,7 +335,7 @@ DiffResult result = diff(golden, bus.sent_trace());
 1. `0x200` 组包——编码已定（CSP、`0xC6`，HF 2.3、2.4），剩真机确认模块的响应
 2. `0x110` MIT 单轴 9 字节顺序（12 位字段跨字节，容易错位）；没有任何样本（HF 2.8）
 3. 反馈 `byte[10]` / `byte[11]` 的语义（HF 2.5）
-4. 控制周期——按实测定（`l2-executor-interface.md` §2.1；厂家用 2 ms，HF 8.8），抖动真机要测
+4. 控制周期——按实测定（`l2-executor.md` §2.1；厂家用 2 ms，HF 8.8），抖动真机要测
 
 写 wire 层时又钉出四条**文档自身**的问题，都已经写成可执行断言（`cpp/tests/test_wire.cpp`
 的 `pr0002_documented_anomalies` 与 `frame_classification_and_device_ids`），不会随时间被遗忘：
@@ -363,7 +366,7 @@ DiffResult result = diff(golden, bus.sent_trace());
 `research/vendor-derived/document-text/controller-user-manual.md`）是**控制器**那一层的文档，
 本仓库此前只有关节模组那一层。其中三条直接影响 L0 / L1 / L2：
 
-1. **左臂 CAN1、右臂 CAN2。** 这是整机映射（`development-plan.md` 1C.1）缺的那一半。⚠️ 但手册用 **1 基**的 `CAN1`/`CAN2`，
+1. **左臂 CAN1、右臂 CAN2。** 这是 joint mapping（`development-plan.md` 1C.1）缺的那一半。⚠️ 但手册用 **1 基**的 `CAN1`/`CAN2`，
    而 `rk3576_can_canfd.h` 和 `/dev/misc_shm_can*` 用 **0 基**的 `CAN0`/`CAN1`；若两者对应，
    则**左臂 = `Bus::Can0`**。这个推断必须真机确认——它是左右臂互换最可能的来源，所以
    trace 表头把它写进文件，`diff()` 也把 `BusMismatch` 单列一类。
