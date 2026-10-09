@@ -74,7 +74,9 @@ L1 有完整文档（PR0002），L3 没有任何文档（只能写行为契约�
 | L4 Control API | 控制板，经 RPC Service 暴露 | 外部程序都通过它访问机器人 |
 | L3 离线规划、streaming smoothing、运动学 | **外部计算机**（v1） | 重的规划本来就在外面；L3 只往 L2 交带时间戳的点，不需要知道周期，也不需要实时线程（`l2-executor.md` §3.3），所以隔一层网络不改接口 |
 
-外部程序（含 Python）一律经 RPC 访问，不提供 C ABI 绑定——调用者在另一台机器上，进程内绑定用不上。
+**实现语言：控制板上用 Go，外部计算机上用 Python**（§6）。控制板上的 L0 / L1 / L2 / L4 和 RPC Service
+是一个 Go 程序；L3、RPC Client 和应用都是 Python。外部程序一律经 RPC 访问，不提供 C ABI 绑定——调用者在另一台机器上，
+进程内绑定用不上。
 RPC 的契约（操作、时间换算、断连、control session）见 [`rpc.md`](docs/interfaces/rpc.md)。
 
 L3 v1 整体放在外部，板上就不需要 IK 和规划代码。如果实测发现 streaming 经网络的到达抖动大到
@@ -149,6 +151,7 @@ L3 v1 整体放在外部，板上就不需要 IK 和规划代码。如果实测�
 | **方向与零偏在 L1** | 配置里有逐轴方向与软零位，方向配错会让直线走不直（`hardware-facts.md` 3.5） | `development-plan.md` 1B.4 |
 | **L3 只交带时间戳的点** | L3 不需要实时线程，也不需要知道周期；所以 L3 可以隔一层网络放在外部计算机上，接口不变 | `l2-executor.md` §3.3 |
 | **网络边界在 Executor 之上** | 带时钟的层和 bus master 必须靠近总线 | §3 |
+| **控制板用 Go，外部计算机用 Python** | 两台机器之间只有 RPC，两边各用最合适的语言。外部是规划、运动学和应用，Python 的数值生态合适；板上除了控制循环，还是一个常驻的网络服务（gRPC 流、会话、超时），Go 写这类服务直接；交叉编译成单个 aarch64 静态二进制；越界直接 panic、数据竞争有 `-race`，错误在测试里能暴露出来。控制循环本身不靠 Go 的并发。代价：L0 要从 C++ 移植；Go 有 GC，tick 抖动必须在板上实测达标（0C.4），tick 路径不分配内存 | `development-plan.md` 0C.4、1A.1 |
 | **运动学从零重写，FK / IK 共用一个模型文件** | 随包的三份模型（YAML、厂家 FK、厂家 IK）互相不一致（[`kinematics.md`](research/vendor-analysis/kinematics.md)）。模型文件是我们自己的格式，每个参数标明来源；真值是真机 | `development-plan.md` 2A |
 | **Joint Emulator 是独立组件，不是 L2 的测试附件** | trace 比对只是调试工具，离线判断 L1 / L2 对不对只剩它，所以 L1 / L2 的「做完」都依赖它 | [`verification.md`](docs/verification.md) |
 
@@ -161,7 +164,7 @@ L3 v1 整体放在外部，板上就不需要 IK 和规划代码。如果实测�
 | Q1 | streaming smoothing 留在外部还是搬到板上 | 由网络到达抖动决定（`rpc.md` §5 第 1 项；2B.4） |
 | Q2 | 板上 CAN 访问是 SocketCAN 还是寄存器 | `hardware-facts.md` 1.8，真机（0C.3；实现 1D.1）。只影响 L0 `Transport` 后端，不影响分层 |
 | Q3 | 板上的空闲算力与调度抖动 | 真机上在满载下测 L2 tick 的迟到分布（`l2-executor.md` §2.1；0C.4） |
-| Q4 | 开发板侧的实现语言 | 阶段 0 结束时定（0C.4）；L0 沿用 C++ 或移植 |
+| Q4 | Go 的 tick 抖动在开发板上满载时是否达标（语言已定为 Go，§6） | 真机实测（0C.4）；不达标就在阶段 0 结束前重新评估 |
 
 ## 8. 代码地图
 
@@ -169,7 +172,8 @@ L3 v1 整体放在外部，板上就不需要 IK 和规划代码。如果实测�
 cpp/include/shensi/can/   L0 公共头：frame、wire、transport、fake_transport、trace
 cpp/src/                  L0 实现
 cpp/tests/                L0 测试（PR0002 golden vector、字节序、trace 往返与差分）
+                          （C++ 版 L0 是移植到 Go 的参照；Go 版过了同一套 golden vector 后删除，见 1A.1）
 tools/verify.sh           离线检查：厂家原件哈希、SDK 树完整、L0 测试
 ```
 
-L1 以上还没有代码。
+L1 以上还没有代码。控制板上的代码将放在 `go/`，外部计算机上的代码放在 `python/`。

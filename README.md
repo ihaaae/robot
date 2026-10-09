@@ -11,6 +11,9 @@ analysis is kept in [`research/`](research/README.md) as frozen reference materi
 then [`docs/development-plan.md`](docs/development-plan.md) (phases and tasks). Every other
 document is listed in [`docs/index.md`](docs/index.md).
 
+**Languages.** The program on the control board is Go; everything on the external computer
+(L3 motion planning, the RPC client, applications) is Python. See `ARCHITECTURE.md` §6.
+
 **Status.** L0 (wire codec, transport, trace) is implemented and tested in `cpp/`; nothing above
 it exists yet. Nothing has run on the robot — the gates before the first motion are in
 [`docs/hardware-bringup.md`](docs/hardware-bringup.md).
@@ -18,7 +21,7 @@ it exists yet. Nothing has run on the robot — the gates before the first motio
 ## Layout
 
 ```
-cpp/             our controller SDK (C++); L0 is implemented and tested
+cpp/             L0 in C++, implemented and tested; to be ported to Go, then removed
 docs/            requirements, safety concept, verification, RPC interface, component docs,
                  plan, hardware facts, hardware bring-up, glossary
 tools/           verify.sh
