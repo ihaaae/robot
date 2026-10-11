@@ -134,9 +134,8 @@ P0-4（限位安全）在这条路线上同样适用，限位检查必须由我�
 - 清错位是电平还是边沿触发：持续置 `clear_error = 1` 与只置一个 tick，分别看故障是否清除、持续置位有没有副作用（`hardware-facts.md` 4.7）
 - 抱闸开合的实际延时（文档约 100 ms，`hardware-facts.md` 4.8），以反馈 `byte[11]` bit6 为准
 
-**怎么做**：用 `development-plan.md` T0.1 的钩子库（`LD_PRELOAD` 替换厂家驱动库里的 `can_send_data`）记录厂家栈发的
-每一帧，转成我们的 trace 格式，用 `diff()` 对照我们自己发的帧（`l0-can-io.md` §6）。依赖反馈原始字节的项
-（`byte[11]` 的各位）钩子拿不到，要借一台 CAN FD 适配器只听抓包，或者用我们自己的栈发帧、由 `RecordingTransport` 记录反馈。
+**怎么做**：用 CAN FD 分析仪只听抓包（`development-plan.md` T0.1），记录厂家栈在线上收发的每一帧（含原始 `0x300` 反馈），
+转成我们的 trace 格式，用 `diff()` 对照我们自己发的帧（`l0-can-io.md` §6）。
 
 **决定了什么**：我们 L0 / L1 / L2 的待解项（`l0-can-io.md` §8、`l2-executor.md` §8）。
 
