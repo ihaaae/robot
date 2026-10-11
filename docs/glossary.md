@@ -11,7 +11,7 @@
 | **controlled stop** | `halt()`：按配置的最大减速度把速度降到 0，然后保持。不依赖 L3 和网络。大致对应 IEC 60204-1 的 stop category 2（停下后保持使能） | `safety-concept.md` |
 | **Executor** | L2：唯一拥有控制时钟的层 | `l2-executor.md` |
 | **freshness**（新鲜度） | 一条臂所有关节的反馈都在新鲜度窗口内。不新鲜的臂不接受新目标 | `l2-executor.md` §4 |
-| **hardware bring-up** | 真机到货后、第一次运动前后要过的验证门 | `hardware-bringup.md` |
+| **hardware bring-up** | 真机上第一次运动前后要过的验证门 | `hardware-bringup.md` |
 | **hold frame**（保持帧） | 目标为当前位置的 `0x200`。没有 motion source 时每个 tick 发它 | `l2-executor.md` §2.3 |
 | **Joint Driver** | L1：**一个**关节模组的控制字节、SDO 诊断、方向 / 零偏、单位换算。无线程，由 L2 每个 tick 调用 | `development-plan.md` T1.3 |
 | **Joint Emulator** | 照 PR0002 写的虚拟关节模组，挂在 `FakeTransport` 上。离线判定 L1 / L2 对不对的唯一依据 | `verification.md` §2 |
