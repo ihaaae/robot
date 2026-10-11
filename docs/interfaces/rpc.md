@@ -4,7 +4,7 @@
 > 不是另一套「轨迹格式」。
 >
 > 为什么网络边界放在 Executor 之上、每层跑在哪台机器上，见 [`ARCHITECTURE.md`](../../ARCHITECTURE.md) §3。
-> 设计在 T0.6，实现在 T1.5（回放子集）与 T2.4（其余部分），见 [`development-plan.md`](../development-plan.md)。
+> 设计在 T0.5，实现在 T1.5（回放子集）与 T2.4（其余部分），见 [`development-plan.md`](../development-plan.md)。
 > 服务端（控制板）用 Go，客户端（外部计算机）用 Python（`ARCHITECTURE.md` §6）；契约本身与语言无关。
 
 ## 1. 操作
@@ -19,7 +19,7 @@
 | 监控 | 快照订阅（位置、速度、电流、温度、每臂健康、机器人状态） |
 | 维护 | 零位标定、手动抱闸 |
 
-传输建议用 gRPC：streaming 的点和快照订阅都是自然的双向 / 服务端流，Go 和 Python 都有成熟实现。待 T0.6 定案。
+传输建议用 gRPC：streaming 的点和快照订阅都是自然的双向 / 服务端流，Go 和 Python 都有成熟实现。待 T0.5 定案。
 带宽不是问题：14 关节 × 8 B × 100 点/秒约 11 KB/s。
 
 ## 2. 时间：两台机器的时钟不同
@@ -57,4 +57,4 @@ L2 的 `stream()` 要的 `point.t` 是**板上** `steady_clock` 的绝对时刻�
 | # | 问题 | 怎么定 |
 |---|---|---|
 | 1 | 网络到达抖动的分布，决定 `stream_delay` 与 `link_timeout` | 真机 + 实际网络环境，用遥操作的真实输入测（T2.2）；结果也决定 streaming smoothing 的位置（`ARCHITECTURE.md` §7 Q1） |
-| 2 | RPC 框架（gRPC 或其他） | T0.6 |
+| 2 | RPC 框架（gRPC 或其他） | T0.5 |

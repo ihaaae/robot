@@ -28,7 +28,7 @@ once, in Chinese, in [`glossary.md`](glossary.md).
 | Requirements | [`requirements.md`](requirements.md) | Goal and scope, use cases (UC), functional (FR) and non-functional (NFR) requirements, gap check against the vendor SDK | Living |
 | Architecture | [`ARCHITECTURE.md`](../ARCHITECTURE.md) | Context, constraints (C1–C5), deployment view, logical view (L0–L4), runtime view, key decisions, open questions, code map. **Start here** | Living |
 | Cross-cutting | [`safety-concept.md`](safety-concept.md) | Every software safety mechanism across layers, how they relate, timing constraints, parameters still to calibrate, accepted risks | Draft |
-| Cross-cutting | [`verification.md`](verification.md) | What decides that the code is right: the Joint Emulator, test doubles, offline tests, acceptance by feedback curves | Draft |
+| Cross-cutting | [`verification.md`](verification.md) | What decides that the code is right: the Fake Joint, test doubles, offline tests, acceptance by feedback curves | Draft |
 | Interface | [`interfaces/rpc.md`](interfaces/rpc.md) | The RPC contract between the external computer and the control board: operations, time conversion, link loss, the single control session | Draft |
 | Component | [`components/l0-can-io.md`](components/l0-can-io.md) | L0 CAN I/O — wire codec, `Transport`, trace and diff. Interface and internal design are marked | Implemented in `cpp/`, frozen |
 | Component | [`components/l2-executor.md`](components/l2-executor.md) | L2 Executor — the only clock owner: tick loop, motion sources, freshness, safety limiter. Interface and internal design are marked | Draft |

@@ -119,7 +119,7 @@ struct SdoRequest  { uint8_t dev_id; SdoCmd cmd; uint16_t index; uint8_t sub; ui
 struct SdoResponse { uint8_t dev_id; SdoCmd cmd; uint16_t index; uint8_t sub; uint32_t value; };
 
 Frame encode_sdo(const SdoRequest&);                  // 只收请求命令字；Dev_ID > 0x7F 抛 std::invalid_argument
-Frame encode_sdo_response(const SdoResponse&);        // 模块那一侧（FakeTransport、Joint Emulator、测试用），只收应答命令字
+Frame encode_sdo_response(const SdoResponse&);        // 模块那一侧（FakeTransport、Fake Joint、测试用），只收应答命令字
 bool  decode_sdo(const Frame&, SdoResponse& out);     // false 表示不是 SDO 应答
 bool  decode_sdo_request(const Frame&, SdoRequest& out);
 // 便捷构造：sdo_write1/2/3/4(dev_id, index, sub, value)、sdo_read(dev_id, index, sub)
