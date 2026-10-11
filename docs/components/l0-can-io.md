@@ -16,13 +16,13 @@
 
 | 决定 | 结论 |
 |---|---|
-| 语言 | 开发板侧用 **Go**（`ARCHITECTURE.md` §6）。现有实现是 C++，要移植到 Go（`development-plan.md` 1A.1）；移植前下面的签名以 C++ 头文件为准，移植后改成 Go 的，语义和 trace 文本格式不变。不提供 C ABI 绑定：外部程序一律经 RPC 访问（`ARCHITECTURE.md` §3）。 |
+| 语言 | 开发板侧用 **Go**（`ARCHITECTURE.md` §6）。现有实现是 C++，要移植到 Go（`development-plan.md` T1.1）；移植前下面的签名以 C++ 头文件为准，移植后改成 Go 的，语义和 trace 文本格式不变。不提供 C ABI 绑定：外部程序一律经 RPC 访问（`ARCHITECTURE.md` §3）。 |
 | 总线独占 | **一条总线只有一个 bus master。** 我们的栈拥有总线时，任何别的 bus master（包括厂家栈）都不能在上面跑。见 §5。 |
 | 分层 | L0 只做"字节 ↔ 线上结构体 + 收发 + trace"，**不含策略、时序、状态**。 |
 | RX 边界 | **原始帧。** 不走厂家 `setReadFunction` 解好的 `JointState`——那个结构没有温度字段，且解码必须能独立验证。见 §4.3。 |
 | 厂家 `.so` | **不链接。** 我们的 SDK 不依赖厂家任何库；所有后端都是我们自己的。见 §4.2。 |
 | 公共 API | **我们自己的 API**，只在能力层次上对标厂家 SDK，不追求同名方法、同号返回码（`ARCHITECTURE.md`）。 |
-| 原始帧来源 | **未定**：板上有 SocketCAN 就用；没有则打开内核驱动，或直接读写寄存器。由真机摸底定（`development-plan.md` 0C.3、1D.1；§4.4）。只影响后端，不影响接口。 |
+| 原始帧来源 | **未定**：板上有 SocketCAN 就用；没有则打开内核驱动，或直接读写寄存器。由真机摸底定（`development-plan.md` T0.3、T1.1；§4.4）。只影响后端，不影响接口。 |
 
 ## 实现状态
 
@@ -58,7 +58,7 @@ golden vector 全部取自 PR0002 自带的例子，并已并入 `tools/verify.s
 - 关节索引到机器人的映射（L2 的构造配置：14 个关节 ↔ `Dev_ID` ↔ 通道，`l2-executor.md` §3.2）
 - 什么时候必须发帧（L2 的 tick 与 watchdog keep-alive，见 [`l2-executor.md`](l2-executor.md)）
 - 单位换算的**语义**（上层决定用 rad 还是 deg）；L0 只提供 `cnt ↔ rad` 的纯函数
-- 运动学（84.721 mm 偏置属于运动学 2A，不属于 L0）
+- 运动学（84.721 mm 偏置属于运动学 T2.1，不属于 L0）
 
 ## 2. 三块结构
 
@@ -219,7 +219,7 @@ public:
 | `FakeTransport` | 脚本化应答 | 现在 |
 | `ReplayTransport` | 回放录好的 trace | 现在 |
 | `RecordingTransport` | 装饰器，把任意后端录成 trace | 现在 |
-| 板上真实后端 | SocketCAN（`can0` / `can1`）或寄存器直接读写，由 0C.3 定 | 1D.1 |
+| 板上真实后端 | SocketCAN（`can0` / `can1`）或寄存器直接读写，由 T0.3 定 | T1.1 |
 | `UsbCanTransport` | USB-CAN 适配器，台架调试用（具体型号未定） | 需要时 |
 
 ### 4.3 RX 边界（**已定：原始帧**）
@@ -227,7 +227,7 @@ public:
 厂家驱动的 `setReadFunction` 回调签名是 `void(JointState&, JointState&)`——它给的是**已经解码好的** `JointState`，不是原始帧。而且 vendored 头里的 `JointState` 只有
 `MotionState / ControlType / Current / Vel / single_torque / six_axis_torque / FaultData / origPosAct / isUpdated`，**没有温度字段**——走它的解码就永远读不到反馈帧 `[8..9]`。
 
-我们不链接厂家库（§0），这个选项本来也不存在；记在这里是因为它说明了原始帧边界的另一条理由：解码必须能独立验证。反馈帧的字节解码在 L0 的 `decode_feedback`，物理量换算是 L1（`development-plan.md` 1B.4）。
+我们不链接厂家库（§0），这个选项本来也不存在；记在这里是因为它说明了原始帧边界的另一条理由：解码必须能独立验证。反馈帧的字节解码在 L0 的 `decode_feedback`，物理量换算是 L1（`development-plan.md` T1.3）。
 
 ### 4.4 原始帧从哪来
 
@@ -239,7 +239,7 @@ public:
 
 台架上另有 **USB-CAN 适配器**一条路（厂商自带的用户态库）。
 
-哪条路由 `development-plan.md` 0C.3 摸底定、1D.1 实现。带宽都够用（`l2-executor.md` §2.1 有估算），选哪条不影响 L0 接口。离线开发用 `FakeTransport` + `ReplayTransport`。
+哪条路由 `development-plan.md` T0.3 摸底定、T1.1 实现。带宽都够用（`l2-executor.md` §2.1 有估算），选哪条不影响 L0 接口。离线开发用 `FakeTransport` + `ReplayTransport`。
 
 ## 5. 总线独占（已定）
 
@@ -358,7 +358,7 @@ DiffResult result = diff(golden, bus.sent_trace());
 | 1 | RX 边界：原始帧 | **已定**：原始帧 |
 | 2 | 是否链接厂家 `.so` | **已定**：不链接 |
 | 3 | 公共 API | **已定**：我们自己的 API，只在能力层次上对标厂家 |
-| 4 | 原始帧从哪来 | **未定**：SocketCAN 或寄存器直接读写，0C.3 摸底后定（§4.4）；不链接厂家驱动库 |
+| 4 | 原始帧从哪来 | **未定**：SocketCAN 或寄存器直接读写，T0.3 摸底后定（§4.4）；不链接厂家驱动库 |
 
 ## 10. 控制器手册带来的信息
 
@@ -366,7 +366,7 @@ DiffResult result = diff(golden, bus.sent_trace());
 `research/vendor-derived/document-text/controller-user-manual.md`）是**控制器**那一层的文档，
 本仓库此前只有关节模组那一层。其中三条直接影响 L0 / L1 / L2：
 
-1. **左臂 CAN1、右臂 CAN2。** 这是 joint mapping（`development-plan.md` 1C.1）缺的那一半。⚠️ 但手册用 **1 基**的 `CAN1`/`CAN2`，
+1. **左臂 CAN1、右臂 CAN2。** 这是 joint mapping（`development-plan.md` T1.4）缺的那一半。⚠️ 但手册用 **1 基**的 `CAN1`/`CAN2`，
    而 `rk3576_can_canfd.h` 和 `/dev/misc_shm_can*` 用 **0 基**的 `CAN0`/`CAN1`；若两者对应，
    则**左臂 = `Bus::Can0`**。这个推断必须真机确认——它是左右臂互换最可能的来源，所以
    trace 表头把它写进文件，`diff()` 也把 `BusMismatch` 单列一类。

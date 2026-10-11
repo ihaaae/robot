@@ -13,7 +13,7 @@
 | **freshness**（新鲜度） | 一条臂所有关节的反馈都在新鲜度窗口内。不新鲜的臂不接受新目标 | `l2-executor.md` §4 |
 | **hardware bring-up** | 真机到货后、第一次运动前后要过的验证门 | `hardware-bringup.md` |
 | **hold frame**（保持帧） | 目标为当前位置的 `0x200`。没有 motion source 时每个 tick 发它 | `l2-executor.md` §2.3 |
-| **Joint Driver** | L1：**一个**关节模组的控制字节、SDO 诊断、方向 / 零偏、单位换算。无线程，由 L2 每个 tick 调用 | `development-plan.md` 1B |
+| **Joint Driver** | L1：**一个**关节模组的控制字节、SDO 诊断、方向 / 零偏、单位换算。无线程，由 L2 每个 tick 调用 | `development-plan.md` T1.3 |
 | **Joint Emulator** | 照 PR0002 写的虚拟关节模组，挂在 `FakeTransport` 上。离线判定 L1 / L2 对不对的唯一依据 | `verification.md` §2 |
 | **joint mapping** | 14 个关节 ↔ (bus, `Dev_ID`) 的映射表，`ExecutorConfig` 的一部分，无默认值 | `l2-executor.md` §3.2 |
 | **Motion Planning** | L3：streaming smoothing、离线规划、FK / IK | `ARCHITECTURE.md` §4 |

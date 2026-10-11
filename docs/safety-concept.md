@@ -20,12 +20,12 @@
 |---|---|---|---|---|
 | **safety limiter**：位置限位 | L2 | `stream` / `execute` 提交的目标越过 `[lower, upper]` | 提交时拒绝，返回 `TargetOutOfLimits` | `l2-executor.md` §5 |
 | **safety limiter**：单 tick 步长 | L2 | `\|Δq\| > v_max · T` | 截断到上限并计数；持续截断 M 个 tick 则该臂 `halt` | `l2-executor.md` §5 |
-| **controlled stop**（`halt`） | L2 | 上层调用、safety limiter、RPC 断连 | 按配置的最大减速度把速度降到 0，然后保持 | `l2-executor.md` §3；`development-plan.md` 1C.4 |
+| **controlled stop**（`halt`） | L2 | 上层调用、safety limiter、RPC 断连 | 按配置的最大减速度把速度降到 0，然后保持 | `l2-executor.md` §3；`development-plan.md` T1.4 |
 | **反馈新鲜度** | L2 | 一条臂的反馈超出新鲜度窗口 | 该臂 motion source 中止、发保持帧；连续 N 个 tick 不新鲜则判失效，L4 转 `fault` | `l2-executor.md` §4 |
 | **watchdog keep-alive** | L2 | 每个 tick | 总线上每个 tick 都有一帧，没有 motion source 时发保持帧，避免关节自锁 | `l2-executor.md` §2.3 |
 | **RPC 断连** | RPC Service | 超过 `link_timeout` 没有消息 | 对该 control session 占用的臂 `halt`，离线轨迹执行中也一样 | `rpc.md` §3 |
 | **单一 bus master / control session** | L0、L4、RPC | 第二个实例或第二个 control session | 拒绝 | `l0-can-io.md` §5；`rpc.md` §4 |
-| 规划期限位检查 | L3 | 规划时 | 尽早报错。**不是兜底** | `development-plan.md` 2C.3 |
+| 规划期限位检查 | L3 | 规划时 | 尽早报错。**不是兜底** | `development-plan.md` T2.3 |
 | 关节模组自身的看门狗 | 硬件 | 约 500 ms 没有控制帧 | 自锁 | `hardware-facts.md` 4.2 |
 
 ## 3. 时间上的约束
@@ -41,11 +41,11 @@
 
 | 参数 | 怎么定 |
 |---|---|
-| 位置限位 `lower` / `upper` | P0-4（`hardware-bringup.md`；0C.1） |
+| 位置限位 `lower` / `upper` | P0-4（`hardware-bringup.md`；T0.3） |
 | 步长上限 `v_max`、持续截断 tick 数 M、`halt` 的最大减速度 | 和 P0-4 一起标定；`v_max` 先取保守值（例如 1.5 rad/s）（`l2-executor.md` §8 第 4 项） |
 | 新鲜度窗口、失效 tick 数 N | 真机测反馈延迟分布后定（`l2-executor.md` §8 第 3 项） |
 | `link_timeout`、心跳周期 | 实测网络后定（`rpc.md` §5） |
-| joint mapping（左右臂、`Dev_ID`、方向） | 真机逐轴点动（0C.2；`hardware-facts.md` 1.4、1.5） |
+| joint mapping（左右臂、`Dev_ID`、方向） | 真机逐轴点动（T0.3；`hardware-facts.md` 1.4、1.5） |
 
 ## 5. 有意接受的风险
 
