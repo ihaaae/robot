@@ -7,7 +7,7 @@
 > 依据：PR0002（协议正本）、[`hardware-facts.md`](../hardware-facts.md)（硬件事实）、
 > [`hardware-bringup.md`](../hardware-bringup.md)（hardware bring-up）。协议与厂家实现的逐项对照在
 > [`can-protocol-comparison.md`](../../research/vendor-analysis/can-protocol-comparison.md)，只作参考。
-> 相关：[`development-plan.md`](../development-plan.md)（任务划分）、[`verification.md`](../verification.md)（test double 与判定依据）、[`glossary.md`](../glossary.md)。
+> 相关：[`development-plan.md`](../development-plan.md)（任务划分）、[`verification.md`](../verification.md)（判定依据）、[`glossary.md`](../glossary.md)。
 >
 > **接口（契约）**：§1 边界、§3 wire、§4.1 `Transport`、§5 总线独占、§6 trace 文本格式——这些已冻结。
 > **内部设计**：§4.2–4.4 后端与原始帧来源——只影响后端，不影响接口。
@@ -26,7 +26,7 @@
 
 ## 实现状态
 
-未实现（`development-plan.md` T0.7）。范围：wire、`Transport` 接口与 `FakeTransport`、trace 与差分，
+未实现（`development-plan.md` T0.7）。范围：wire、`Transport` 接口、trace 与差分，
 连同 §7 的离线测试。`0x110` MIT 单轴编解码先不做（§8 未确认）。
 
 ## 1. 边界：L0 拥有什么，不拥有什么
@@ -35,7 +35,7 @@
 
 - 字节 ↔ 线上结构体的双向映射（纯函数，无 I/O、无状态）
 - 原始帧的发送与接收
-- trace 的记录、回放、归一化、差分
+- trace 的记录、归一化、差分
 
 **不拥有**
 
@@ -50,8 +50,8 @@
 | 块 | 内容 | 能否离线验证 |
 |---|---|---|
 | **wire** | 编解码纯函数 | ✅ 完全离线，golden vector 在这里 |
-| **transport** | 原始帧收发，多后端 | ✅ fake / replay 后端离线可跑 |
-| **trace** | 记录 / 回放 / 归一化 / 差分 | ✅ 对录好的 trace 离线可跑 |
+| **transport** | 原始帧收发，多后端 | ❌ 只有真实后端，要板子或台架 |
+| **trace** | 记录 / 归一化 / 差分 | ✅ 对录好的 trace 离线可跑 |
 
 ## 3. wire
 
@@ -104,7 +104,7 @@ struct SdoRequest  { uint8_t dev_id; SdoCmd cmd; uint16_t index; uint8_t sub; ui
 struct SdoResponse { uint8_t dev_id; SdoCmd cmd; uint16_t index; uint8_t sub; uint32_t value; };
 
 Frame encode_sdo(const SdoRequest&);                  // 只收请求命令字；Dev_ID > 0x7F 抛 std::invalid_argument
-Frame encode_sdo_response(const SdoResponse&);        // 模块那一侧（FakeTransport、Fake Joint、测试用），只收应答命令字
+Frame encode_sdo_response(const SdoResponse&);        // 模块那一侧（往返测试用），只收应答命令字
 bool  decode_sdo(const Frame&, SdoResponse& out);     // false 表示不是 SDO 应答
 bool  decode_sdo_request(const Frame&, SdoRequest& out);
 // 便捷构造：sdo_write1/2/3/4(dev_id, index, sub, value)、sdo_read(dev_id, index, sub)
@@ -201,8 +201,6 @@ public:
 
 | 后端 | 说明 | 何时可用 |
 |---|---|---|
-| `FakeTransport` | 脚本化应答 | 现在 |
-| `ReplayTransport` | 回放录好的 trace | 现在 |
 | `RecordingTransport` | 装饰器，把任意后端录成 trace | 现在 |
 | 板上真实后端 | SocketCAN（`can0` / `can1`）或寄存器直接读写，由 T0.3 定 | T1.1 |
 | `UsbCanTransport` | USB-CAN 适配器，台架调试用（具体型号未定） | 需要时 |
@@ -224,7 +222,7 @@ public:
 
 台架上另有 **USB-CAN 适配器**一条路（厂商自带的用户态库）。
 
-哪条路由 `development-plan.md` T0.3 摸底定、T1.1 实现。带宽都够用（`l2-executor.md` §2.1 有估算），选哪条不影响 L0 接口。离线开发用 `FakeTransport` + `ReplayTransport`。
+哪条路由 `development-plan.md` T0.3 摸底定、T1.1 实现。带宽都够用（`l2-executor.md` §2.1 有估算），选哪条不影响 L0 接口。没有离线后端：要收发帧就上板子，或在台架上接 USB-CAN 适配器。
 
 ## 5. 总线独占（已定）
 
@@ -286,21 +284,8 @@ DiffResult diff(const Trace& golden, const Trace& actual, const NormalizeOptions
 
 **必须从定义好的初始状态抓。** 使能过程依赖关节的当前状态，起点不同，帧序列就不同。
 
-配套两个后端：
-
-| 类 | 用途 |
-|---|---|
-| `RecordingTransport` | 装饰器，套在任意 `Transport` 外面，记录双向。**记录用的 receiver 在构造时装好**，不依赖使用者是否注册了 receiver |
-| `ReplayTransport` | 回放录好的 trace：`replay_rx()` 注入录到的反馈，`sent_trace()` 交出被测栈发出的帧，直接喂给 `diff()` |
-
-差分回路长这样：
-
-```cpp
-ReplayTransport bus(golden);
-drive_your_implementation(bus);          // 它发的帧进了 bus.sent()
-bus.replay_rx();                         // 把录到的反馈喂进去
-DiffResult result = diff(golden, bus.sent_trace());
-```
+trace 由 `RecordingTransport` 录：装饰器，套在任意 `Transport` 外面，记录双向。**记录用的 receiver 在构造时装好**，
+不依赖使用者是否注册了 receiver。`diff()` 比对录下的 trace（板上录的、分析仪抓的）。
 
 ## 7. 离线就能写的测试
 
@@ -311,7 +296,6 @@ DiffResult result = diff(golden, bus.sent_trace());
   - 反馈：`09 E1 FD E5 FF 51 00 00 00 F0 01 C0` → +13.89°、-539 RPM、-175 mA、无故障、24.0 °C、PP、使能+抱闸释放+运行中
   - 7 轴广播：`0x200` 那条 64 字节示例
 - 字节序断言：SDO 索引小端（`0x6040` → `40 60`）、控制帧目标大端（16384 → `40 00`）
-- `FakeTransport` 驱动的时序测试
 
 ## 8. 待解项（需真机帧或二进制定案）
 

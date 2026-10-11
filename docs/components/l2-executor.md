@@ -1,7 +1,7 @@
 # L2 Executor
 
 > **草稿。** 和 [`l0-can-io.md`](l0-can-io.md) 一样：先把边界和签名冻结，让 L3 / L4
-> 能对着 `SimExecutor` 开工，不必等 L1 做完。内容会变；变的时候改这一份。
+> 能对着接口写代码；要跑起来，得等真实实现（`development-plan.md` T1.4）。内容会变；变的时候改这一份。
 >
 > **接口（契约）**：§1 边界、§3 接口、§3.3 motion source 的语义、§5 safety limiter 的可观察行为——T0.4 冻结的是这些。
 > **内部设计**：§2 tick 与线程模型、§4 新鲜度的判定方式、附录 A——实现可以改，不影响上层。
@@ -298,7 +298,7 @@ safety limiter（§5）照常对插值结果截断步长。
   motion source 释放。之后的 `stream` 调用开始新的一段。保持是突然停下，所以 `stream_delay` 要选得让 L3
   正常工作时不出现 stream underrun
 
-`stream_delay` 是构造参数，和 L3 的输出节奏一起定（§8 第 8 项）。
+`stream_delay` 是构造参数，和 L3 的输出节奏一起定（§7 第 8 项）。
 
 **否决过的方案。**
 
@@ -336,36 +336,30 @@ safety limiter（§5）照常对插值结果截断步长。
 safety limiter **不可关闭**，也没有「调试时绕过」的开关。
 
 位置限位**没有可用的随包值**（HF 6.3），真实位置限位要在真机上标定（P0-4）。在那之前，
-`SimExecutor` 用测试自己给的限位即可；真实的 `Executor` 构造时必须显式传入限位，**不提供默认值**。
+离线测试用测试自己给的限位即可；真实的 `Executor` 构造时必须显式传入限位，**不提供默认值**。
 步长上限 `v_max` 先取保守值（例如 1.5 rad/s），同样要真机确认；它必须始终低于 §2.1 的硬件上限。
 
 它和其他层的安全机制（RPC 断连、硬件看门狗……）的关系见 [`safety-concept.md`](../safety-concept.md)。
 
-## 6. 两个 test double
+## 6. 测试
 
-| Test double | 替代什么 | 给谁用 |
-|---|---|---|
-| `SimExecutor` | 实现 `Executor` 接口本身。关节理想跟随目标（可选一阶滞后），可注入故障、掉帧 | L3 / L4 开发。不需要 L1，不需要写 CAN 应答脚本 |
-| Fake Joint | 挂在 `FakeTransport` 的 responder 上模拟关节模组：收控制帧回 `0x300`，按控制字节的使能 / 抱闸 / 清错位改变自身状态，收 SDO 回 `0x580`。行为照真机实测，见 `development-plan.md` T1.2 | 测真实的 `Executor` + L1 整条链 |
+**离线（纯函数，不收发帧）**
 
-`SimExecutor` 和真实 `Executor` 必须跑**同一套**接口契约测试，否则 L3 在 test double 上验证过的东西，
-换到真实实现上可能不成立。
-整个项目的 test double 与判定依据见 [`verification.md`](../verification.md)。
-
-## 7. 离线就能写的测试
-
-- tick：用可控时钟驱动，断言每个 tick 都恰好发出一帧 `0x200`，包括没有 motion source 的时候
-- 保持：`start()` 之后不给任何设定点，发出的目标恒等于最后一次实测位置
-- 仲裁：`execute` 进行中调用 `stream`，返回 `Busy`
 - 插值：给两个点，断言中间各 tick 的目标正好落在连线上；点的时刻不和 tick 对齐时也成立；周期换一个值，同一条轨迹的路径不变
 - 时间戳校验：`points[0].t != 0`、不递增、间隔超过 `kMaxPointSpacing` 都返回 `InvalidArgument`
-- 流：按 `stream_delay` 延迟播放；成批提前追加和逐个追加结果相同；停止追加后保持在最后一个点、`stream_underruns` 加一、motion source 释放
+- 流缓冲：按 `stream_delay` 延迟取点；成批提前追加和逐个追加结果相同；停止追加后保持在最后一个点、`stream_underruns` 加一
 - safety limiter：越限目标被拒绝；过大步长被截断且计数
-- 新鲜度：Fake Joint 停止回复一条臂的反馈，该臂中止并保持，另一条臂照常运动
-- `halt`：从最大速度停下所用的 tick 数有上界
-- 看门狗：让 tick 线程停 600 ms，Fake Joint 按真机实测的看门狗行为响应（`hardware-facts.md` 4.2），L2 能检出
 
-## 8. 待解项
+**真机（我们的栈独占总线后）**
+
+- tick：每个 tick 都恰好发出一帧 `0x200`，包括没有 motion source 的时候（用分析仪抓包核对）
+- 保持：`start()` 之后不给任何设定点，发出的目标恒等于最后一次实测位置
+- 仲裁：`execute` 进行中调用 `stream`，返回 `Busy`；流断开后 motion source 释放
+- 新鲜度：断开一条臂的总线（或该臂失去反馈），该臂中止并保持，另一条臂照常运动
+- `halt`：从最大速度停下所用的 tick 数有上界
+- 看门狗：让 tick 线程停 600 ms，按真机实测的看门狗行为（`hardware-facts.md` 4.2）L2 能检出。要先确认这样做安全
+
+## 7. 待解项
 
 | # | 事项 | 怎么定 |
 |---|---|---|

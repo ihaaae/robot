@@ -42,8 +42,8 @@
 | 参数 | 怎么定 |
 |---|---|
 | 位置限位 `lower` / `upper` | P0-4（`hardware-bringup.md`；T0.3） |
-| 步长上限 `v_max`、持续截断 tick 数 M、`halt` 的最大减速度 | 和 P0-4 一起标定；`v_max` 先取保守值（例如 1.5 rad/s）（`l2-executor.md` §8 第 4 项） |
-| 新鲜度窗口、失效 tick 数 N | 真机测反馈延迟分布后定（`l2-executor.md` §8 第 3 项） |
+| 步长上限 `v_max`、持续截断 tick 数 M、`halt` 的最大减速度 | 和 P0-4 一起标定；`v_max` 先取保守值（例如 1.5 rad/s）（`l2-executor.md` §7 第 4 项） |
+| 新鲜度窗口、失效 tick 数 N | 真机测反馈延迟分布后定（`l2-executor.md` §7 第 3 项） |
 | `link_timeout`、心跳周期 | 实测网络后定（`rpc.md` §5） |
 | joint mapping（左右臂、`Dev_ID`、方向） | 真机逐轴点动（T0.3；`hardware-facts.md` 1.4、1.5） |
 

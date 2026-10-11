@@ -45,7 +45,7 @@
 | C2 | 关节模组的看门狗：超过约 500 ms 没有控制帧就自锁 | `hardware-facts.md` 4.2（来源冲突） | 总线上必须持续有帧，由唯一一个组件保证 |
 | C3 | 反馈只由总线上的帧触发，模块不自己上报 | `hardware-facts.md` 2.6 | 反馈新鲜度和发帧节奏是同一个循环 |
 | C4 | 控制板算力不够做完整的运动规划 | 厂家板卡 | 系统分两台机器 |
-| C5 | 仓库里还没有任何东西在真机上跑过 | 现状 | L1 / L2 对不对在真机上判定；离线只有照真机实测写的 Fake Joint 跑回归（[`verification.md`](docs/verification.md)） |
+| C5 | 仓库里还没有任何东西在真机上跑过 | 现状 | L1 及以上对不对在真机上判定（[`verification.md`](docs/verification.md)） |
 
 设计原则（我们选的，不是外部强加的）：**按层切，不按 API 切。** API 表面跨好几层，规格质量差很远：
 L1 有完整文档（PR0002），L3 没有任何文档（只能写行为契约）。混在一起做会给出虚假的信心。
@@ -153,7 +153,6 @@ L3 v1 整体放在外部，板上就不需要 IK 和规划代码。如果实测�
 | **网络边界在 Executor 之上** | 带时钟的层和 bus master 必须靠近总线 | §3 |
 | **控制板用 Go，外部计算机用 Python** | 两台机器之间只有 RPC，两边各用最合适的语言。外部是规划、运动学和应用，Python 的数值生态合适；板上除了控制循环，还是一个常驻的网络服务（gRPC 流、会话、超时），Go 写这类服务直接；交叉编译成单个 aarch64 静态二进制；越界直接 panic、数据竞争有 `-race`，错误在测试里能暴露出来。控制循环本身不靠 Go 的并发。代价：Go 有 GC，tick 抖动必须在板上实测达标（T0.4），tick 路径不分配内存 | `development-plan.md` T0.4 |
 | **运动学从零重写，FK / IK 共用一个模型文件** | 随包的三份模型（YAML、厂家 FK、厂家 IK）互相不一致（[`kinematics.md`](research/vendor-analysis/kinematics.md)）。模型文件是我们自己的格式，每个参数标明来源；真值是真机 | `development-plan.md` T2.1 |
-| **Fake Joint 只是测试替身，验收在真机上** | 真机已到位，L1 / L2 对不对由真机判定；Fake Joint 照真机实测写，用来跑离线回归、测真机上不便制造的故障 | [`verification.md`](docs/verification.md) |
 
 ## 7. 待定问题
 
