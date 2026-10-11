@@ -3,12 +3,12 @@
 > **草稿。** 和 [`l0-can-io.md`](l0-can-io.md) 一样：先把边界和签名冻结，让 L3 / L4
 > 能对着 `SimExecutor` 开工，不必等 L1 做完。内容会变；变的时候改这一份。
 >
-> **接口（契约）**：§1 边界、§3 接口、§3.3 motion source 的语义、§5 safety limiter 的可观察行为——0D.1 冻结的是这些。
+> **接口（契约）**：§1 边界、§3 接口、§3.3 motion source 的语义、§5 safety limiter 的可观察行为——T0.4 冻结的是这些。
 > **内部设计**：§2 tick 与线程模型、§4 新鲜度的判定方式、附录 A——实现可以改，不影响上层。
 >
 > 依据：PR0002、[`hardware-facts.md`](../hardware-facts.md)（下文 `HF x.y` 指它的第 x.y 行）、
 > [`hardware-bringup.md`](../hardware-bringup.md)。
-> 相关：[`ARCHITECTURE.md`](../../ARCHITECTURE.md) §4（分层）、[`safety-concept.md`](../safety-concept.md)、[`verification.md`](../verification.md)、[`glossary.md`](../glossary.md)、[`development-plan.md`](../development-plan.md)（L2 的任务是 0D.1、1C、1E.1）。
+> 相关：[`ARCHITECTURE.md`](../../ARCHITECTURE.md) §4（分层）、[`safety-concept.md`](../safety-concept.md)、[`verification.md`](../verification.md)、[`glossary.md`](../glossary.md)、[`development-plan.md`](../development-plan.md)（L2 的任务是 T0.4、T1.4）。
 >
 > 这是**我们自己的**接口。厂家 `ExecutorBase` 的职责边界和这一层大致对应，对照放在附录 A，
 > 只作参考；正文的决定不以「和厂家一致」为理由。
@@ -51,7 +51,7 @@ L2 回答的是：**谁拥有时钟。**
 | 机器人状态机（`power_off / ready / idle / running / fault`） | L4 |
 | 每轴的使能 / 抱闸 / 清错逻辑（本 tick 置哪些位、等哪个状态位、SDO 诊断） | L1。L2 只负责每个 tick 调用它 |
 | 单关节的方向、零偏、单位换算 | L1 |
-| 运动学 | 2A |
+| 运动学 | T2.1 |
 
 **L2 是 L0 之上唯一带线程、带时钟的层。** L1 做成无线程、无时钟的库，由 L2 在 tick 里
 调用。这样 L1 能完全离线地做单测，时序问题也只需要在一处审查。
@@ -230,7 +230,7 @@ struct JointAddress {
 
 struct ExecutorConfig {
     std::array<JointAddress, kJoints> joints;   // 关节 i 在哪条总线、哪个 Dev_ID。无默认值
-    std::array<l1::AxisConfig, kJoints> axes;   // 方向、零偏、力矩常数（1B.4）
+    std::array<l1::AxisConfig, kJoints> axes;   // 方向、零偏、力矩常数（T1.3）
     JointVector lower, upper;                   // 位置限位（§5）。无默认值
     double v_max = 0;                           // 单 tick 步长上限对应的速度，rad/s（§5）
     std::chrono::nanoseconds tick_period{};     // §2.1
@@ -242,7 +242,7 @@ struct ExecutorConfig {
 
 ### 3.1 L4 状态机从这里读什么
 
-L4 的机器人状态从 L2 推导（`development-plan.md` 2D.2），不另起轮询线程。所以上面的接口必须能回答
+L4 的机器人状态从 L2 推导（`development-plan.md` T2.4），不另起轮询线程。所以上面的接口必须能回答
 这几个问题：
 
 | L4 要知道 | 这里 | 备注 |
@@ -265,7 +265,7 @@ L4 的机器人状态从 L2 推导（`development-plan.md` 2D.2），不另起�
 真机逐轴点动确认之前，配置文件必须显式写出来。
 
 「是否全部使能、是否有轴报错、是否有轴掉线」这类聚合不再是单独的函数：L2 的 `Snapshot` 和 `ArmHealth`
-已经给出了原始数据，聚合由 L4 的状态机在读快照时做（`development-plan.md` 2D.2）。
+已经给出了原始数据，聚合由 L4 的状态机在读快照时做（`development-plan.md` T2.4）。
 
 ### 3.3 Motion source：带时间戳的点，L2 线性插值
 
@@ -346,7 +346,7 @@ safety limiter **不可关闭**，也没有「调试时绕过」的开关。
 | Test double | 替代什么 | 给谁用 |
 |---|---|---|
 | `SimExecutor` | 实现 `Executor` 接口本身。关节理想跟随目标（可选一阶滞后），可注入故障、掉帧 | L3 / L4 开发。不需要 L1，不需要写 CAN 应答脚本 |
-| Joint Emulator | 挂在 `FakeTransport` 的 responder 上，按 PR0002 模拟关节模组：收控制帧回 `0x300`，按控制字节的使能 / 抱闸 / 清错位改变自身状态，收 SDO 回 `0x580`，超过 500 ms 没收到控制帧就自锁。规格与任务见 `development-plan.md` 0D.2、1A | 测真实的 `Executor` + L1 整条链 |
+| Fake Joint | 挂在 `FakeTransport` 的 responder 上模拟关节模组：收控制帧回 `0x300`，按控制字节的使能 / 抱闸 / 清错位改变自身状态，收 SDO 回 `0x580`。行为照真机实测，见 `development-plan.md` T1.2 | 测真实的 `Executor` + L1 整条链 |
 
 `SimExecutor` 和真实 `Executor` 必须跑**同一套**接口契约测试，否则 L3 在 test double 上验证过的东西，
 换到真实实现上可能不成立。
@@ -361,9 +361,9 @@ safety limiter **不可关闭**，也没有「调试时绕过」的开关。
 - 时间戳校验：`points[0].t != 0`、不递增、间隔超过 `kMaxPointSpacing` 都返回 `InvalidArgument`
 - 流：按 `stream_delay` 延迟播放；成批提前追加和逐个追加结果相同；停止追加后保持在最后一个点、`stream_underruns` 加一、motion source 释放
 - safety limiter：越限目标被拒绝；过大步长被截断且计数
-- 新鲜度：Joint Emulator 停止回复一条臂的反馈，该臂中止并保持，另一条臂照常运动
+- 新鲜度：Fake Joint 停止回复一条臂的反馈，该臂中止并保持，另一条臂照常运动
 - `halt`：从最大速度停下所用的 tick 数有上界
-- 看门狗：让 tick 线程停 600 ms，Joint Emulator 应进入自锁。这条是用来证明 Joint Emulator 本身是对的
+- 看门狗：让 tick 线程停 600 ms，Fake Joint 按真机实测的看门狗行为响应（`hardware-facts.md` 4.2），L2 能检出
 
 ## 8. 待解项
 
@@ -414,7 +414,7 @@ safety limiter **不可关闭**，也没有「调试时绕过」的开关。
 | `SetSending(bool, part)` | 无 | 它写的两个原子标志（按头文件成员顺序是 `isLeftSending_` / `isRightSending_`）由 `move()` 和 `isMoving()` 读，看起来是「这条臂正在执行轨迹」的状态位，不是开关总线发送。对应物是 `motion_active(part)`，不需要单独的写接口 |
 | `MoveEnd(v, part)` | 无 | 发给 Dev_ID 8 的普通单轴速度帧（`can-protocol-comparison.md` §2）。L2 目前不管 Dev_ID 8；要支持时加一个面向它的轴请求，不走 `send_raw` |
 | `getDof()` / `getJointNames()` / `getHomeJointValues()` | 无 | 配置，不是运行时状态；归 `ExecutorConfig`（§3.2）和 L4 |
-| `setJointZeroPosition()` | 无 | 标定操作，须先失能（1B.2）；由 L4 在 tick 循环停止时调 L1 |
+| `setJointZeroPosition()` | 无 | 标定操作，须先失能（T1.3）；由 L4 在 tick 循环停止时调 L1 |
 
 ### A.3 厂家状态机读的四个谓词
 
