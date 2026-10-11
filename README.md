@@ -14,14 +14,14 @@ document is listed in [`docs/index.md`](docs/index.md).
 **Languages.** The program on the control board is Go; everything on the external computer
 (L3 motion planning, the RPC client, applications) is Python. See `ARCHITECTURE.md` §6.
 
-**Status.** L0 (wire codec, transport, trace) is implemented and tested in `cpp/`; nothing above
-it exists yet. Nothing has run on the robot — the gates before the first motion are in
-[`docs/hardware-bringup.md`](docs/hardware-bringup.md).
+**Status.** No product code exists yet. The L0 interface (wire codec, transport, trace) is
+specified in [`docs/components/l0-can-io.md`](docs/components/l0-can-io.md); the Go
+implementation is task T0.7. Nothing has run on the robot — the gates before the first motion
+are in [`docs/hardware-bringup.md`](docs/hardware-bringup.md).
 
 ## Layout
 
 ```
-cpp/             L0 in C++, implemented and tested; to be ported to Go, then removed
 docs/            requirements, safety concept, verification, RPC interface, component docs,
                  plan, hardware facts, hardware bring-up, glossary
 tools/           verify.sh
@@ -29,7 +29,7 @@ research/        reference only, frozen: vendor SDK analysis, tools that link it
 vendor/          the vendor's originals and the SDK tree extracted from them, with manifests
 ```
 
-`cpp/`, `docs/` and `tools/` are ours and are where new work goes. `research/` and
+`docs/` and `tools/` are ours and are where new work goes. `research/` and
 [`vendor/`](vendor/README.md) are records; nothing outside them depends on them, except that
 `tools/verify.sh` checks the vendor originals' hashes.
 
@@ -38,12 +38,8 @@ vendor/          the vendor's originals and the SDK tree extracted from them, wi
 Everything below runs offline, without the robot and without root.
 
 ```bash
-# Check the repository: vendor originals unmodified, SDK tree complete, and the L0 tests
-# (needs a host C++ compiler; skipped if none)
+# Check the repository: vendor originals unmodified, SDK tree complete
 ./tools/verify.sh
-
-# Build and run only the L0 tests
-./cpp/build.sh
 ```
 
 `tools/verify.sh` proves nothing about motion or safety.

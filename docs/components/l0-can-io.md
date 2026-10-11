@@ -1,8 +1,8 @@
 # L0 CAN I/O
 
-> **已冻结，已实现**（`cpp/`）。目的是让各层不必等真机、可以并行推进，所以 L0 的边界和签名先定下来。
-> 下面的签名摘自 `cpp/include/shensi/can/` 的头文件；两者不一致时以头文件为准，并回来改这一份，
-> 不要各自在代码里另立一套。
+> **接口已冻结，未实现**（T0.7）。目的是让各层不必等真机、可以并行推进，所以 L0 的边界和签名先定下来。
+> 本文档是 L0 的规格：实现与本文不一致时以本文为准；要改接口先改这一份。下面的签名用 C++ 写成，
+> 只表达类型与语义，Go 实现按 Go 的习惯落地，语义和 trace 文本格式不变。
 >
 > 依据：PR0002（协议正本）、[`hardware-facts.md`](../hardware-facts.md)（硬件事实）、
 > [`hardware-bringup.md`](../hardware-bringup.md)（hardware bring-up）。协议与厂家实现的逐项对照在
@@ -16,7 +16,7 @@
 
 | 决定 | 结论 |
 |---|---|
-| 语言 | 开发板侧用 **Go**（`ARCHITECTURE.md` §6）。现有实现是 C++，要移植到 Go（`development-plan.md` T1.1）；移植前下面的签名以 C++ 头文件为准，移植后改成 Go 的，语义和 trace 文本格式不变。不提供 C ABI 绑定：外部程序一律经 RPC 访问（`ARCHITECTURE.md` §3）。 |
+| 语言 | 开发板侧用 **Go**（`ARCHITECTURE.md` §6）。实现见 `development-plan.md` T0.7（编解码、`Transport` 接口、trace）与 T1.1（板上后端）。不提供 C ABI 绑定：外部程序一律经 RPC 访问（`ARCHITECTURE.md` §3）。 |
 | 总线独占 | **一条总线只有一个 bus master。** 我们的栈拥有总线时，任何别的 bus master（包括厂家栈）都不能在上面跑。见 §5。 |
 | 分层 | L0 只做"字节 ↔ 线上结构体 + 收发 + trace"，**不含策略、时序、状态**。 |
 | RX 边界 | **原始帧。** 不走厂家 `setReadFunction` 解好的 `JointState`——那个结构没有温度字段，且解码必须能独立验证。见 §4.3。 |
@@ -26,23 +26,8 @@
 
 ## 实现状态
 
-`cpp/` 下已经落地 **wire + transport + trace/差分** 三块，`./cpp/build.sh` 一条命令构建并跑测：
-1127 个断言，0 失败，`-Wall -Wextra -Wpedantic` 零警告，ASan + UBSan 下干净。
-golden vector 全部取自 PR0002 自带的例子，并已并入 `tools/verify.sh` 第 3 步（离线，只需宿主 C++ 编译器）。
-
-| 文件 | 内容 |
-|---|---|
-| `cpp/include/shensi/can/frame.hpp` | `Frame`、标识符映射、`classify()` / `dev_id_of()`、`to_hex` / `from_hex` |
-| `cpp/include/shensi/can/wire.hpp` | SDO / 控制子帧 / 广播 / 反馈 / NMT / 单位换算 |
-| `cpp/include/shensi/can/transport.hpp` | `Transport` 接口（含总线独占规则） |
-| `cpp/include/shensi/can/fake_transport.hpp` | 脚本化假后端 |
-| `cpp/include/shensi/can/trace.hpp` | `Trace` 文本格式、`diff()`、`RecordingTransport`、`ReplayTransport` |
-| `cpp/tests/test_wire.cpp` | golden vector、字节序、往返、文档矛盾 |
-| `cpp/tests/test_transport.cpp` | 收发、responder、`send_raw` |
-| `cpp/tests/test_trace.cpp` | 文本往返、解析报错、六类差分、左右臂互换、录制回放 |
-| `cpp/CMakeLists.txt`, `cpp/build.sh` | 构建（cmake 优先，无 cmake 时直接 g++） |
-
-还没做：`0x110` MIT 单轴编解码（§8 未确认，故意先不做）。
+未实现（`development-plan.md` T0.7）。范围：wire、`Transport` 接口与 `FakeTransport`、trace 与差分，
+连同 §7 的离线测试。`0x110` MIT 单轴编解码先不做（§8 未确认）。
 
 ## 1. 边界：L0 拥有什么，不拥有什么
 
@@ -256,7 +241,7 @@ public:
 
 ## 6. trace 与差分
 
-**已实现。用途是调试与回归，不是验收标准。** 正确与否以 PR0002 和真机实测为准
+**用途是调试与回归，不是验收标准。** 正确与否以 PR0002 和真机实测为准
 （`hardware-facts.md`）；trace 回答的是「这次和上次有什么不同」「真机总线上实际跑的是什么」：
 比对我们自己两次运行的差异，或者比对我们发的帧和 CAN 分析仪在真机上抓到的帧。
 
@@ -337,8 +322,7 @@ DiffResult result = diff(golden, bus.sent_trace());
 3. 反馈 `byte[10]` / `byte[11]` 的语义（HF 2.5）
 4. 控制周期——按实测定（`l2-executor.md` §2.1；厂家用 2 ms，HF 8.8），抖动真机要测
 
-写 wire 层时又钉出四条**文档自身**的问题，都已经写成可执行断言（`cpp/tests/test_wire.cpp`
-的 `pr0002_documented_anomalies` 与 `frame_classification_and_device_ids`），不会随时间被遗忘：
+PR0002 **文档自身**有四条问题，L0 的测试要把它们写成可执行断言，免得随时间被遗忘：
 
 1. **§5.3 的 7 轴示例控制字节是 `0xD0`**，按 §5.1 位域解出 mode = **8**，而模式表只有 1–7；
    该示例的加速度与速度字段还都是 0，不像一条 PP 指令。我们的位置模式用 `0xC6`

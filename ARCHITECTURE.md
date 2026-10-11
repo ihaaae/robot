@@ -115,7 +115,7 @@ L3 v1 整体放在外部，板上就不需要 IK 和规划代码。如果实测�
 
 | 层 | 职责 | 线程 / 时钟 | 文档 | 状态 |
 |---|---|---|---|---|
-| L0 CAN I/O | 字节 ↔ 线上结构体（wire codec），收发（`Transport`），trace 记录与比对 | `Transport` 后端可有 RX 线程 | [`l0-can-io.md`](docs/components/l0-can-io.md) | **已实现，接口已冻结**（`cpp/`） |
+| L0 CAN I/O | 字节 ↔ 线上结构体（wire codec），收发（`Transport`），trace 记录与比对 | `Transport` 后端可有 RX 线程 | [`l0-can-io.md`](docs/components/l0-can-io.md) | 接口已冻结，未实现（T0.7） |
 | L1 Joint Driver | **一个**关节模组：控制字节里的使能 / 抱闸 / 清错 / 模式、SDO 诊断与零位标定、故障码、方向与零偏、单位 | 无。由 L2 每个 tick 调用 | `development-plan.md` T1.3 | 未开始 |
 | L2 Executor | 控制周期：tick、组 `0x200`、watchdog keep-alive、新鲜度、**safety limiter**、motion source 仲裁、controlled stop；joint mapping 作为构造配置 | **有，且只有这一层有** | [`l2-executor.md`](docs/components/l2-executor.md) | 接口草案 |
 | L3 Motion Planning | streaming（10–50 Hz 输入 → 平滑、加密成带时间戳的点）、离线规划、FK / IK；所有速度 / 加速度 / jerk 约束 | 无自有 tick，不需要知道周期；只往 L2 交带时间戳的点，L2 每个 tick 线性插值 | `development-plan.md` T2.1–T2.3 | 未开始 |
@@ -151,7 +151,7 @@ L3 v1 整体放在外部，板上就不需要 IK 和规划代码。如果实测�
 | **方向与零偏在 L1** | 配置里有逐轴方向与软零位，方向配错会让直线走不直（`hardware-facts.md` 3.5） | `development-plan.md` T1.3 |
 | **L3 只交带时间戳的点** | L3 不需要实时线程，也不需要知道周期；所以 L3 可以隔一层网络放在外部计算机上，接口不变 | `l2-executor.md` §3.3 |
 | **网络边界在 Executor 之上** | 带时钟的层和 bus master 必须靠近总线 | §3 |
-| **控制板用 Go，外部计算机用 Python** | 两台机器之间只有 RPC，两边各用最合适的语言。外部是规划、运动学和应用，Python 的数值生态合适；板上除了控制循环，还是一个常驻的网络服务（gRPC 流、会话、超时），Go 写这类服务直接；交叉编译成单个 aarch64 静态二进制；越界直接 panic、数据竞争有 `-race`，错误在测试里能暴露出来。控制循环本身不靠 Go 的并发。代价：L0 要从 C++ 移植；Go 有 GC，tick 抖动必须在板上实测达标（T0.4），tick 路径不分配内存 | `development-plan.md` T0.4、T1.1 |
+| **控制板用 Go，外部计算机用 Python** | 两台机器之间只有 RPC，两边各用最合适的语言。外部是规划、运动学和应用，Python 的数值生态合适；板上除了控制循环，还是一个常驻的网络服务（gRPC 流、会话、超时），Go 写这类服务直接；交叉编译成单个 aarch64 静态二进制；越界直接 panic、数据竞争有 `-race`，错误在测试里能暴露出来。控制循环本身不靠 Go 的并发。代价：Go 有 GC，tick 抖动必须在板上实测达标（T0.4），tick 路径不分配内存 | `development-plan.md` T0.4 |
 | **运动学从零重写，FK / IK 共用一个模型文件** | 随包的三份模型（YAML、厂家 FK、厂家 IK）互相不一致（[`kinematics.md`](research/vendor-analysis/kinematics.md)）。模型文件是我们自己的格式，每个参数标明来源；真值是真机 | `development-plan.md` T2.1 |
 | **Fake Joint 只是测试替身，验收在真机上** | 真机已到位，L1 / L2 对不对由真机判定；Fake Joint 照真机实测写，用来跑离线回归、测真机上不便制造的故障 | [`verification.md`](docs/verification.md) |
 
@@ -169,11 +169,7 @@ L3 v1 整体放在外部，板上就不需要 IK 和规划代码。如果实测�
 ## 8. 代码地图
 
 ```
-cpp/include/shensi/can/   L0 公共头：frame、wire、transport、fake_transport、trace
-cpp/src/                  L0 实现
-cpp/tests/                L0 测试（PR0002 golden vector、字节序、trace 往返与差分）
-                          （C++ 版 L0 是移植到 Go 的参照；Go 版过了同一套 golden vector 后删除，见 T1.1）
-tools/verify.sh           离线检查：厂家原件哈希、SDK 树完整、L0 测试
+tools/verify.sh           离线检查：厂家原件哈希、SDK 树完整
 ```
 
-L1 以上还没有代码。控制板上的代码将放在 `go/`，外部计算机上的代码放在 `python/`。
+还没有产品代码。控制板上的代码将放在 `go/`，外部计算机上的代码放在 `python/`。

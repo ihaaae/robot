@@ -2,9 +2,8 @@
 # Everything that can be checked without a robot, in one command.
 #
 # This is the executable form of the repository's acceptance criterion: a fresh clone can
-# verify that the vendor originals are unmodified, that the committed SDK tree is complete
-# and linkable, and that the L0 wire/transport/trace layer reproduces the protocol document's
-# own frames.
+# verify that the vendor originals are unmodified and that the committed SDK tree is complete
+# and linkable.
 #
 #   ./tools/verify.sh
 #
@@ -12,8 +11,7 @@
 # C++ programs and Python bridge linking the vendor SDK) live in
 # research/vendor-tools/verify-native.sh.
 #
-# Never opens a socket, never touches a robot. Step 3 needs a host C++ compiler and nothing
-# else; it is skipped, not failed, when there is none.
+# Never opens a socket, never touches a robot.
 set -euo pipefail
 
 repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -98,17 +96,6 @@ if problems:
     sys.exit(1)
 print(f"  \033[32mok\033[0m   libraries, symlinks, headers and config are all in place")
 PYTREE
-
-echo "3. L0 wire, transport and trace tests (offline, host C++ compiler)"
-if command -v c++ >/dev/null 2>&1 || command -v g++ >/dev/null 2>&1; then
-    if ! l0_output="$(./cpp/build.sh 2>&1)"; then
-        printf '%s\n' "$l0_output" >&2
-        fail "cpp/build.sh"
-    fi
-    pass "$(printf '%s\n' "$l0_output" | tail -1)"
-else
-    printf '  \033[33mskip\033[0m no host C++ compiler, L0 tests not run\n'
-fi
 
 echo
 echo "all checks passed"

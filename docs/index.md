@@ -30,7 +30,7 @@ once, in Chinese, in [`glossary.md`](glossary.md).
 | Cross-cutting | [`safety-concept.md`](safety-concept.md) | Every software safety mechanism across layers, how they relate, timing constraints, parameters still to calibrate, accepted risks | Draft |
 | Cross-cutting | [`verification.md`](verification.md) | What decides that the code is right: the Fake Joint, test doubles, offline tests, acceptance by feedback curves | Draft |
 | Interface | [`interfaces/rpc.md`](interfaces/rpc.md) | The RPC contract between the external computer and the control board: operations, time conversion, link loss, the single control session | Draft |
-| Component | [`components/l0-can-io.md`](components/l0-can-io.md) | L0 CAN I/O — wire codec, `Transport`, trace and diff. Interface and internal design are marked | Implemented in `cpp/`, frozen |
+| Component | [`components/l0-can-io.md`](components/l0-can-io.md) | L0 CAN I/O — wire codec, `Transport`, trace and diff. Interface and internal design are marked | Interface frozen, not implemented |
 | Component | [`components/l2-executor.md`](components/l2-executor.md) | L2 Executor — the only clock owner: tick loop, motion sources, freshness, safety limiter. Interface and internal design are marked | Draft |
 | Plan | [`development-plan.md`](development-plan.md) | Current status, phases and exit criteria, work packages with estimates and owners, interface freeze status | Draft |
 | Hardware | [`hardware-facts.md`](hardware-facts.md) | Every hardware fact the design relies on, one row each: source, confidence, evidence. Conflicts and unknowns are marked | Living |
@@ -59,7 +59,6 @@ motion, state transitions or fault handling.
 
 ## Related material outside `docs/`
 
-* `cpp/` — our own SDK. L0 is implemented; `./cpp/build.sh` builds and runs its tests.
 * `research/vendor-tools/` — frozen programs that link the vendor SDK (demos, probes, the
   Python bridge). See its README.
 * `research/evidence/` — symbol tables and DWARF source listings extracted from the binaries.
