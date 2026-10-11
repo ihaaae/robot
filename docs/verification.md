@@ -10,7 +10,7 @@
 |---|---|---|
 | PR0002 + 真机实测 | 一切 | 正本（规格优先级见 `ARCHITECTURE.md` §1） |
 | **Fake Joint** | 离线时 L1 / L2 的逻辑 | 测试替身，行为照真机实测；L1 / L2 的验收在真机上 |
-| golden vector（照 PR0002 写） | L0 wire codec | 已写成断言（`cpp/tests/test_wire.cpp`） |
+| golden vector（照 PR0002 写） | L0 wire codec | 随 L0 实现一起写（T0.7） |
 | 接口契约测试 | `Executor` 的真实实现和 `SimExecutor` 行为一致 | 两者跑同一套 |
 | trace 差分 | 「这次和上次有什么不同」 | **调试工具，不是验收标准** |
 | 参考运动（厂家栈的反馈曲线） | 阶段 1 真机回放 | 验收按反馈曲线，不按帧 |
@@ -43,7 +43,7 @@ Fake Joint 用来跑离线回归，以及测真机上难以或不宜制造的故
 ## 4. 离线测试
 
 - **L0**：PR0002 golden vector、字节序、往返、文档矛盾、trace 文本往返与六类差分（`l0-can-io.md` §7）。
-  已在 `tools/verify.sh` 第 3 步，只需宿主 C++ 编译器。
+  随 L0 实现一起写（T0.7），并入 `tools/verify.sh`。
 - **L2**：tick、保持、仲裁、插值、时间戳校验、stream、safety limiter、新鲜度、`halt`、看门狗（`l2-executor.md` §7）。
   契约测试清单在 T0.4。
 - **RPC**：注入 ±10⁻⁴ 的时钟漂移和网络抖动，断言长时间流不出现 stream underrun（T2.2）。

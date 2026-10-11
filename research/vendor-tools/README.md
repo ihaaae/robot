@@ -5,8 +5,8 @@ Everything in this directory links or loads the vendor's binary SDK
 repository aimed to be detail-compatible with that SDK. That goal is gone: we now match the
 vendor SDK only at the level of abstraction, and the binary is reference material. These tools
 stay because they are how the findings in [`../vendor-analysis/`](../vendor-analysis) were
-obtained and can be reproduced. They are **frozen**: kept runnable, not extended. New code goes
-in `cpp/` and does not depend on anything here.
+obtained and can be reproduced. They are **frozen**: kept runnable, not extended. New code does
+not depend on anything here.
 
 | Path | What it is |
 |---|---|

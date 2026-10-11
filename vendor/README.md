@@ -1,6 +1,6 @@
 # Vendor originals and the vendored SDK
 
-Reference material only: our SDK (`cpp/`) does not link anything here. The tree is kept buildable
+Reference material only: our own stack does not link anything here. The tree is kept buildable
 because the frozen tools in [`research/vendor-tools/`](../research/vendor-tools/README.md) link it.
 
 | | Where | What it is for |

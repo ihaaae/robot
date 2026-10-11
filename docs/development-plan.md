@@ -7,8 +7,8 @@
 > 依据：PR0002（协议正本）、[`hardware-facts.md`](hardware-facts.md)、[`hardware-bringup.md`](hardware-bringup.md)。
 > 要做什么见 [`requirements.md`](requirements.md)；怎么判定做对了见 [`verification.md`](verification.md)。
 
-**现状：** L0（wire + transport + trace）已实现并冻结（[`l0-can-io.md`](components/l0-can-io.md)），离线可测；
-trace 比对器只修 bug、不再加功能。L1 以上还没有代码。真机和一台 CAN FD 分析仪已到位，阶段 0 的真机项可以开始。下一个要冻结的是 L2 的 `Executor` 接口（T0.4）。
+**现状：** L0（wire + transport + trace）接口已冻结（[`l0-can-io.md`](components/l0-can-io.md)），还没有实现（T0.7）。
+还没有产品代码。真机和一台 CAN FD 分析仪已到位，阶段 0 的真机项可以开始。下一个要冻结的是 L2 的 `Executor` 接口（T0.4）。
 
 ## 阶段
 
@@ -28,8 +28,8 @@ trace 比对器只修 bug、不再加功能。L1 以上还没有代码。真机�
 参考运动是**数据，不是规格**：阶段 1 要复现的是那段运动，不是厂家栈的帧序列。抓到的流量顺带用来关掉
 `hardware-facts.md` 里的未知项，那些结论照常以 PR0002 + 真机为准。
 
-**实现语言已定：开发板上用 Go，外部计算机上用 Python**（`ARCHITECTURE.md` §6）。阶段 0 仍不写开发板上的产品代码，
-但要在开发板上实测 Go 的 tick 抖动（T0.4）。抓包（T0.1）用 CAN FD 分析仪，导出格式的转换脚本属于工具，不受这个决定约束。
+**实现语言已定：开发板上用 Go，外部计算机上用 Python**（`ARCHITECTURE.md` §6）。阶段 0 只写 L0 的离线部分（T0.7），
+因为抓包的转换和解码要用；此外要在开发板上实测 Go 的 tick 抖动（T0.4）。抓包（T0.1）用 CAN FD 分析仪，导出格式的转换脚本属于工具，不受这个决定约束。
 
 **退出条件（全部满足）：**
 
@@ -51,7 +51,7 @@ trace 比对器只修 bug、不再加功能。L1 以上还没有代码。真机�
 
 **目标：** 厂家栈不在总线上；外部计算机经 RPC 把阶段 0 抓到的目标轨迹交给开发板上我们自己的程序，复现那段运动。
 
-**范围：** T1.1–T1.6：L0 移植到 Go 与板上 CAN 后端、Fake Joint、L1、L2（含 `SimExecutor`）、
+**范围：** T1.1–T1.6：L0 板上 CAN 后端、Fake Joint、L1、L2（含 `SimExecutor`）、
 最小 L4 + RPC 服务端、外部回放工具与集成验收。
 
 **退出条件：**
@@ -85,13 +85,14 @@ trace 比对器只修 bug、不再加功能。L1 以上还没有代码。真机�
 
 | 任务 | 内容 | 人周 | 依赖 |
 |---|---|---|---|
-| T0.1 | 总线抓包与硬件事实 | 2.5 | 真机、分析仪 |
-| T0.2 | 参考运动与回放设计 | 3 | T0.1 |
+| T0.1 | 总线抓包与硬件事实 | 2.5 | 真机、分析仪；转换要 T0.7 |
+| T0.2 | 参考运动与回放设计 | 3 | T0.1、T0.7 |
 | T0.3 | 真机验证门与开发板摸底 | 2.5–3 | 真机 |
 | T0.4 | `Executor` 接口、契约测试清单与 Go tick 抖动 | 3 | 开发板 |
 | T0.5 | RPC 协议与最小 L4 | 3 | — |
 | T0.6 | 运动学接口与标定数据 | 1.5 | 外部测量设备 |
-| T1.1 | L0：移植到 Go 与板上 CAN 后端 | 3–4 / 4–7 | T0.3（SocketCAN） |
+| T0.7 | L0：wire、`Transport` 接口与 trace（Go） | 3 | — |
+| T1.1 | L0：板上 CAN 后端 | 1 / 2–4 | T0.3（SocketCAN）、T0.7 |
 | T1.2 | Fake Joint | 2 | T1.1；真机项要 T0.3 |
 | T1.3 | L1 Joint Driver | 6 | T1.1、T0.3（方向）；离线测试用 T1.2 |
 | T1.4 | L2 Executor（含插值器与 `SimExecutor`） | 7.5 | T0.4、T1.3、T0.3（限位、映射） |
@@ -107,7 +108,7 @@ trace 比对器只修 bug、不再加功能。L1 以上还没有代码。真机�
 
 - **T1.1 的板上 CAN 后端：** 开发板有 SocketCAN 就是约 1 人周；没有的话要么改设备树 / 内核打开标准驱动，
   要么学厂家直接读写寄存器，约 2–4 人周。T0.3 摸底后就能定。
-- **T1.1 的 Go 移植：** wire 编解码与 trace 要从 C++ 移植到 Go。golden vector 原样带过去，量有底。
+- **T0.7 的 golden vector：** 要逐条照 PR0002 的例子手写并核对，文档自身有矛盾的地方（`l0-can-io.md` §8）要先定怎么处理。
 
 **约束：**
 
@@ -131,7 +132,7 @@ trace 比对器只修 bug、不再加功能。L1 以上还没有代码。真机�
 - **接入**：只听模式、T 型接入、不加终端电阻（`hardware-facts.md` 1.2）；仲裁 1 Mbps / 数据 5 Mbps、BRS。
   分析仪是双通道的，两条总线同时抓、共用分析仪的时钟，双臂数据天然对齐。
   确认接入后厂家栈行为不变（无错误帧、`0x200` 间隔分布不变）。
-- **转换**：分析仪的导出格式 → L0 冻结的 trace 文本格式，双向原始帧都转；转完用 L0 的 `decode_*` 全部解一遍，
+- **转换**：分析仪的导出格式 → L0 冻结的 trace 文本格式，双向原始帧都转；转完用 L0 的 `decode_*`（T0.7）全部解一遍，
   解不出的帧要报出来，不能静默丢掉。
 - **完整性**：长时间连续录制；**丢帧必须能检出**：分析仪自己的溢出 / 错误计数，以及协议自带的连续性
   （控制帧按拍出现，每个 tick 每个模块一帧反馈）。另附一份元数据（时间、跑的是哪个栈与参数、输入文件的哈希、
@@ -222,22 +223,32 @@ L4 API 的网络形态，设计在 [`rpc.md`](interfaces/rpc.md)。协议一次�
 
 **做完：** 阶段 0 退出条件 5 里的运动学接口与模型文件格式；标定数据在阶段 2 开始前采完。
 
+### T0.7 — L0：wire、`Transport` 接口与 trace（3 人周）
+
+按 [`l0-can-io.md`](components/l0-can-io.md) 用 Go 实现 L0 的离线部分。放在阶段 0，是因为 T0.1 的转换和 T0.2 的解码要用它；
+它不依赖真机，可以和 T0.1 同时开始。
+
+**内容：**
+
+- **wire**：SDO、控制子帧、`0x200` 广播、反馈、NMT 的编解码与 `cnt ↔ rad` 换算（`l0-can-io.md` §3）。`0x110` 先不做（§8）。
+- **`Transport` 接口与 `FakeTransport`**（§4.1、§5）。
+- **trace**：文本格式读写、归一化与差分、`RecordingTransport`、`ReplayTransport`（§6）。
+- **离线测试**（§7）：golden vector 逐条照 PR0002 的例子写，不从厂家二进制写；PR0002 自身的四条问题（§8）写成断言。
+  测试并入 `tools/verify.sh`。
+
+**做完：** §7 的测试全部通过；T0.1 能用它把分析仪的导出转成 trace 并全部解码。
+
 ---
 
 ## 阶段 1 的任务
 
-### T1.1 — L0：移植到 Go 与板上 CAN 后端（3–4 / 4–7 人周）
+### T1.1 — L0：板上 CAN 后端（1 / 2–4 人周）
 
-L0 的接口已经冻结，这个任务把它整体搬到开发板上：编解码与 trace 移植到 Go，`Transport` 补上真实后端。
+`Transport` 的真实实现，接在 T0.7 的接口上。有 SocketCAN 就接 SocketCAN；没有则改设备树 / 内核打开标准驱动，
+或者照厂家的方式直接读写寄存器（`hardware-facts.md` 1.7）。方式由 T0.3 定；这一项约 1 人周，或 2–4 人周。
+用 `RecordingTransport` 在板上录的 trace 与分析仪在线上抓的对照（T0.1）。
 
-**内容：**
-
-- **移植到 Go**：wire 编解码、`Transport` 接口、`FakeTransport`、trace 与差分，golden vector 和测试原样带过去；
-  trace 文本格式不变，两边录的文件互通。Go 版全部通过后删掉 `cpp/`。
-- **板上 CAN 后端**：`Transport` 的真实实现。有 SocketCAN 就接 SocketCAN；没有则改设备树 / 内核打开标准驱动，
-  或者照厂家的方式直接读写寄存器（`hardware-facts.md` 1.7）。方式由 T0.3 定；这一项约 1 人周，或 2–4 人周。
-
-**做完：** Go 版过了全部 golden vector 与测试；板上后端在真机上收发两条总线。
+**做完：** 板上后端在真机上收发两条总线，与分析仪的抓包一致。
 
 ### T1.2 — Fake Joint（2 人周）
 
@@ -451,7 +462,7 @@ RPC 是 L4 API 的网络形态，协议在 T0.5 已经定全；L4 每多一项�
 
 | 接口 | 状态 | Test double |
 |---|---|---|
-| L0 帧结构体、`Transport`、trace 文本格式 | 已冻结 | `FakeTransport`、`ReplayTransport` |
+| L0 帧结构体、`Transport`、trace 文本格式 | 已冻结（实现在 T0.7） | `FakeTransport`、`ReplayTransport` |
 | L2 `Executor` | 草案，阶段 0 冻结（T0.4） | `SimExecutor` |
 | 运动学：`FK` / `IK` 签名与模型文件格式 | 阶段 0 冻结（T0.6） | — |
 | RPC 服务定义 | 阶段 0 冻结（T0.5，建议 gRPC） | — |
